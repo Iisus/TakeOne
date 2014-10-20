@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 2.8.4)
 project(TakeOne)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+set(CMAKE_CXX_FLAGS_DEBUG "-DENABLE_DEBUG")
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/bin)
 
@@ -18,7 +19,6 @@ else(UNIX)
     set(PLATFORM "Unknown")
   endif(WIN32)
 endif(UNIX)
-message("----------${PLATFORM}")
 
 set(LINK_DIRS
     lib/GLFW/lib/${PLATFORM}

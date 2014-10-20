@@ -2,10 +2,10 @@
 
 #include <iostream>
 
-#define ENABLE_DEBUG 1
+//TODO: Implement Logging
 
 #if ENABLE_DEBUG
-	#define LOG_MSG(msg, ...) std::cout << "TODO: Implement Logging" << std::endl;
+	#define LOG_MSG(msg, ...) std::cout << "Not Implemented" << std::endl;
 #else
 	#define LOG_MSG(...)
 #endif

@@ -21,6 +21,7 @@ namespace TakeOne
 
 	private:
 		//private methods
+        void InitGlew();
 		static void ErrorCallback(int pError, const char* pDescription);
 
 		//private members
