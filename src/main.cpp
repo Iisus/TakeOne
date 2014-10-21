@@ -1,5 +1,4 @@
 #include "GL/glew.h"
-
 #include "Engine.h"
 
 int main(void)

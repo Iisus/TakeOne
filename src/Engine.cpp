@@ -14,11 +14,10 @@ TakeOne::Engine::Engine(int pWidth, int pHeight, std::string pTitle)
 	//create window
 	mWindow = glfwCreateWindow(pWidth, pHeight, pTitle.c_str(), NULL, NULL);
 
-    //TODO: Understand what are this hints for
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT,GL_TRUE);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_SAMPLES, 4);
 
 #ifdef ENABLE_DEBUG
@@ -62,13 +61,10 @@ void  TakeOne::Engine::InitGlew()
 
     if (GLEW_OK != err)
     {
-        /* Problem: glewInit failed, something is seriously wrong. */
+        // Problem: glewInit failed, something is seriously wrong.
         LOG_MSG("Error: %s\n", glewGetErrorString(err));
     }
 
-    //TODO: Understand what are this for
-
-    LOG_MSG("Status: Using GLEW %s\n", glewGetString(GLEW_VERSION));
     glEnable (GL_BLEND);
     glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
