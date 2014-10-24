@@ -29,6 +29,7 @@ set(INCLUDE_DIRS
     include
     lib/GLFW/include
     lib/GLEW/include
+    lib/glm
     )
 
 set(SOURCE_FILES
