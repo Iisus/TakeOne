@@ -1,6 +1,6 @@
 #pragma once
 
-#include <iostream>
+#include <cstdio>
 
 //TODO: Implement better Logging system (with levels)
 
