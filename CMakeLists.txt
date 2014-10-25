@@ -2,9 +2,9 @@ cmake_minimum_required(VERSION 2.8.4)
 project(TakeOne)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-set(CMAKE_CXX_FLAGS_DEBUG "-DENABLE_DEBUG")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DENABLE_DEBUG")
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/bin)
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_LIST_DIR}/bin)
 
 if(UNIX)
   if(APPLE)
@@ -34,6 +34,7 @@ set(INCLUDE_DIRS
 
 set(SOURCE_FILES
     src/Engine.cpp
+    src/Mesh.cpp
     src/main.cpp
     )
 
