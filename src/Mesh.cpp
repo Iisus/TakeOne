@@ -12,7 +12,7 @@ TakeOne::Mesh::~Mesh()
     Release();
 }
 
-void TakeOne::Mesh::Setup(const std::vector<Vertex>& pVertices, const std::vector<unsigned int>& pIndices, const std::bitset<5>& pAttribsUsed)
+void TakeOne::Mesh::Setup(const std::vector<Vertex>& pVertices, const std::vector<unsigned int>& pIndices, const std::bitset<(unsigned int)VertexFormat::Count>& pAttribsUsed)
 {
     assert(pAttribsUsed[(unsigned int)VertexFormat::POSITION] && "A mesh must contain positions!");
 
@@ -115,9 +115,9 @@ void TakeOne::Mesh::Render()
         );
     }
 
-    if(mAttribsUsed[(unsigned int)VertexFormat::TEXTCOORD])
+    if(mAttribsUsed[(unsigned int)VertexFormat::TEXCOORD])
     {
-        attribLocation = (unsigned int)VertexFormat::TEXTCOORD;
+        attribLocation = (unsigned int)VertexFormat::TEXCOORD;
         glEnableVertexAttribArray(attribLocation);
         glVertexAttribPointer(
                 attribLocation,
@@ -125,14 +125,14 @@ void TakeOne::Mesh::Render()
                 GL_FLOAT,
                 GL_FALSE,
                 sizeof(Vertex),
-                (void*) offsetof(Vertex, textCoord)
+                (void*) offsetof(Vertex, texCoord)
         );
     }
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIBO);
     glDrawElements(
             GL_TRIANGLES,
-            mIndices.size(),
+            (GLsizei) mIndices.size(),
             mIndicesType,
             (void*)0
     );

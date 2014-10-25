@@ -13,7 +13,9 @@ namespace TakeOne
         NORMAL,
         COLOR,
         TANGENT,
-        TEXTCOORD
+        TEXCOORD,
+
+        Count
     };
 
     struct Vertex
@@ -22,7 +24,7 @@ namespace TakeOne
         glm::vec3 normal;
         glm::vec3 color;
         glm::vec3 tangent;
-        glm::vec2 textCoord;
+        glm::vec2 texCoord;
     };
 
     class Mesh
@@ -31,7 +33,7 @@ namespace TakeOne
         Mesh();
         ~Mesh();
 
-        void Setup(const std::vector<Vertex>& pVertices, const std::vector<unsigned int>& pIndices, const std::bitset<5>& pAttribsUsed);
+        void Setup(const std::vector<Vertex>& pVertices, const std::vector<unsigned int>& pIndices, const std::bitset<(unsigned int)VertexFormat::Count>& pAttribsUsed);
         void Render();
         void Release();
     private:
@@ -43,6 +45,6 @@ namespace TakeOne
         std::vector<unsigned int>   mIndices;
 
         unsigned short mIndicesType;
-        std::bitset<5> mAttribsUsed; // There are 5 VertexFormat types
+        std::bitset<(unsigned int)VertexFormat::Count> mAttribsUsed; // There are 5 VertexFormat types
     };
 }

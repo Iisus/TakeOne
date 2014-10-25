@@ -51,7 +51,7 @@ void TakeOne::Engine::Update()
 bool TakeOne::Engine::ShouldClose()
 {
 	//convert to bool before returning to avoid warning
-	return !!glfwWindowShouldClose(mWindow);
+	return glfwWindowShouldClose(mWindow) != 0;
 }
 
 void  TakeOne::Engine::InitGlew()
