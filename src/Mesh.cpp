@@ -12,8 +12,12 @@ TakeOne::Mesh::~Mesh()
     Release();
 }
 
-void TakeOne::Mesh::Setup(const std::vector<Vertex>& pVertices, const std::vector<unsigned int>& pIndices, const std::bitset<(unsigned int)VertexFormat::Count>& pAttribsUsed)
+void TakeOne::Mesh::Setup(std::vector<Vertex> pVertices, std::vector<unsigned int> pIndices, const bitset_vf& pAttribsUsed)
 {
+    mVertices = std::move(pVertices);
+    mIndices = std::move(pIndices);
+    mAttribsUsed = pAttribsUsed;
+
     assert(pAttribsUsed[(unsigned int)VertexFormat::POSITION] && "A mesh must contain positions!");
 
     glGenVertexArrays(1, &mVAO);
@@ -21,34 +25,30 @@ void TakeOne::Mesh::Setup(const std::vector<Vertex>& pVertices, const std::vecto
 
     glGenBuffers(1, &mVBO);
     glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-    glBufferData(GL_ARRAY_BUFFER, pVertices.size() * sizeof(Vertex), &pVertices[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, mVertices.size() * sizeof(Vertex), &mVertices[0], GL_STATIC_DRAW);
 
 
     glGenBuffers(1, &mIBO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIBO);
 
     //find out the minimum size for indices
-    if(pVertices.size() < 0xff)
+    if(mVertices.size() < 0xff)
     {
         mIndicesType = GL_UNSIGNED_BYTE;
-        std::vector<unsigned char> charIndices(pIndices.begin(), pIndices.end());
+        std::vector<unsigned char> charIndices(mIndices.begin(), mIndices.end());
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, charIndices.size() * sizeof(unsigned char), &charIndices[0], GL_STATIC_DRAW);
     }
-    else if(pVertices.size() < 0xffff)
+    else if(mVertices.size() < 0xffff)
     {
         mIndicesType = GL_UNSIGNED_SHORT;
-        std::vector<unsigned short> shortIndices(pIndices.begin(), pIndices.end());
+        std::vector<unsigned short> shortIndices(mIndices.begin(), mIndices.end());
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, shortIndices.size() * sizeof(unsigned short), &shortIndices[0], GL_STATIC_DRAW);
     }
     else
     {
         mIndicesType = GL_UNSIGNED_INT;
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, pIndices.size() * sizeof(unsigned int), &pIndices[0], GL_STATIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, mIndices.size() * sizeof(unsigned int), &mIndices[0], GL_STATIC_DRAW);
     }
-
-    mVertices       = pVertices;
-    mIndices        = pIndices;
-    mAttribsUsed    = pAttribsUsed;
 }
 
 void TakeOne::Mesh::Render()

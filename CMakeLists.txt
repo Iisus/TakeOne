@@ -32,11 +32,7 @@ set(INCLUDE_DIRS
     lib/glm
     )
 
-set(SOURCE_FILES
-    src/Engine.cpp
-    src/Mesh.cpp
-    src/main.cpp
-    )
+FILE(GLOB SOURCE_FILES "src/*.cpp")
 
 if(PLATFORM STREQUAL "Win32")
     set(LINK_FILES

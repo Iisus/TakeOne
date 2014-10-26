@@ -7,91 +7,16 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include "Program.h"
 #include "Mesh.h"
 #include "Log.h"
 
+#include "Raster.h"
+
 using namespace std;
-
-GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_path){
-
-    // Create the shaders
-    GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
-    GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
-
-    // Read the Vertex Shader code from the file
-    std::string VertexShaderCode;
-    std::ifstream VertexShaderStream(vertex_file_path, std::ios::in);
-    if(VertexShaderStream.is_open())
-    {
-        std::string Line = "";
-        while(getline(VertexShaderStream, Line))
-            VertexShaderCode += "\n" + Line;
-        VertexShaderStream.close();
-    }
-
-    // Read the Fragment Shader code from the file
-    std::string FragmentShaderCode;
-    std::ifstream FragmentShaderStream(fragment_file_path, std::ios::in);
-    if(FragmentShaderStream.is_open()){
-        std::string Line = "";
-        while(getline(FragmentShaderStream, Line))
-            FragmentShaderCode += "\n" + Line;
-        FragmentShaderStream.close();
-    }
-
-    GLint Result = GL_FALSE;
-    int InfoLogLength;
-
-    // Compile Vertex Shader
-    printf("Compiling shader : %s\n", vertex_file_path);
-    char const * VertexSourcePointer = VertexShaderCode.c_str();
-    glShaderSource(VertexShaderID, 1, &VertexSourcePointer , NULL);
-    glCompileShader(VertexShaderID);
-
-    // Check Vertex Shader
-    glGetShaderiv(VertexShaderID, GL_COMPILE_STATUS, &Result);
-    glGetShaderiv(VertexShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-    std::vector<char> VertexShaderErrorMessage(InfoLogLength);
-    glGetShaderInfoLog(VertexShaderID, InfoLogLength, NULL, &VertexShaderErrorMessage[0]);
-    fprintf(stdout, "%s\n", &VertexShaderErrorMessage[0]);
-
-    // Compile Fragment Shader
-    printf("Compiling shader : %s\n", fragment_file_path);
-    char const * FragmentSourcePointer = FragmentShaderCode.c_str();
-    glShaderSource(FragmentShaderID, 1, &FragmentSourcePointer , NULL);
-    glCompileShader(FragmentShaderID);
-
-    // Check Fragment Shader
-    glGetShaderiv(FragmentShaderID, GL_COMPILE_STATUS, &Result);
-    glGetShaderiv(FragmentShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-    std::vector<char> FragmentShaderErrorMessage(InfoLogLength);
-    glGetShaderInfoLog(FragmentShaderID, InfoLogLength, NULL, &FragmentShaderErrorMessage[0]);
-    fprintf(stdout, "%s\n", &FragmentShaderErrorMessage[0]);
-
-    // Link the program
-    fprintf(stdout, "Linking program\n");
-    GLuint ProgramID = glCreateProgram();
-    glAttachShader(ProgramID, VertexShaderID);
-    glAttachShader(ProgramID, FragmentShaderID);
-    glLinkProgram(ProgramID);
-
-    // Check the program
-    glGetProgramiv(ProgramID, GL_LINK_STATUS, &Result);
-    glGetProgramiv(ProgramID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-    std::vector<char> ProgramErrorMessage( max(InfoLogLength, int(1)) );
-    glGetProgramInfoLog(ProgramID, InfoLogLength, NULL, &ProgramErrorMessage[0]);
-    fprintf(stdout, "%s\n", &ProgramErrorMessage[0]);
-
-    glDeleteShader(VertexShaderID);
-    glDeleteShader(FragmentShaderID);
-
-    return ProgramID;
-}
 
 int main(void)
 {
-    int a = 0;
-    a++;
     TakeOne::Engine engine(800, 600, "TakeOne");
 
     TakeOne::Mesh mesh;
@@ -109,17 +34,16 @@ int main(void)
     v1.color = glm::vec3(0.0f, 0.0f, 1.0f);
     v.push_back(v1);
 
-    std::vector<unsigned int> i;
-    i.push_back(0);
-    i.push_back(1);
-    i.push_back(2);
+    std::vector<unsigned int> i = {1, 2, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,1, 2, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            1, 2, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,1, 2, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,1, 2, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
 
-    std::bitset<5> b;
+    TakeOne::bitset_vf b;
     b.set((unsigned int)TakeOne::VertexFormat::POSITION);
     b.set((unsigned int)TakeOne::VertexFormat::COLOR);
-    mesh.Setup(v, i, b);
-// Create and compile our GLSL program from the shaders
-    GLuint programID = LoadShaders( "../shaders/vertex.glsl", "../shaders/fragment.glsl" );
+
+    mesh.Setup(std::move(v), std::move(i), b);
+
+    TakeOne::Program program("../shaders/vertex.glsl", "../shaders/fragment.glsl");
 
     glClearColor(0.0, 0.2, 0.5, 1.0);
 
@@ -137,14 +61,22 @@ int main(void)
 // Our ModelViewProjection : multiplication of our 3 matrices
     glm::mat4 MVP        = Projection * View * Model; // Remember, matrix multiplication is the other way around
 
+
+    long long it = 0;
 	while (!engine.ShouldClose())
 	{
+        it++;
+        if(it > 100) //reload shader every 100 iterrations; to be removed!!
+        {
+            program.Reload();
+            it = 0;
+        }
         // Use our shader
-        glUseProgram(programID);
+        program.Use();
 
         // Get a handle for our "MVP" uniform.
 // Only at initialisation time.
-        GLint MatrixID = glGetUniformLocation(programID, "MVP");
+        GLint MatrixID = program.GetUniformLocation("MVP");
 
 // Send our transformation to the currently bound shader,
 // in the "MVP" uniform
