@@ -31,6 +31,8 @@ TakeOne::Engine::Engine(int pWidth, int pHeight, std::string pTitle)
 
 	//use the context created
 	glfwMakeContextCurrent(mWindow);
+    //VSync: 0->off, 1->on
+    glfwSwapInterval(0);
 
     InitGlew();
 }
@@ -43,9 +45,24 @@ TakeOne::Engine::~Engine()
 
 void TakeOne::Engine::Update()
 {
+    static double lastTime = glfwGetTime();
+    static int nbFrames = 0;
+    static char title[20];
+
 	//get the events, then swap buffers
 	glfwPollEvents();
 	glfwSwapBuffers(mWindow);
+
+    //TODO: remove this:
+    nbFrames++;
+    if(glfwGetTime() - lastTime >= 0.5)
+    {
+        sprintf(title, "%9.9lf", double(nbFrames));
+        glfwSetWindowTitle(mWindow, title);
+        nbFrames = 0;
+        lastTime+=0.5;
+    }
+
 }
 
 bool TakeOne::Engine::ShouldClose()
