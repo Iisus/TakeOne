@@ -1,6 +1,7 @@
 #include "GL/glew.h"
 #include "Log.h"
 #include "Mesh.h"
+#include <fstream>
 
 TakeOne::Mesh::Mesh()
 : mVAO(0), mVBO(0), mIBO(0)
@@ -12,43 +13,46 @@ TakeOne::Mesh::~Mesh()
     Release();
 }
 
-void TakeOne::Mesh::Setup(std::vector<Vertex> pVertices, std::vector<unsigned int> pIndices, const bitset_vf& pAttribsUsed)
+void TakeOne::Mesh::Load(const std::string& pMeshFile)
 {
-    mVertices = std::move(pVertices);
-    mIndices = std::move(pIndices);
-    mAttribsUsed = pAttribsUsed;
-
-    assert(pAttribsUsed[(unsigned int)VertexFormat::POSITION] && "A mesh must contain positions!");
-
-    glGenVertexArrays(1, &mVAO);
-    glBindVertexArray(mVAO);
-
-    glGenBuffers(1, &mVBO);
-    glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-    glBufferData(GL_ARRAY_BUFFER, mVertices.size() * sizeof(Vertex), &mVertices[0], GL_STATIC_DRAW);
-
-
-    glGenBuffers(1, &mIBO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIBO);
-
-    //find out the minimum size for indices
-    if(mVertices.size() < 0xff)
+    //The components in file are floats
+    std::ifstream file(pMeshFile, std::ios::binary);
+    if(!file.is_open())
     {
-        mIndicesType = GL_UNSIGNED_BYTE;
-        std::vector<unsigned char> charIndices(mIndices.begin(), mIndices.end());
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, charIndices.size() * sizeof(unsigned char), &charIndices[0], GL_STATIC_DRAW);
+        LOG_MSG("Error loading file \"%s\"", pMeshFile.c_str());
+        file.close();
     }
-    else if(mVertices.size() < 0xffff)
+
+    //The header contains the vertex format (form: 11010, where 1 means that the component is used)
+    // + vertex and index count
+    int headerSize = static_cast<int>(VertexFormat::Count) + 2;
+
+    std::vector<unsigned int> header(headerSize);
+    file.read((char*)&header[0], headerSize * sizeof(header[0]));
+
+    unsigned int indexCount  = (header.back());
+    header.pop_back();
+    unsigned int vertexCount = (header.back());
+    header.pop_back();
+
+    //Set bitset that keeps the vertex format
+    for(auto i=0; i<static_cast<int>(VertexFormat::Count); i++)
     {
-        mIndicesType = GL_UNSIGNED_SHORT;
-        std::vector<unsigned short> shortIndices(mIndices.begin(), mIndices.end());
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, shortIndices.size() * sizeof(unsigned short), &shortIndices[0], GL_STATIC_DRAW);
+        mAttribsUsed[i] = header[i];
     }
-    else
-    {
-        mIndicesType = GL_UNSIGNED_INT;
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, mIndices.size() * sizeof(unsigned int), &mIndices[0], GL_STATIC_DRAW);
-    }
+
+    //Read vertices and indices
+    mVertices.resize(vertexCount);
+    file.read((char*) &mVertices[0], vertexCount * sizeof(mVertices[0]));
+
+    //Read in temporary buffer in order to convert from float to unsigned int
+    mIndices.resize(indexCount);
+    file.read((char*) &mIndices[0], indexCount * sizeof(mIndices[0]));
+
+    file.close();
+
+    //Set VAO, VBO and IBO (send the buffers to the video memory)
+    Setup();
 }
 
 void TakeOne::Mesh::Render()
@@ -59,9 +63,9 @@ void TakeOne::Mesh::Render()
     glBindBuffer(GL_ARRAY_BUFFER, mVBO);
 
     unsigned int attribLocation;
-    if(mAttribsUsed[(unsigned int)VertexFormat::POSITION])
+    if(mAttribsUsed[static_cast<unsigned int>(VertexFormat::POSITION)])
     {
-        attribLocation = (unsigned int)VertexFormat::POSITION;
+        attribLocation = static_cast<unsigned int>(VertexFormat::POSITION);
         glEnableVertexAttribArray(attribLocation);
         glVertexAttribPointer(
                 attribLocation,
@@ -73,9 +77,9 @@ void TakeOne::Mesh::Render()
         );
     }
 
-    if(mAttribsUsed[(unsigned int)VertexFormat::NORMAL])
+    if(mAttribsUsed[static_cast<unsigned int>(VertexFormat::NORMAL)])
     {
-        attribLocation = (unsigned int)VertexFormat::NORMAL;
+        attribLocation = static_cast<unsigned int>(VertexFormat::NORMAL);
         glEnableVertexAttribArray(attribLocation);
         glVertexAttribPointer(
                 attribLocation,
@@ -87,9 +91,9 @@ void TakeOne::Mesh::Render()
         );
     }
 
-    if(mAttribsUsed[(unsigned int)VertexFormat::COLOR])
+    if(mAttribsUsed[static_cast<unsigned int>(VertexFormat::COLOR)])
     {
-        attribLocation = (unsigned int)VertexFormat::COLOR;
+        attribLocation = static_cast<unsigned int>(VertexFormat::COLOR);
         glEnableVertexAttribArray(attribLocation);
         glVertexAttribPointer(
                 attribLocation,
@@ -101,23 +105,9 @@ void TakeOne::Mesh::Render()
         );
     }
 
-    if(mAttribsUsed[(unsigned int)VertexFormat::TANGENT])
+    if(mAttribsUsed[static_cast<unsigned int>(VertexFormat::TEXCOORD)])
     {
-        attribLocation = (unsigned int)VertexFormat::TANGENT;
-        glEnableVertexAttribArray(attribLocation);
-        glVertexAttribPointer(
-                attribLocation,
-                3,
-                GL_FLOAT,
-                GL_FALSE,
-                sizeof(Vertex),
-                (void*) offsetof(Vertex, tangent)
-        );
-    }
-
-    if(mAttribsUsed[(unsigned int)VertexFormat::TEXCOORD])
-    {
-        attribLocation = (unsigned int)VertexFormat::TEXCOORD;
+        attribLocation = static_cast<unsigned int>(VertexFormat::TEXCOORD);
         glEnableVertexAttribArray(attribLocation);
         glVertexAttribPointer(
                 attribLocation,
@@ -149,5 +139,38 @@ void TakeOne::Mesh::Release()
         glDeleteVertexArrays(1, &mVAO);
         glDeleteBuffers(1, &mVBO);
         glDeleteBuffers(1, &mIBO);
+    }
+}
+
+void TakeOne::Mesh::Setup()
+{
+    glGenVertexArrays(1, &mVAO);
+    glBindVertexArray(mVAO);
+
+    glGenBuffers(1, &mVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, mVBO);
+    glBufferData(GL_ARRAY_BUFFER, mVertices.size() * sizeof(Vertex), &mVertices[0], GL_STATIC_DRAW);
+
+
+    glGenBuffers(1, &mIBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIBO);
+
+    //find out the minimum size for indices
+    if(mVertices.size() < sizeof(unsigned char))
+    {
+        mIndicesType = GL_UNSIGNED_BYTE;
+        std::vector<unsigned char> charIndices(mIndices.begin(), mIndices.end());
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, charIndices.size() * sizeof(unsigned char), &charIndices[0], GL_STATIC_DRAW);
+    }
+    else if(mVertices.size() < sizeof(unsigned short))
+    {
+        mIndicesType = GL_UNSIGNED_SHORT;
+        std::vector<unsigned short> shortIndices(mIndices.begin(), mIndices.end());
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, shortIndices.size() * sizeof(unsigned short), &shortIndices[0], GL_STATIC_DRAW);
+    }
+    else
+    {
+        mIndicesType = GL_UNSIGNED_INT;
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, mIndices.size() * sizeof(unsigned int), &mIndices[0], GL_STATIC_DRAW);
     }
 }

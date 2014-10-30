@@ -1,8 +1,8 @@
 #pragma once
 
+#include "glm/glm.hpp"
 #include <vector>
 #include <bitset>
-#include "glm/glm.hpp"
 
 namespace TakeOne
 {
@@ -11,7 +11,6 @@ namespace TakeOne
         POSITION,
         NORMAL,
         COLOR,
-        TANGENT,
         TEXCOORD,
 
         Count
@@ -24,7 +23,6 @@ namespace TakeOne
         glm::vec3 position;
         glm::vec3 normal;
         glm::vec3 color;
-        glm::vec3 tangent;
         glm::vec2 texCoord;
     };
 
@@ -34,10 +32,11 @@ namespace TakeOne
         Mesh();
         ~Mesh();
 
-        void Setup(std::vector<Vertex> pVertices, std::vector<unsigned int> pIndices, const std::bitset<(unsigned int)VertexFormat::Count>& pAttribsUsed);
+        void Load(const std::string& pMeshFile);
         void Render();
         void Release();
     private:
+        void Setup();
         unsigned int mVAO;
         unsigned int mVBO;
         unsigned int mIBO;
@@ -46,6 +45,6 @@ namespace TakeOne
         std::vector<unsigned int>   mIndices;
 
         unsigned short mIndicesType;
-        bitset_vf mAttribsUsed; // There are 5 VertexFormat types
+        bitset_vf mAttribsUsed;
     };
 }
