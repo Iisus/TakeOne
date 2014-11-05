@@ -18,7 +18,7 @@ int main(void)
     TakeOne::Engine engine(800, 600, "TakeOne");
 
     TakeOne::Mesh mesh;
-    mesh.Load("../res/meshes/0_box.t1o");
+    mesh.Load("../res/meshes/teapot.t1o");
 
     TakeOne::Program program("../res/shaders/vertex.glsl", "../res/shaders/fragment.glsl");
 
@@ -27,7 +27,7 @@ int main(void)
     glm::mat4 Projection = (glm::mat4)glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
 // Camera matrix
     glm::mat4 View       = glm::lookAt(
-            (glm::vec3)glm::vec3(4,3,3), // Camera is at (4,3,3), in World Space
+            (glm::vec3)glm::vec3(7,7,7), // Camera is at (4,3,3), in World Space
             (glm::vec3)glm::vec3(0,0,0), // and looks at the origin
             (glm::vec3)glm::vec3(0,1,0)  // Head is up (set to 0,-1,0 to look upside-down)
     );

@@ -21,6 +21,7 @@ void TakeOne::Mesh::Load(const std::string& pMeshFile)
     {
         LOG_MSG("Error loading file \"%s\"", pMeshFile.c_str());
         file.close();
+        return;
     }
 
     //The header contains the vertex format (form: 11010, where 1 means that the component is used)

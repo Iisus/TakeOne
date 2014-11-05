@@ -9,7 +9,7 @@ uniform mat4 MVP;
 
 void main()
 {
-    fragmentColor = vertexColor;
+    fragmentColor = vectorPosition_modelspace;
 
     gl_Position = MVP * vec4(vectorPosition_modelspace,1);
 }
