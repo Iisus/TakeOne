@@ -10,20 +10,24 @@
 #include "Program.h"
 #include "Mesh.h"
 #include "Log.h"
+#include "Material.h"
 
 #include "Raster.h"
 
-    int main(void)
-    {
-        TakeOne::Engine engine(800, 600, "TakeOne");
+int main(void)
+{
+    TakeOne::Engine engine(800, 600, "TakeOne");
 
-        TakeOne::Mesh duck, teapot1, teapot2, teapot3;
-        duck.Load("../res/meshes/duck.t1o");
-        teapot1.Load("../res/meshes/Teapot01.t1o");
-        teapot2.Load("../res/meshes/Teapot02.t1o");
-        teapot3.Load("../res/meshes/Teapot03.t1o");
+    TakeOne::Mesh duck, teapot1, teapot2, teapot3;
+    duck.Load("../res/meshes/duck.t1o");
+    teapot1.Load("../res/meshes/Teapot01.t1o");
+    teapot2.Load("../res/meshes/Teapot02.t1o");
+    teapot3.Load("../res/meshes/Teapot03.t1o");
 
-    TakeOne::Program program("../res/shaders/vertex.glsl", "../res/shaders/fragment.glsl");
+    TakeOne::Program program ("../res/shaders/vertex.glsl", "../res/shaders/fragment.glsl");
+
+    TakeOne::Material m(std::unique_ptr<TakeOne::Program>(new TakeOne::Program("../res/shaders/vertex.glsl", "../res/shaders/fragment.glsl")));
+    m.SetParam(TakeOne::ShaderParamType::UNIFORM_1f, "ABC", &glm::vec3(1)[0]);
 
     glClearColor(0.0, 0.2, 0.5, 1.0);
     // Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
@@ -40,7 +44,6 @@
             glm::vec3(0.15f));
 // Our ModelViewProjection : multiplication of our 3 matrices
     glm::mat4 MVP        = (glm::mat4)(Projection * View * Model); // Remember, matrix multiplication is the other way around
-
 
     long long it = 0;
 	while (!engine.ShouldClose())
