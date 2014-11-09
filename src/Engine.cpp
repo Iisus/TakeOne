@@ -57,7 +57,7 @@ void TakeOne::Engine::Update()
     nbFrames++;
     if(glfwGetTime() - lastTime >= 0.5)
     {
-        sprintf(title, "%9.9lf", double(nbFrames));
+        sprintf(title, "%f", float(nbFrames));
         glfwSetWindowTitle(mWindow, title);
         nbFrames = 0;
         lastTime+=0.5;

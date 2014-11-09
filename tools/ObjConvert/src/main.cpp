@@ -2,13 +2,14 @@
 #include "assimp/cimport.h"
 #include "assimp/postprocess.h"
 #include <iostream>
+#include <vector>
 #include <fstream>
 
 using namespace std;
 
-void saveToFile(const std::vector<unsigned int>& header, const std::vector<float>& vbo, const std::vector<unsigned int> ibo)
+void saveToFile(string dest, const std::vector<unsigned int>& header, const std::vector<float>& vbo, const std::vector<unsigned int> ibo)
 {
-    ofstream file("teapot.t1o", ios::binary);
+    ofstream file(dest, ios::binary);
     if(!file.is_open())
     {
         cout << "Error writting the file"<<endl;
@@ -23,7 +24,7 @@ void saveToFile(const std::vector<unsigned int>& header, const std::vector<float
     file.close();
 }
 
-void loadScene(const aiScene* scene, const aiNode* node)
+void loadScene(const aiScene* scene, const aiNode* node, string destPath)
 {
     for(int i=0; i < node->mNumMeshes; i++)
     {
@@ -80,21 +81,36 @@ void loadScene(const aiScene* scene, const aiNode* node)
         header.push_back(mesh->mNumVertices);
         header.push_back(ibo.size());
 
-        saveToFile(header, vbo, ibo);
+        saveToFile(destPath + node->mName.C_Str() + ".t1o", header, vbo, ibo);
     }
 
     for(int n = 0; n < node->mNumChildren; ++n)
     {
-        loadScene(scene, node->mChildren[n]);
+        loadScene(scene, node->mChildren[n], destPath);
     }
 }
 
-int main()
+int main(int argc, char *argv[])
 {
-    const char* path = "teapot.obj";
-    const aiScene* scene = aiImportFile(path,aiProcessPreset_TargetRealtime_MaxQuality);
+    const char* source = argv[1];
+    string dest = argc>2 ? argv[2] : "";
 
-    loadScene(scene, scene->mRootNode);
+    cout<<dest<<endl;
 
+    const aiScene* scene;
+    if(argc < 2)
+    {
+        cout<<"You need to provide the source"<<endl;
+        return 0;
+    }
+    if(! (scene = aiImportFile(source,aiProcessPreset_TargetRealtime_MaxQuality)) )
+    {
+        cout<<"Cannot load file " << source << endl;
+        return 0;
+    }
+
+    loadScene(scene, scene->mRootNode, dest);
+
+    cout<<"Success!"<<endl;
     return 0;
 }

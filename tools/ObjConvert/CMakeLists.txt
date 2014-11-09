@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.4)
+cmake_minimum_required(VERSION 2.8.12)
 project(ObjConvert)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
@@ -38,7 +38,10 @@ else(PLATFORM STREQUAL "Win32")
         )
 endif(PLATFORM STREQUAL "Win32")
 
+
+include_directories(${INCLUDE_DIRS})
 link_directories(${LINK_DIRS})
+
 add_executable(ObjConvert ${SOURCE_FILES})
 target_link_libraries(ObjConvert ${LINK_FILES})
 
