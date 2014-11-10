@@ -24,10 +24,7 @@ int main(void)
     teapot2.Load("../res/meshes/Teapot02.t1o");
     teapot3.Load("../res/meshes/Teapot03.t1o");
 
-    TakeOne::Program program ("../res/shaders/vertex.glsl", "../res/shaders/fragment.glsl");
-
-    TakeOne::Material m(std::unique_ptr<TakeOne::Program>(new TakeOne::Program("../res/shaders/vertex.glsl", "../res/shaders/fragment.glsl")));
-    m.SetParam(TakeOne::ShaderParamType::UNIFORM_1f, "ABC", &glm::vec3(1)[0]);
+    TakeOne::Material material( std::unique_ptr<TakeOne::Program>(new TakeOne::Program("../res/shaders/vertex.glsl", "../res/shaders/fragment.glsl")) );
 
     glClearColor(0.0, 0.2, 0.5, 1.0);
     // Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
@@ -43,32 +40,46 @@ int main(void)
             glm::mat4(1.0f),
             glm::vec3(0.15f));
 // Our ModelViewProjection : multiplication of our 3 matrices
-    glm::mat4 MVP        = (glm::mat4)(Projection * View * Model); // Remember, matrix multiplication is the other way around
 
     long long it = 0;
-	while (!engine.ShouldClose())
-	{
-        it++;
-        if(it > 100) //reload shader every 100 iterrations; to be removed!!
-        {
-            program.Reload();
-            it = 0;
-        }
-        // Use our shader
-        program.Use();
 
-        // Get a handle for our "MVP" uniform.
+
+    // Get a handle for our "MVP" uniform.
 // Only at initialisation time.
-        GLint MatrixID = program.GetUniformLocation("MVP");
+    //GLint MatrixID = program.GetUniformLocation("MVP");
 
 // Send our transformation to the currently bound shader,
 // in the "MVP" uniform
 // For each model you render, since the MVP will be different (at least the M part)
-        glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
+    //glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
+
+    glm::mat4 MVP        = (glm::mat4)(Projection * View * Model); // Remember, matrix multiplication is the other way around
+
+    material.SetParam(TakeOne::ShaderParamType::UNIFORM_4x4f, "MVP", MVP);
+
+    glm::vec3 col(0.0, 1.0, 0.0);
+    material.SetParam(TakeOne::ShaderParamType::UNIFORM_3f, "color", col);
+
+    float angle = 0.0f;
+	while (!engine.ShouldClose())
+	{
+
+        it++;
+        if(it > 100) //reload shader every 100 iterrations; to be removed!!
+        {
+            material.Reload();
+            it = 0;
+        }
+
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         // 1rst attribute buffer : vertices
 
+
+        // Use our shader
+        material.Use();
+
+        glUniformMatrix4fv(1, 1, GL_FALSE, &MVP[0][0]);
         duck.Render();
         //teapot1.Render();
         //teapot2.Render();

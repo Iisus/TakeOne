@@ -7,10 +7,11 @@ layout (location = 3) in vec2 tex;
 out vec3 fragmentColor;
 
 uniform mat4 MVP;
+uniform vec3 color;
 
 void main()
 {
-    fragmentColor = nor;
+    fragmentColor = color;
 
     gl_Position = MVP * vec4(pos,1);
 }

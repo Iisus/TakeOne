@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ShaderParam.hpp"
 #include "Program.h"
 #include "GL/glew.h"
 #include <string>
@@ -8,45 +9,30 @@
 
 namespace TakeOne
 {
-    enum class ShaderParamType
-    {
-        UNIFORM_1f,
-        UNIFORM_2f,
-        UNIFORM_3f,
-        UNIFORM_4f,
-
-        UNIFORM_M2x2f,
-        UNIFORM_M3x3f,
-        UNIFORM_M4x4f,
-        UNIFORM_M2x3f,
-        UNIFORM_M3x2f,
-        UNIFORM_M2x4f,
-        UNIFORM_M4x2f,
-        UNIFORM_M3x4f,
-        UNIFORM_M4x3f,
-    };
-
-    struct ShaderParam
-    {
-        ShaderParam(int _id, ShaderParamType _type, std::string _name, const float* _value, int _count)
-                : id(_id), type(_type), name(_name), value(_value), count(_count)
-        {}
-
-        int id;
-        ShaderParamType type;
-        std::string name;
-        const float* value;
-        int count;
-    };
+    typedef void (*glUniformFP)(int, int, ...);
 
     class Material
     {
     public:
         Material(std::unique_ptr<Program> pProgram);
-        void SetParam(ShaderParamType pType, const std::string& pName, const float* pValue, int pCount = 1);
+
+        template<typename T>
+        void SetParam(ShaderParamType pType, const std::string& pName, T pValue, int pCount = 1);
+        void Use();
+        void Reload();
 
     private:
+        void InitGlUniformFPs();
+
         std::unique_ptr<Program> mProgram;
-        std::vector<ShaderParam> mShaderParams;
+        std::vector<std::unique_ptr<ShaderParamBase>> mShaderParams;
+        std::map<ShaderParamType, glUniformFP> mGlUniformFPs;
     };
+
+    template<typename T>
+    void Material::SetParam(ShaderParamType pType, const std::string& pName, T pValue, int pCount)
+    {
+        int id = mProgram->GetUniformLocation(pName);
+        mShaderParams.push_back(std::unique_ptr<ShaderParamBase>(new ShaderParam<T>(id, pType, pName, pValue, pCount)));
+    }
 }
