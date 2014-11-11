@@ -13,7 +13,6 @@
 #include "Material.h"
 
 #include "Raster.h"
-
 int main(void)
 {
     TakeOne::Engine engine(800, 600, "TakeOne");
@@ -24,7 +23,8 @@ int main(void)
     teapot2.Load("../res/meshes/Teapot02.t1o");
     teapot3.Load("../res/meshes/Teapot03.t1o");
 
-    TakeOne::Material material( std::unique_ptr<TakeOne::Program>(new TakeOne::Program("../res/shaders/vertex.glsl", "../res/shaders/fragment.glsl")) );
+    std::unique_ptr<TakeOne::Program> program(new TakeOne::Program("../res/shaders/vertex.glsl", "../res/shaders/fragment.glsl"));
+    TakeOne::Material material( std::move(program) );
 
     glClearColor(0.0, 0.2, 0.5, 1.0);
     // Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
@@ -55,10 +55,10 @@ int main(void)
 
     glm::mat4 MVP        = (glm::mat4)(Projection * View * Model); // Remember, matrix multiplication is the other way around
 
-    material.SetParam(TakeOne::ShaderParamType::UNIFORM_4x4f, "MVP", MVP);
+    material.SetParam("MVP", MVP);
 
     glm::vec3 col(0.0, 1.0, 0.0);
-    material.SetParam(TakeOne::ShaderParamType::UNIFORM_3f, "color", col);
+    material.SetParam("color", col);
 
     float angle = 0.0f;
 	while (!engine.ShouldClose())
@@ -70,7 +70,6 @@ int main(void)
             material.Reload();
             it = 0;
         }
-
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         // 1rst attribute buffer : vertices

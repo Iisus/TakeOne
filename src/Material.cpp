@@ -1,7 +1,7 @@
 #include <glm/detail/type_vec.hpp>
 #include "Material.h"
 
-TakeOne::Material::Material(std::unique_ptr<Program> pProgram)
+TakeOne::Material::Material(std::unique_ptr<Program>&& pProgram)
         : mProgram(std::move(pProgram))
 {
     InitGlUniformFPs();
@@ -12,20 +12,10 @@ void TakeOne::Material::Use()
     mProgram->Use();
 
     //send the uniforms to the shader
-    for(auto& shaderParam : mShaderParams)
+    for (auto it=mShaderParams.begin(); it!=mShaderParams.end(); ++it)
     {
-        ShaderParamType uniformType = shaderParam->GetType();
-        auto glFunc = mGlUniformFPs[uniformType];
-
-        //check if the uniform is a matrix or not; for matrices, the gl call has 4 arguments, for vectors it has 3
-        if(static_cast<int>(uniformType) > static_cast<int>(ShaderParamType::UNIFORM_MATRIX))
-        {
-            glFunc(shaderParam->GetId(), shaderParam->GetCount(), GL_FALSE, shaderParam->GetValue());
-        }
-        else
-        {
-            glFunc(shaderParam->GetId(), shaderParam->GetCount(), shaderParam->GetValue());
-        }
+        //call glUniform* function from the map
+        mGlUniformFPs[it->second->GetTypeHash()](it->second->GetId(), it->second->GetCount(), it->second->GetValue());
     }
 }
 
@@ -36,28 +26,56 @@ void TakeOne::Material::Reload()
 
 void TakeOne::Material::InitGlUniformFPs()
 {
-    mGlUniformFPs.insert(std::pair<ShaderParamType, glUniformFP>(ShaderParamType::UNIFORM_1f, reinterpret_cast<glUniformFP>(glUniform1fv)));
-    mGlUniformFPs.insert(std::pair<ShaderParamType, glUniformFP>(ShaderParamType::UNIFORM_2f, reinterpret_cast<glUniformFP>(glUniform2fv)));
-    mGlUniformFPs.insert(std::pair<ShaderParamType, glUniformFP>(ShaderParamType::UNIFORM_3f, reinterpret_cast<glUniformFP>(glUniform3fv)));
-    mGlUniformFPs.insert(std::pair<ShaderParamType, glUniformFP>(ShaderParamType::UNIFORM_4f, reinterpret_cast<glUniformFP>(glUniform4fv)));
+    //primitives
+    mGlUniformFPs[typeid(float).hash_code()] = [](int id, int count, void* value){
+        glUniform1fv(id, count, (float*)value);
+    };
+    mGlUniformFPs[typeid(int).hash_code()] = [](int id, int count, void* value){
+        glUniform1iv(id, count, (int*)value);
+    };
+    mGlUniformFPs[typeid(unsigned int).hash_code()] = [](int id, int count, void* value){
+        glUniform1uiv(id, count, (unsigned int*)value);
+    };
 
-    mGlUniformFPs.insert(std::pair<ShaderParamType, glUniformFP>(ShaderParamType::UNIFORM_1i, reinterpret_cast<glUniformFP>(glUniform1iv)));
-    mGlUniformFPs.insert(std::pair<ShaderParamType, glUniformFP>(ShaderParamType::UNIFORM_2i, reinterpret_cast<glUniformFP>(glUniform2iv)));
-    mGlUniformFPs.insert(std::pair<ShaderParamType, glUniformFP>(ShaderParamType::UNIFORM_3i, reinterpret_cast<glUniformFP>(glUniform3iv)));
-    mGlUniformFPs.insert(std::pair<ShaderParamType, glUniformFP>(ShaderParamType::UNIFORM_4i, reinterpret_cast<glUniformFP>(glUniform4iv)));
+    //vectors
+    mGlUniformFPs[typeid(glm::vec2).hash_code()] = [](int id, int count, void* value){
+        glUniform2fv(id, count, (float*)value);
+    };
+    mGlUniformFPs[typeid(glm::vec3).hash_code()] = [](int id, int count, void* value){
+        glUniform3fv(id, count, (float*)value);
+    };
+    mGlUniformFPs[typeid(glm::vec4).hash_code()] = [](int id, int count, void* value){
+        glUniform4fv(id, count, (float*)value);
+    };
 
-    mGlUniformFPs.insert(std::pair<ShaderParamType, glUniformFP>(ShaderParamType::UNIFORM_1ui, reinterpret_cast<glUniformFP>(glUniform1uiv)));
-    mGlUniformFPs.insert(std::pair<ShaderParamType, glUniformFP>(ShaderParamType::UNIFORM_2ui, reinterpret_cast<glUniformFP>(glUniform2uiv)));
-    mGlUniformFPs.insert(std::pair<ShaderParamType, glUniformFP>(ShaderParamType::UNIFORM_3ui, reinterpret_cast<glUniformFP>(glUniform3uiv)));
-    mGlUniformFPs.insert(std::pair<ShaderParamType, glUniformFP>(ShaderParamType::UNIFORM_4ui, reinterpret_cast<glUniformFP>(glUniform4uiv)));
+    //matrices
+    mGlUniformFPs[typeid(glm::mat2).hash_code()] = [](int id, int count, void* value){
+        glUniformMatrix2fv(id, count, GL_FALSE, (float*)value);
+    };
+    mGlUniformFPs[typeid(glm::mat2x3).hash_code()] = [](int id, int count, void* value){
+        glUniformMatrix2x3fv(id, count, GL_FALSE, (float*)value);
+    };
+    mGlUniformFPs[typeid(glm::mat2x4).hash_code()] = [](int id, int count, void* value){
+        glUniformMatrix2x4fv(id, count, GL_FALSE, (float*)value);
+    };
 
-    mGlUniformFPs.insert(std::pair<ShaderParamType, glUniformFP>(ShaderParamType::UNIFORM_2x2f, reinterpret_cast<glUniformFP>(glUniformMatrix2fv)));
-    mGlUniformFPs.insert(std::pair<ShaderParamType, glUniformFP>(ShaderParamType::UNIFORM_3x3f, reinterpret_cast<glUniformFP>(glUniformMatrix3fv)));
-    mGlUniformFPs.insert(std::pair<ShaderParamType, glUniformFP>(ShaderParamType::UNIFORM_4x4f, reinterpret_cast<glUniformFP>(glUniformMatrix4fv)));
-    mGlUniformFPs.insert(std::pair<ShaderParamType, glUniformFP>(ShaderParamType::UNIFORM_2x3f, reinterpret_cast<glUniformFP>(glUniformMatrix2x3fv)));
-    mGlUniformFPs.insert(std::pair<ShaderParamType, glUniformFP>(ShaderParamType::UNIFORM_3x2f, reinterpret_cast<glUniformFP>(glUniformMatrix3x2fv)));
-    mGlUniformFPs.insert(std::pair<ShaderParamType, glUniformFP>(ShaderParamType::UNIFORM_2x4f, reinterpret_cast<glUniformFP>(glUniformMatrix2x4fv)));
-    mGlUniformFPs.insert(std::pair<ShaderParamType, glUniformFP>(ShaderParamType::UNIFORM_4x2f, reinterpret_cast<glUniformFP>(glUniformMatrix4x2fv)));
-    mGlUniformFPs.insert(std::pair<ShaderParamType, glUniformFP>(ShaderParamType::UNIFORM_3x4f, reinterpret_cast<glUniformFP>(glUniformMatrix3x4fv)));
-    mGlUniformFPs.insert(std::pair<ShaderParamType, glUniformFP>(ShaderParamType::UNIFORM_4x3f, reinterpret_cast<glUniformFP>(glUniformMatrix4x3fv)));
+    mGlUniformFPs[typeid(glm::mat3).hash_code()] = [](int id, int count, void* value){
+        glUniformMatrix3fv(id, count, GL_FALSE, (float*)value);
+    };
+    mGlUniformFPs[typeid(glm::mat3x2).hash_code()] = [](int id, int count, void* value){
+        glUniformMatrix3x2fv(id, count, GL_FALSE, (float*)value);
+    };
+    mGlUniformFPs[typeid(glm::mat3x4).hash_code()] = [](int id, int count, void* value){
+        glUniformMatrix3x4fv(id, count, GL_FALSE, (float*)value);
+    };
+
+    mGlUniformFPs[typeid(glm::mat4).hash_code()] = [](int id, int count, void* value){
+        glUniformMatrix4fv(id, count, GL_FALSE, (float*)value);
+    };
+    mGlUniformFPs[typeid(glm::mat4x2).hash_code()] = [](int id, int count, void* value){
+        glUniformMatrix4x2fv(id, count, GL_FALSE, (float*)value);
+    };
+    mGlUniformFPs[typeid(glm::mat4x3).hash_code()] = [](int id, int count, void* value){
+        glUniformMatrix4x3fv(id, count, GL_FALSE, (float*)value);
+    };
 }
