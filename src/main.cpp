@@ -23,8 +23,15 @@ int main(void)
     teapot2.Load("../res/meshes/Teapot02.t1o");
     teapot3.Load("../res/meshes/Teapot03.t1o");
 
+    TakeOne::Material material;
+
+    //load program
     std::unique_ptr<TakeOne::Program> program(new TakeOne::Program("../res/shaders/vertex.glsl", "../res/shaders/fragment.glsl"));
-    TakeOne::Material material( std::move(program) );
+    //load texture
+    std::unique_ptr<TakeOne::Texture> texture(new TakeOne::Texture("../res/textures/duckCM.tga"));
+
+    material.SetProgram(std::move(program));
+    material.SetTexture(std::move(texture));
 
     glClearColor(0.0, 0.2, 0.5, 1.0);
     // Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
@@ -55,10 +62,10 @@ int main(void)
 
     glm::mat4 MVP        = (glm::mat4)(Projection * View * Model); // Remember, matrix multiplication is the other way around
 
-    material.SetParam("MVP", MVP);
+    material.SetShaderParam("MVP", MVP);
 
     glm::vec3 col(0.0, 1.0, 0.0);
-    material.SetParam("color", col);
+    material.SetShaderParam("color", col);
 
     float angle = 0.0f;
 	while (!engine.ShouldClose())

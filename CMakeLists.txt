@@ -23,6 +23,7 @@ endif(UNIX)
 set(LINK_DIRS
     lib/GLFW/lib/${PLATFORM}
     lib/GLEW/lib/${PLATFORM}
+    lib/soil/lib/
     )
 
 set(INCLUDE_DIRS
@@ -30,6 +31,7 @@ set(INCLUDE_DIRS
     lib/GLFW/include
     lib/GLEW/include
     lib/glm
+    lib/soil/include
     )
 
 FILE(GLOB SOURCE_FILES "src/*.cpp")
@@ -39,12 +41,14 @@ if(PLATFORM STREQUAL "Win32")
         glfw3dll
         glew32.dll
         opengl32
+        SOIL
         )
 else(PLATFORM STREQUAL "Win32")
     set(LINK_FILES
         glfw
         GLEW
         GL
+        SOIL
         )
 endif(PLATFORM STREQUAL "Win32")
 

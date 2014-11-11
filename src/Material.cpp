@@ -1,26 +1,48 @@
 #include <glm/detail/type_vec.hpp>
 #include "Material.h"
 
-TakeOne::Material::Material(std::unique_ptr<Program>&& pProgram)
-        : mProgram(std::move(pProgram))
+TakeOne::Material::Material()
+        : mProgram(nullptr), mTexture(nullptr)
 {
     InitGlUniformFPs();
 }
 
+void TakeOne::Material::SetProgram(std::unique_ptr<Program>&& pProgram)
+{
+    mProgram = std::move(pProgram);
+}
+
+void TakeOne::Material::SetTexture(std::unique_ptr<Texture>&& pTexture)
+{
+    mTexture = std::move(pTexture);
+}
+
 void TakeOne::Material::Use()
 {
+    assert(mProgram != nullptr && "The program from material must be set!");
+
     mProgram->Use();
+
+    if(mTexture != nullptr)
+        mTexture->Bind();
 
     //send the uniforms to the shader
     for (auto it=mShaderParams.begin(); it!=mShaderParams.end(); ++it)
     {
         //call glUniform* function from the map
-        mGlUniformFPs[it->second->GetTypeHash()](it->second->GetId(), it->second->GetCount(), it->second->GetValue());
+        mGlUniformFPs[it->second->GetTypeHash()]
+                (
+                        it->second->GetId(),
+                        it->second->GetCount(),
+                        it->second->GetValue()
+                );
     }
 }
 
 void TakeOne::Material::Reload()
 {
+    assert(mProgram != nullptr && "The program from material must be set!");
+
     mProgram->Reload();
 }
 
