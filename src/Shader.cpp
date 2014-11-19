@@ -53,7 +53,7 @@ void TakeOne::Shader::Compile(const std::string& pShaderSource)
     if(infoLogLength > 1) //Usually returns 1 because the message is '\0'
     {
         std::string errorMessage;
-        errorMessage.reserve(infoLogLength);
+        errorMessage.reserve(static_cast<unsigned long>(infoLogLength));
         glGetShaderInfoLog(mShaderId, infoLogLength, NULL, &errorMessage[0]);
         LOG_MSG("%s\n", errorMessage.c_str());
     }

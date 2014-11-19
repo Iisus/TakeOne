@@ -74,7 +74,7 @@ void TakeOne::Program::Link()
     if(infoLogLength > 1)//Usually returns 1 because the message is '\0'
     {
         std::string errorMessage;
-        errorMessage.reserve(infoLogLength);
+        errorMessage.reserve(static_cast<unsigned long>(infoLogLength));
         glGetProgramInfoLog(mProgramId, infoLogLength, NULL, &errorMessage[0]);
         LOG_MSG("%s\n", errorMessage.c_str());
     }
@@ -83,3 +83,4 @@ void TakeOne::Program::Link()
         LOG_MSG("Program did not link!");
     }
 }
+

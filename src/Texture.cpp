@@ -9,10 +9,16 @@ TakeOne::Texture::Texture()
 
 }
 
-TakeOne::Texture::Texture(std::string pTexturePath)
+TakeOne::Texture::Texture(std::string pTexturePath, unsigned int pTextureFlags)
         : mTextureId(0)
 {
-    Load(pTexturePath);
+    Load(pTexturePath, pTextureFlags);
+}
+
+TakeOne::Texture::Texture(const unsigned char* const pBuffer, int pSize, unsigned int pTextureFlags)
+        : mTextureId(0)
+{
+    Load(pBuffer, pSize, pTextureFlags);
 }
 
 TakeOne::Texture::~Texture()
@@ -20,20 +26,35 @@ TakeOne::Texture::~Texture()
     Unload();
 }
 
-void TakeOne::Texture::Load(std::string pTexturePath)
+void TakeOne::Texture::Load(std::string pTexturePath, unsigned int pTextureFlags)
 {
-    mTexturePath = pTexturePath;
-
     mTextureId = SOIL_load_OGL_texture
             (
                     pTexturePath.c_str(),
                     SOIL_LOAD_AUTO,
-                    SOIL_CREATE_NEW_ID,
-                    SOIL_FLAG_INVERT_Y | SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
+                    mTextureId ? mTextureId : SOIL_CREATE_NEW_ID, //if the texture was already loaded, overwrite it
+                    pTextureFlags
             );
     if(!mTextureId)
     {
-        LOG_MSG("Failed to load texture %s", pTexturePath.c_str());
+        LOG_MSG("Failed to load texture %s.", pTexturePath.c_str());
+    }
+}
+
+void TakeOne::Texture::Load(const unsigned char* const pBuffer, int pSize, unsigned int pTextureFlags)
+{
+    mTextureId = SOIL_load_OGL_texture_from_memory
+            (
+                    pBuffer,
+                    pSize,
+                    SOIL_LOAD_AUTO,
+                    mTextureId ? mTextureId : SOIL_CREATE_NEW_ID, //if the texture was already loaded, overwrite it
+                    pTextureFlags
+            );
+
+    if(!mTextureId)
+    {
+        LOG_MSG("Failed to load texture from memory.");
     }
 }
 

@@ -26,10 +26,10 @@ void TakeOne::Mesh::Load(const std::string& pMeshFile)
 
     //The header contains the vertex format (form: 11010, where 1 means that the component is used)
     // + vertex and index count
-    int headerSize = static_cast<int>(VertexFormat::Count) + 2;
+    unsigned long headerSize = static_cast<unsigned long>(VertexFormat::Count) + 2;
 
     std::vector<unsigned int> header(headerSize);
-    file.read((char*)&header[0], headerSize * sizeof(header[0]));
+    file.read(reinterpret_cast<char*>(&header[0]), static_cast<long>(headerSize * sizeof(header[0])));
 
     unsigned int indexCount  = (header.back());
     header.pop_back();
@@ -37,18 +37,18 @@ void TakeOne::Mesh::Load(const std::string& pMeshFile)
     header.pop_back();
 
     //Set bitset that keeps the vertex format
-    for(auto i=0; i<static_cast<int>(VertexFormat::Count); i++)
+    for(unsigned long i=0; i<static_cast<unsigned long>(VertexFormat::Count); i++)
     {
         mAttribsUsed[i] = header[i];
     }
 
     //Read vertices and indices
     mVertices.resize(vertexCount);
-    file.read((char*) &mVertices[0], vertexCount * sizeof(mVertices[0]));
+    file.read(reinterpret_cast<char*>(&mVertices[0]), vertexCount * sizeof(mVertices[0]));
 
     //Read in temporary buffer in order to convert from float to unsigned int
     mIndices.resize(indexCount);
-    file.read((char*) &mIndices[0], indexCount * sizeof(mIndices[0]));
+    file.read(reinterpret_cast<char*>(&mIndices[0]), indexCount * sizeof(mIndices[0]));
 
     file.close();
 
@@ -74,7 +74,7 @@ void TakeOne::Mesh::Render()
                 GL_FLOAT,
                 GL_FALSE,
                 sizeof(Vertex),
-                (void*) offsetof(Vertex, position)
+                reinterpret_cast<const void*>(offsetof(Vertex, position))
         );
     }
 
@@ -88,7 +88,7 @@ void TakeOne::Mesh::Render()
                 GL_FLOAT,
                 GL_FALSE,
                 sizeof(Vertex),
-                (void*) offsetof(Vertex, normal)
+                reinterpret_cast<const void*>(offsetof(Vertex, normal))
         );
     }
 
@@ -102,7 +102,7 @@ void TakeOne::Mesh::Render()
                 GL_FLOAT,
                 GL_FALSE,
                 sizeof(Vertex),
-                (void*) offsetof(Vertex, color)
+                reinterpret_cast<const void*>(offsetof(Vertex, color))
         );
     }
 
@@ -116,16 +116,16 @@ void TakeOne::Mesh::Render()
                 GL_FLOAT,
                 GL_FALSE,
                 sizeof(Vertex),
-                (void*) offsetof(Vertex, texCoord)
+                reinterpret_cast<const void*>(offsetof(Vertex, texCoord))
         );
     }
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIBO);
     glDrawElements(
             GL_TRIANGLES,
-            (GLsizei) mIndices.size(),
+            static_cast<int>(mIndices.size()),
             mIndicesType,
-            (void*)0
+            reinterpret_cast<const void*>(0)
     );
 }
 

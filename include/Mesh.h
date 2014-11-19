@@ -16,7 +16,7 @@ namespace TakeOne
         Count
     };
 
-    using bitset_vf = std::bitset<(unsigned int)VertexFormat::Count>;
+    using bitset_vf = std::bitset<static_cast<unsigned int>(VertexFormat::Count)>;
 
     struct Vertex
     {
@@ -41,10 +41,11 @@ namespace TakeOne
         unsigned int mVBO;
         unsigned int mIBO;
 
-        std::vector<Vertex>         mVertices;
-        std::vector<unsigned int>   mIndices;
-
         unsigned short mIndicesType;
+
+        std::vector<unsigned int>   mIndices;
+        std::vector<Vertex>         mVertices;
+
         bitset_vf mAttribsUsed;
     };
 }

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ShaderParam.hpp"
+#include "ShaderParam.h"
 #include "Program.h"
 #include "Texture.h"
 #include "GL/glew.h"
@@ -31,22 +31,8 @@ namespace TakeOne
         std::unique_ptr<Program> mProgram;
         std::unique_ptr<Texture> mTexture;
         std::map<std::string, std::unique_ptr<ShaderParamBase>> mShaderParams;
-        std::map<unsigned int, glUniformFP> mGlUniformFPs;
+        std::map<unsigned long, glUniformFP> mGlUniformFPs;
     };
-
-    template<typename T>
-    void Material::SetShaderParam(const std::string& pName, T pValue, int pCount)
-    {
-        assert(mProgram != nullptr && "The program from material must be set!");
-
-        if(mShaderParams.find(pName) != mShaderParams.end())
-        {
-            dynamic_cast<ShaderParam<T>*>(mShaderParams[pName].get())->SetValue(pValue);
-        }
-        else
-        {
-            mShaderParams[pName] = std::unique_ptr<ShaderParamBase>(
-                    new ShaderParam<T>(mProgram->GetUniformLocation(pName), pValue, pCount));
-        }
-    }
 }
+
+#include "template_impl/Material.hpp"

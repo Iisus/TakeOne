@@ -4,14 +4,14 @@ layout (location = 1) in vec3 nor;
 layout (location = 2) in vec3 col;
 layout (location = 3) in vec2 tex;
 
-out vec3 fragmentColor;
+out vec4 fragmentColor;
 
 uniform mat4 MVP;
 uniform sampler2D textureSampler;
 
 void main()
 {
-    fragmentColor = texture( textureSampler, tex).rgb;
+    fragmentColor = texture( textureSampler, tex);
 
     gl_Position = MVP * vec4(pos,1);
 }

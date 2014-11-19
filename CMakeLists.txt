@@ -6,6 +6,8 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DENABLE_DEBUG")
 
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_LIST_DIR}/bin)
 
+add_definitions(-DGLM_FORCE_RADIANS)
+
 if(UNIX)
   if(APPLE)
     set(PLATFORM "Apple")
@@ -26,12 +28,15 @@ set(LINK_DIRS
     lib/soil/lib/
     )
 
-set(INCLUDE_DIRS
-    include
+set(INCLUDE_LIB_DIRS
     lib/GLFW/include
     lib/GLEW/include
     lib/glm
     lib/soil/include
+    )
+
+set(INCLUDE_DIRS
+    include
     )
 
 FILE(GLOB SOURCE_FILES "src/*.cpp")
@@ -54,11 +59,12 @@ endif(PLATFORM STREQUAL "Win32")
 
 
 include_directories(${INCLUDE_DIRS})
+
+include_directories(SYSTEM ${INCLUDE_LIB_DIRS})
 link_directories(${LINK_DIRS})
 
 add_executable(TakeOne ${SOURCE_FILES})
 target_link_libraries(TakeOne ${LINK_FILES})
-
 
 #postbuild commands; copy dll's
 if(PLATFORM STREQUAL "Win32")
@@ -73,4 +79,16 @@ if(PLATFORM STREQUAL "Win32")
             ${CMAKE_CURRENT_LIST_DIR}/lib/GLFW/lib/Win32/glfw3.dll                  # <--this is in-file
             ${CMAKE_CURRENT_LIST_DIR}/bin/                                            # <--this is out-file path
             )
+
+    set_source_files_properties(
+            ${SOURCE_FILES}
+            PROPERTIES
+            COMPILE_FLAGS "-Wall"
+            )
+else(PLATFORM STREQUAL "Win32")
+    set_source_files_properties(
+        ${SOURCE_FILES}
+        PROPERTIES
+        COMPILE_FLAGS "-Weverything -Wno-c++98-compat-pedantic -Wno-c++98-compat -Wno-padded"
+        )
 endif(PLATFORM STREQUAL "Win32")
