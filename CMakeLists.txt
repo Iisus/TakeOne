@@ -25,7 +25,7 @@ endif(UNIX)
 set(LINK_DIRS
     lib/GLFW/lib/${PLATFORM}
     lib/GLEW/lib/${PLATFORM}
-    lib/soil/lib/
+    lib/soil/lib/${PLATFORM}
     )
 
 set(INCLUDE_LIB_DIRS
@@ -45,8 +45,8 @@ if(PLATFORM STREQUAL "Win32")
     set(LINK_FILES
         glfw3dll
         glew32.dll
-        opengl32
         SOIL
+        opengl32
         )
 else(PLATFORM STREQUAL "Win32")
     set(LINK_FILES
