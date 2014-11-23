@@ -6,6 +6,7 @@
 #include "GL/glew.h"
 #include <string>
 #include <vector>
+#include <typeindex>
 #include <map>
 
 namespace TakeOne
@@ -31,7 +32,7 @@ namespace TakeOne
         std::unique_ptr<Program> mProgram;
         std::unique_ptr<Texture> mTexture;
         std::map<std::string, std::unique_ptr<ShaderParamBase>> mShaderParams;
-        std::map<unsigned long, glUniformFP> mGlUniformFPs;
+        std::map<std::type_index, glUniformFP> mGlUniformFPs;
     };
 }
 

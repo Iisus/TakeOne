@@ -1,5 +1,7 @@
 #pragma once
 
+#include <typeindex>
+
 namespace TakeOne
 {
     //Use as base for ShaderParam so it can be used in std::vector
@@ -9,7 +11,7 @@ namespace TakeOne
         virtual ~ShaderParamBase();
 
         virtual int GetId() = 0;
-        virtual unsigned long GetTypeHash() = 0;
+        virtual std::type_index GetTypeIndex() = 0;
         virtual int GetCount() = 0;
         virtual void* GetValue() = 0;
     };
@@ -20,7 +22,7 @@ namespace TakeOne
     public:
         ShaderParam(int pId, T pValue, int pCount);
         int GetId();
-        unsigned long GetTypeHash();
+        std::type_index GetTypeIndex();
         int GetCount();
         void* GetValue();
         void SetValue(T pValue);

@@ -16,8 +16,6 @@ namespace TakeOne
         Count
     };
 
-    using bitset_vf = std::bitset<static_cast<unsigned int>(VertexFormat::Count)>;
-
     struct Vertex
     {
         glm::vec3 position;
@@ -46,6 +44,6 @@ namespace TakeOne
         std::vector<unsigned int>   mIndices;
         std::vector<Vertex>         mVertices;
 
-        bitset_vf mAttribsUsed;
+        std::vector<unsigned int> mAttribsUsed;
     };
 }

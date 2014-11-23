@@ -28,19 +28,13 @@ void TakeOne::Mesh::Load(const std::string& pMeshFile)
     // + vertex and index count
     unsigned long headerSize = static_cast<unsigned long>(VertexFormat::Count) + 2;
 
-    std::vector<unsigned int> header(headerSize);
-    file.read(reinterpret_cast<char*>(&header[0]), static_cast<long>(headerSize * sizeof(header[0])));
+    mAttribsUsed.resize(headerSize);
+    file.read(reinterpret_cast<char*>(&mAttribsUsed[0]), static_cast<long>(headerSize * sizeof(mAttribsUsed[0])));
 
-    unsigned int indexCount  = (header.back());
-    header.pop_back();
-    unsigned int vertexCount = (header.back());
-    header.pop_back();
-
-    //Set bitset that keeps the vertex format
-    for(unsigned long i=0; i<static_cast<unsigned long>(VertexFormat::Count); i++)
-    {
-        mAttribsUsed[i] = header[i];
-    }
+    unsigned int indexCount  = (mAttribsUsed.back());
+    mAttribsUsed.pop_back();
+    unsigned int vertexCount = (mAttribsUsed.back());
+    mAttribsUsed.pop_back();
 
     //Read vertices and indices
     mVertices.resize(vertexCount);

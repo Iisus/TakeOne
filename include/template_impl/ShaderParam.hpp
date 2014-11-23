@@ -17,9 +17,9 @@ int TakeOne::ShaderParam<T>::GetId()
 }
 
 template<typename T>
-unsigned long TakeOne::ShaderParam<T>::GetTypeHash()
+std::type_index TakeOne::ShaderParam<T>::GetTypeIndex()
 {
-    return typeid(T).hash_code();
+    return std::type_index(typeid(T));
 }
 
 template<typename T>

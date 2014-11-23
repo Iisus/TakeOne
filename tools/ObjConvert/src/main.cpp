@@ -7,7 +7,7 @@
 
 using namespace std;
 
-void saveToFile(string dest, const std::vector<unsigned int>& header, const std::vector<float>& vbo, const std::vector<unsigned int> ibo)
+void saveObjectToFile(string dest, const std::vector<unsigned int>& header, const std::vector<float>& vbo, const std::vector<unsigned int> ibo)
 {
     ofstream file(dest, ios::binary);
     if(!file.is_open())
@@ -28,7 +28,11 @@ void loadScene(const aiScene* scene, const aiNode* node, string destPath)
 {
     for(int i=0; i < node->mNumMeshes; i++)
     {
+        string destFile = destPath + node->mName.C_Str() + ".t1o";
+
         const aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
+
+        loadMaterial(scene->mMaterials[mesh->mMaterialIndex]);
 
         //header:pnct v_size i_size
         std::vector<unsigned int> header;
@@ -81,7 +85,7 @@ void loadScene(const aiScene* scene, const aiNode* node, string destPath)
         header.push_back(mesh->mNumVertices);
         header.push_back(ibo.size());
 
-        saveToFile(destPath + node->mName.C_Str() + ".t1o", header, vbo, ibo);
+        saveObjectToFile(destFile, header, vbo, ibo);
     }
 
     for(int n = 0; n < node->mNumChildren; ++n)
