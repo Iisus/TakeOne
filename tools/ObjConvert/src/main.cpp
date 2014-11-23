@@ -7,7 +7,8 @@
 
 using namespace std;
 
-void saveObjectToFile(string dest, const std::vector<unsigned int>& header, const std::vector<float>& vbo, const std::vector<unsigned int> ibo)
+void saveObjectToFile(string dest, const vector<unsigned int>& header, const vector<float>& vbo,
+        const vector<unsigned int> ibo, const vector<unsigned int>& mtlHeader, const vector<float>& mtlValues)
 {
     ofstream file(dest, ios::binary);
     if(!file.is_open())
@@ -21,7 +22,44 @@ void saveObjectToFile(string dest, const std::vector<unsigned int>& header, cons
     file.write((char*) &vbo[0], vbo.size() * sizeof(float));
     file.write((char*) &ibo[0], ibo.size() * sizeof(unsigned int));
 
+    file.write((char*) &mtlHeader[0], mtlHeader.size() * sizeof(unsigned int));
+    file.write((char*) &mtlValues[0], mtlValues.size() * sizeof(float));
+
     file.close();
+}
+
+void loadColor(const aiMaterial* mtl, vector<unsigned int>& header, vector<float>& values, const char* key, unsigned int type, unsigned int index)
+{
+    aiColor4D color(0.0f, 0.0f, 0.0f, 0.0f);
+
+    header.push_back(AI_SUCCESS == aiGetMaterialColor(mtl, key, type, index, &color));
+    values.push_back(color.r);
+    values.push_back(color.g);
+    values.push_back(color.b);
+    values.push_back(color.a);
+}
+
+void loadFloat(const aiMaterial* mtl, vector<unsigned int>& header, vector<float>& values, const char* key, unsigned int type, unsigned int index)
+{
+    float property = 0;
+    header.push_back(AI_SUCCESS == aiGetMaterialFloat(mtl, key, type, index, &property));
+    values.push_back(property);
+}
+
+void loadMaterial(const aiMaterial* mtl, vector<unsigned int>& header, vector<float>& values)
+{
+    loadColor(mtl, header, values, AI_MATKEY_COLOR_AMBIENT);
+    loadColor(mtl, header, values, AI_MATKEY_COLOR_DIFFUSE);
+    loadColor(mtl, header, values, AI_MATKEY_COLOR_EMISSIVE);
+    loadColor(mtl, header, values, AI_MATKEY_COLOR_REFLECTIVE);
+    loadColor(mtl, header, values, AI_MATKEY_COLOR_SPECULAR);
+    loadColor(mtl, header, values, AI_MATKEY_COLOR_TRANSPARENT);
+
+    loadFloat(mtl, header, values, AI_MATKEY_OPACITY);
+    loadFloat(mtl, header, values, AI_MATKEY_REFLECTIVITY);
+    loadFloat(mtl, header, values, AI_MATKEY_REFRACTI);
+    loadFloat(mtl, header, values, AI_MATKEY_SHININESS);
+    loadFloat(mtl, header, values, AI_MATKEY_SHININESS_STRENGTH);
 }
 
 void loadScene(const aiScene* scene, const aiNode* node, string destPath)
@@ -32,12 +70,15 @@ void loadScene(const aiScene* scene, const aiNode* node, string destPath)
 
         const aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
 
-        loadMaterial(scene->mMaterials[mesh->mMaterialIndex]);
+        vector<unsigned int> mtlHeader;
+        vector<float> mtlValues;
+
+        loadMaterial(scene->mMaterials[mesh->mMaterialIndex], mtlHeader, mtlValues);
 
         //header:pnct v_size i_size
-        std::vector<unsigned int> header;
-        std::vector<float> vbo;
-        std::vector<unsigned int> ibo;
+        vector<unsigned int> header;
+        vector<float> vbo;
+        vector<unsigned int> ibo;
 
         bool hasPos = mesh->HasPositions();
         bool hasNor = mesh->HasNormals();
@@ -85,7 +126,7 @@ void loadScene(const aiScene* scene, const aiNode* node, string destPath)
         header.push_back(mesh->mNumVertices);
         header.push_back(ibo.size());
 
-        saveObjectToFile(destFile, header, vbo, ibo);
+        saveObjectToFile(destFile, header, vbo, ibo, mtlHeader, mtlValues);
     }
 
     for(int n = 0; n < node->mNumChildren; ++n)
