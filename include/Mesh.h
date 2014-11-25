@@ -2,6 +2,7 @@
 
 #include "glm/glm.hpp"
 #include <vector>
+#include <string>
 
 namespace TakeOne
 {
@@ -25,15 +26,24 @@ namespace TakeOne
 
     class Mesh
     {
+    friend class RenderObject;
+
     public:
         Mesh();
         ~Mesh();
 
-        void Load(const std::string& pMeshFile);
         void Render();
         void Release();
-    private:
+
+    protected:
+        //accessed from RenderObject
+        void SetVertices(std::vector<Vertex> pVertices) { mVertices = std::move(pVertices); }
+        void SetIndices(std::vector<unsigned int> pIndices) { mIndices = std::move(pIndices); }
+        void SetAttribsUsed(std::vector<unsigned int> pAttribsUsed) { mAttribsUsed = std::move(pAttribsUsed); }
+
         void Setup();
+
+    private:
         unsigned int mVAO;
         unsigned int mVBO;
         unsigned int mIBO;

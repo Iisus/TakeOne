@@ -28,6 +28,8 @@ int TakeOne::ShaderParam<T>::GetCount()
     return mCount;
 }
 
+//prevent compilation error with branching at compile time
+namespace glm { float* value_ptr(float); }
 template<typename T>
 void* TakeOne::ShaderParam<T>::GetValue()
 {

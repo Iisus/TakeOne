@@ -10,27 +10,27 @@
 #include "Mesh.h"
 #include "Log.h"
 #include "Material.h"
+#include "RenderObject.h"
 
 #include "Raster.h"
 int main(void)
 {
     TakeOne::Engine engine(800, 600, "TakeOne");
 
-    TakeOne::Mesh duck, teapot1, teapot2, teapot3;
-    duck.Load("../res/meshes/duck.t1o");
-    teapot1.Load("../res/meshes/Teapot01.t1o");
-    teapot2.Load("../res/meshes/Teapot02.t1o");
-    teapot3.Load("../res/meshes/Teapot03.t1o");
-
-    TakeOne::Material material;
+    TakeOne::RenderObject duck;//, teapot1, teapot2, teapot3;
+    //teapot1.Load("../res/meshes/Teapot01.t1o");
+    //teapot2.Load("../res/meshes/Teapot02.t1o");
+    //teapot3.Load("../res/meshes/Teapot03.t1o");
 
     //load program
     std::unique_ptr<TakeOne::Program> program(new TakeOne::Program("../res/shaders/vertex.glsl", "../res/shaders/fragment.glsl"));
     //load texture
     std::unique_ptr<TakeOne::Texture> texture(new TakeOne::Texture("../res/textures/duckCM.tga", TakeOne::Texture::INVERT_Y));
 
-    material.SetProgram(std::move(program));
-    material.SetTexture(std::move(texture));
+    duck.GetMaterial().SetProgram(std::move(program));
+    duck.GetMaterial().SetTexture(std::move(texture));
+
+    duck.Load("../res/meshes/duck.t1o");
 
     glClearColor(63.0f/255.0f, 75.0f/255.0f, 82.0f/255.0f, 1.0);
     // Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
@@ -61,10 +61,10 @@ int main(void)
 
     glm::mat4 MVP        = static_cast<glm::mat4>((Projection * View * Model)); // Remember, matrix multiplication is the other way around
 
-    material.SetShaderParam("MVP", MVP);
+    duck.GetMaterial().SetShaderParam("MVP", MVP);
 
     glm::vec3 col(0.0, 1.0, 0.0);
-    material.SetShaderParam("color", col);
+    duck.GetMaterial().SetShaderParam("color", col);
 
 	while (!engine.ShouldClose())
 	{
@@ -72,16 +72,12 @@ int main(void)
         it++;
         if(it > 100) //reload shader every 100 iterrations; to be removed!!
         {
-            material.Reload();
+            duck.GetMaterial().Reload();
             it = 0;
         }
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         // 1rst attribute buffer : vertices
-
-
-        // Use our shader
-        material.Use();
 
         glUniformMatrix4fv(1, 1, GL_FALSE, &MVP[0][0]);
         duck.Render();

@@ -6,48 +6,12 @@
 TakeOne::Mesh::Mesh()
 : mVAO(0), mVBO(0), mIBO(0)
 {
+
 }
 
 TakeOne::Mesh::~Mesh()
 {
     Release();
-}
-
-void TakeOne::Mesh::Load(const std::string& pMeshFile)
-{
-    //The components in file are floats
-    std::ifstream file(pMeshFile, std::ios::binary);
-    if(!file.is_open())
-    {
-        LOG_MSG("Error loading file \"%s\"", pMeshFile.c_str());
-        file.close();
-        return;
-    }
-
-    //The header contains the vertex format (form: 11010, where 1 means that the component is used)
-    // + vertex and index count
-    unsigned long headerSize = static_cast<unsigned long>(VertexFormat::Count) + 2;
-
-    mAttribsUsed.resize(headerSize);
-    file.read(reinterpret_cast<char*>(&mAttribsUsed[0]), static_cast<long>(headerSize * sizeof(mAttribsUsed[0])));
-
-    unsigned int indexCount  = (mAttribsUsed.back());
-    mAttribsUsed.pop_back();
-    unsigned int vertexCount = (mAttribsUsed.back());
-    mAttribsUsed.pop_back();
-
-    //Read vertices and indices
-    mVertices.resize(vertexCount);
-    file.read(reinterpret_cast<char*>(&mVertices[0]), vertexCount * sizeof(mVertices[0]));
-
-    //Read in temporary buffer in order to convert from float to unsigned int
-    mIndices.resize(indexCount);
-    file.read(reinterpret_cast<char*>(&mIndices[0]), indexCount * sizeof(mIndices[0]));
-
-    file.close();
-
-    //Set VAO, VBO and IBO (send the buffers to the video memory)
-    Setup();
 }
 
 void TakeOne::Mesh::Render()
