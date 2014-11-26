@@ -1,5 +1,5 @@
 #include "RenderObject.h"
-#include "MaterialLoader.h"
+#include "MaterialHelper.h"
 #include "Log.h"
 
 TakeOne::RenderObject::RenderObject()
@@ -68,13 +68,13 @@ void TakeOne::RenderObject::LoadMesh(std::ifstream& pFile)
 
 void TakeOne::RenderObject::LoadMaterial(std::ifstream& pFile)
 {
-    MaterialLoader materialLoader;
+    MaterialHelper materialLoader;
 
-    std::vector<unsigned int> formatUsed(MaterialLoader::NrOfUniforms);
-    pFile.read(reinterpret_cast<char*>(&formatUsed[0]), MaterialLoader::NrOfUniforms * sizeof(formatUsed[0]));
+    std::vector<unsigned int> formatUsed(MaterialHelper::FormatsNo);
+    pFile.read(reinterpret_cast<char*>(&formatUsed[0]), MaterialHelper::FormatsNo * sizeof(formatUsed[0]));
     materialLoader.SetFormatUsed(std::move(formatUsed));
 
-    MaterialFormat materialFormat;
+    MaterialHelper::MaterialFormat materialFormat;
     pFile.read(reinterpret_cast<char*>(&materialFormat), sizeof(materialFormat));
     materialLoader.SetMaterialFormat(std::move(materialFormat));
 
