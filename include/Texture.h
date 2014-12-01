@@ -8,19 +8,22 @@ namespace TakeOne
     {
     public:
         Texture();
-        Texture(std::string pTexturePath, unsigned int pTextureFlags = 0);
-        Texture(const unsigned char* const pBuffer, int pSize, unsigned int pTextureFlags = 0);
+        Texture(const Texture& pTexture);
+        Texture(Texture&& pTexture);
+        Texture(const std::string pTexturePath, unsigned int pTextureFlags);
         ~Texture();
 
-        void Load(std::string pTexturePath, unsigned int pTextureFlags = 0);
-        void Load(const unsigned char* const pBuffer, int pSize, unsigned int pTextureFlags = 0);
-        void Bind();
-        void Unbind();
+        void Load(unsigned int pTextureId = 0);
+        void LoadFromFile(const std::string pTexturePath, unsigned int pTextureFlags, unsigned int pTextureId = 0);
+        void LoadFromBuffer(const unsigned char* const pBuffer, int pSize, unsigned int pTextureFlags, unsigned int pTextureId = 0);
+        void Bind() const;
+        void Unbind() const;
         void Unload();
 
         //match SOIL flags, so SOIL is not exposed
         enum Flag : unsigned int
         {
+            NONE = 0,
             POWER_OF_TWO = 1,       //force the image to be POT
             MIPMAPS = 2,            //generate mipmaps for the texture
             TEXTURE_REPEATS = 4,    //otherwise will clamp
@@ -34,7 +37,8 @@ namespace TakeOne
         };
 
     private:
+        std::string mTexturePath;
+        unsigned int mTextureFlags;
         unsigned int mTextureId;
-
     };
 }

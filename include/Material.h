@@ -18,8 +18,8 @@ namespace TakeOne
 
         template<typename T>
         void SetShaderParam(const std::string& pName, T pValue, int pCount = 1);
+        void SetTexture(const std::string& pUniformName, std::unique_ptr<Texture> pTexture);
         void SetProgram(std::unique_ptr<Program>&& pProgram);
-        void SetTexture(std::unique_ptr<Texture>&& pTexture);
         void Use();
         void Reload();
 
@@ -30,7 +30,7 @@ namespace TakeOne
         using glUniformFP = void(*)(int, int, void*);
 
         std::unique_ptr<Program> mProgram;
-        std::unique_ptr<Texture> mTexture;
+        std::vector<std::unique_ptr<Texture>> mTextures;
         std::map<std::string, std::unique_ptr<ShaderParamBase>> mShaderParams;
         std::map<std::type_index, glUniformFP> mGlUniformFPs;
     };

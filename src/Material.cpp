@@ -3,7 +3,7 @@
 #include "Material.h"
 
 TakeOne::Material::Material()
-        : mProgram(nullptr), mTexture(nullptr)
+        : mProgram(nullptr)
 {
     InitGlUniformFPs();
 }
@@ -13,9 +13,10 @@ void TakeOne::Material::SetProgram(std::unique_ptr<Program>&& pProgram)
     mProgram = std::move(pProgram);
 }
 
-void TakeOne::Material::SetTexture(std::unique_ptr<Texture>&& pTexture)
+void TakeOne::Material::SetTexture(const std::string& pUniformName, std::unique_ptr<Texture> pTexture)
 {
-    mTexture = std::move(pTexture);
+    mTextures.push_back(std::move(pTexture));
+    mTextures.back()->Load(static_cast<unsigned int>(mProgram->GetUniformLocation(pUniformName)));
 }
 
 void TakeOne::Material::Use()
@@ -24,8 +25,8 @@ void TakeOne::Material::Use()
 
     mProgram->Use();
 
-    if(mTexture != nullptr)
-        mTexture->Bind();
+    for(const auto& texture:mTextures)
+        texture->Bind();
 
     //send the uniforms to the shader
     for (auto it=mShaderParams.begin(); it!=mShaderParams.end(); ++it)

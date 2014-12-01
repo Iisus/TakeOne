@@ -7,11 +7,11 @@ layout (location = 3) in vec2 tex;
 out vec4 fragmentColor;
 
 uniform mat4 MVP;
-uniform sampler2D textureSampler;
+uniform sampler2D u_texture;
 
 void main()
 {
-    fragmentColor = texture( textureSampler, tex);
+    fragmentColor = texture( u_texture, tex);
 
     gl_Position = MVP * vec4(pos,1);
 }

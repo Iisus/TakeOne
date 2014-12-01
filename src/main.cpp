@@ -25,10 +25,10 @@ int main(void)
     //load program
     std::unique_ptr<TakeOne::Program> program(new TakeOne::Program("../res/shaders/vertex.glsl", "../res/shaders/fragment.glsl"));
     //load texture
-    std::unique_ptr<TakeOne::Texture> texture(new TakeOne::Texture("../res/textures/duckCM.tga", TakeOne::Texture::INVERT_Y));
 
     duck.GetMaterial().SetProgram(std::move(program));
-    duck.GetMaterial().SetTexture(std::move(texture));
+
+    duck.GetMaterial().SetTexture("u_texture", std::unique_ptr<TakeOne::Texture>(new TakeOne::Texture("../res/textures/duckCM.tga", TakeOne::Texture::INVERT_Y)));
 
     duck.Load("../res/meshes/duck.t1o");
 
