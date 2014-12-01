@@ -70,8 +70,8 @@ void TakeOne::RenderObject::LoadMaterial(std::ifstream& pFile)
 {
     MaterialHelper materialLoader;
 
-    std::vector<unsigned int> formatUsed(MaterialHelper::FormatsNo);
-    pFile.read(reinterpret_cast<char*>(&formatUsed[0]), MaterialHelper::FormatsNo * sizeof(formatUsed[0]));
+    std::vector<unsigned int> formatUsed(MaterialHelper::Count);
+    pFile.read(reinterpret_cast<char*>(&formatUsed[0]), MaterialHelper::Count * sizeof(formatUsed[0]));
     materialLoader.SetFormatUsed(std::move(formatUsed));
 
     MaterialHelper::MaterialFormat materialFormat;

@@ -41,7 +41,7 @@ namespace TakeOne
             SHININESS,
             SHININESS_STRENGTH,
 
-            FormatsNo
+            Count
         };
 
         void Apply(Material& pMaterial);

@@ -1,8 +1,5 @@
 #include "ShaderParam.h"
-
-#include "glm/gtc/type_ptr.hpp"
 #include <string>
-#include <typeinfo>
 
 template<typename T>
 TakeOne::ShaderParam<T>::ShaderParam(int pId, T pValue, int pCount)
@@ -28,12 +25,10 @@ int TakeOne::ShaderParam<T>::GetCount()
     return mCount;
 }
 
-//prevent compilation error with branching at compile time
-namespace glm { float* value_ptr(float); }
 template<typename T>
 void* TakeOne::ShaderParam<T>::GetValue()
 {
-    return  (std::is_fundamental<T>::value) ? static_cast<void*>(&mValue) : static_cast<void*>(glm::value_ptr(mValue));
+    return &mValue;
 }
 
 template<typename T>

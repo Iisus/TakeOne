@@ -1,4 +1,5 @@
 #include "Material.h"
+#include <cassert>
 
 template<typename T>
 void TakeOne::Material::SetShaderParam(const std::string& pName, T pValue, int pCount)
