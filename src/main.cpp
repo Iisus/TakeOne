@@ -28,7 +28,7 @@ int main(void)
 
     duck.GetMaterial().SetProgram(std::move(program));
 
-    duck.GetMaterial().SetTexture("u_texture", std::unique_ptr<TakeOne::Texture>(new TakeOne::Texture("../res/textures/duckCM.tga", TakeOne::Texture::INVERT_Y)));
+    duck.GetMaterial().SetTexture("u_texture", TakeOne::Texture("../res/textures/duckCM.tga", TakeOne::Texture::INVERT_Y));
 
     duck.Load("../res/meshes/duck.t1o");
 
