@@ -15,6 +15,7 @@
 #include "Raster.h"
 int main(void)
 {
+
     TakeOne::Engine engine(800, 600, "TakeOne");
 
     TakeOne::RenderObject duck;//, teapot1, teapot2, teapot3;
@@ -27,10 +28,7 @@ int main(void)
     //load texture
 
     duck.GetMaterial().SetProgram(std::move(program));
-
-    duck.GetMaterial().SetTexture("u_texture", TakeOne::Texture("../res/textures/duckCM.tga", TakeOne::Texture::INVERT_Y));
-
-    duck.Load("../res/meshes/duck.t1o");
+    duck.Load("../res/meshes/duck_tex.t1o");
 
     glClearColor(63.0f/255.0f, 75.0f/255.0f, 82.0f/255.0f, 1.0);
     // Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units

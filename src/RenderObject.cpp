@@ -1,6 +1,7 @@
 #include "RenderObject.h"
 #include "MaterialHelper.h"
 #include "Log.h"
+#include <sstream>
 
 TakeOne::RenderObject::RenderObject()
         : mMesh(new Mesh), mMaterial(new Material)
@@ -70,13 +71,31 @@ void TakeOne::RenderObject::LoadMaterial(std::ifstream& pFile)
 {
     MaterialHelper materialLoader;
 
-    std::vector<unsigned int> formatUsed(MaterialHelper::Count);
-    pFile.read(reinterpret_cast<char*>(&formatUsed[0]), MaterialHelper::Count * sizeof(formatUsed[0]));
+    //The header contains the uniforms used(form: 11010, where 1 means that the uniform is used)
+    // + textures string size
+    unsigned long headerSize = MaterialHelper::Count + 1;
+
+    std::vector<unsigned int> formatUsed(headerSize);
+    pFile.read(reinterpret_cast<char*>(&formatUsed[0]), headerSize * sizeof(formatUsed[0]));
+    unsigned int texStringSize = formatUsed.back();
+    formatUsed.pop_back();
     materialLoader.SetFormatUsed(std::move(formatUsed));
 
     MaterialHelper::MaterialFormat materialFormat;
     pFile.read(reinterpret_cast<char*>(&materialFormat), sizeof(materialFormat));
     materialLoader.SetMaterialFormat(std::move(materialFormat));
+
+    char* texPaths = new char[texStringSize];
+    pFile.read(texPaths, texStringSize);
+
+    std::stringstream ss((std::string(texPaths)));
+    std::string item;
+    while (std::getline(ss, item, ' '))
+    {
+        item = "../res/textures/" + item;
+        Texture texture(item, Texture::INVERT_Y);
+        mMaterial->SetTexture(std::move(texture));
+    }
 
     materialLoader.Apply(*mMaterial);
 }

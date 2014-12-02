@@ -13,6 +13,12 @@ void TakeOne::Material::SetProgram(std::unique_ptr<Program> pProgram)
     mProgram = std::move(pProgram);
 }
 
+void TakeOne::Material::SetTexture(Texture&& pTexture)
+{
+    mTextures.push_back(std::move(pTexture));
+    mTextures.back().Load();
+}
+
 void TakeOne::Material::SetTexture(const std::string& pUniformName, Texture&& pTexture)
 {
     mTextures.push_back(std::move(pTexture));

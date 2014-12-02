@@ -8,7 +8,8 @@
 using namespace std;
 
 void saveObjectToFile(string dest, const vector<unsigned int>& header, const vector<float>& vbo,
-        const vector<unsigned int> ibo, const vector<unsigned int>& mtlHeader, const vector<float>& mtlValues)
+        const vector<unsigned int> ibo, const vector<unsigned int>& mtlHeader, const vector<float>& mtlValues,
+        const string& texPaths)
 {
     ofstream file(dest, ios::binary);
     if(!file.is_open())
@@ -24,6 +25,7 @@ void saveObjectToFile(string dest, const vector<unsigned int>& header, const vec
 
     file.write((char*) &mtlHeader[0], mtlHeader.size() * sizeof(unsigned int));
     file.write((char*) &mtlValues[0], mtlValues.size() * sizeof(float));
+    file.write((char*) texPaths.c_str(), texPaths.size() * sizeof(char));
 
     file.close();
 }
@@ -46,7 +48,7 @@ void loadFloat(const aiMaterial* mtl, vector<unsigned int>& header, vector<float
     values.push_back(property);
 }
 
-void loadMaterial(const aiMaterial* mtl, vector<unsigned int>& header, vector<float>& values)
+void loadMaterial(const aiMaterial* mtl, vector<unsigned int>& header, vector<float>& values, string& textures)
 {
     loadColor(mtl, header, values, AI_MATKEY_COLOR_AMBIENT);
     loadColor(mtl, header, values, AI_MATKEY_COLOR_DIFFUSE);
@@ -60,6 +62,15 @@ void loadMaterial(const aiMaterial* mtl, vector<unsigned int>& header, vector<fl
     loadFloat(mtl, header, values, AI_MATKEY_REFRACTI);
     loadFloat(mtl, header, values, AI_MATKEY_SHININESS);
     loadFloat(mtl, header, values, AI_MATKEY_SHININESS_STRENGTH);
+
+    for(int i = 0; i<mtl->GetTextureCount(aiTextureType_DIFFUSE); i++)
+    {
+        aiString path;
+        mtl->GetTexture(aiTextureType_DIFFUSE, i, &path);
+        textures += path.data;
+        textures += " ";
+    }
+    header.push_back(textures.size());
 }
 
 void loadScene(const aiScene* scene, const aiNode* node, string destPath)
@@ -72,8 +83,9 @@ void loadScene(const aiScene* scene, const aiNode* node, string destPath)
 
         vector<unsigned int> mtlHeader;
         vector<float> mtlValues;
+        string texPaths("");
 
-        loadMaterial(scene->mMaterials[mesh->mMaterialIndex], mtlHeader, mtlValues);
+        loadMaterial(scene->mMaterials[mesh->mMaterialIndex], mtlHeader, mtlValues, texPaths);
 
         //header:pnct v_size i_size
         vector<unsigned int> header;
@@ -126,7 +138,7 @@ void loadScene(const aiScene* scene, const aiNode* node, string destPath)
         header.push_back(mesh->mNumVertices);
         header.push_back(ibo.size());
 
-        saveObjectToFile(destFile, header, vbo, ibo, mtlHeader, mtlValues);
+        saveObjectToFile(destFile, header, vbo, ibo, mtlHeader, mtlValues, texPaths);
     }
 
     for(int n = 0; n < node->mNumChildren; ++n)
