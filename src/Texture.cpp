@@ -45,7 +45,7 @@ void TakeOne::Texture::Load(unsigned int pTextureId)
             );
     if(!mTextureId)
     {
-        LOG_MSG("Failed to load texture %s.", mTexturePath.c_str());
+        LOG_MSG("Failed to load texture \"%s\".", mTexturePath.c_str());
     }
 }
 

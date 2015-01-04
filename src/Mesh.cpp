@@ -4,7 +4,7 @@
 #include <fstream>
 
 TakeOne::Mesh::Mesh()
-: mVAO(0), mVBO(0), mIBO(0)
+        : mVAO(0), mVBO(0), mIBO(0)
 {
 
 }

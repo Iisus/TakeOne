@@ -17,11 +17,12 @@ TakeOne::RenderObject::RenderObject(const std::string &pObjPath)
 
 void TakeOne::RenderObject::Load(const std::string &pObjPath)
 {
+    mObjPath = pObjPath;
     //The components in file are floats
-    std::ifstream file(pObjPath, std::ios::binary);
+    std::ifstream file(mObjPath + "/obj.t1o", std::ios::binary);
     if(!file.is_open())
     {
-        LOG_MSG("Error loading file \"%s\"", pObjPath.c_str());
+        LOG_MSG("Error loading file \"%s\"", mObjPath.c_str());
         file.close();
         return;
     }
@@ -76,7 +77,7 @@ void TakeOne::RenderObject::LoadMaterial(std::ifstream& pFile)
     unsigned long headerSize = MaterialHelper::Count + 1;
 
     std::vector<unsigned int> formatUsed(headerSize);
-    pFile.read(reinterpret_cast<char*>(&formatUsed[0]), headerSize * sizeof(formatUsed[0]));
+    pFile.read(reinterpret_cast<char*>(&formatUsed[0]), static_cast<long>(headerSize * sizeof(formatUsed[0])));
     unsigned int texStringSize = formatUsed.back();
     formatUsed.pop_back();
     materialLoader.SetFormatUsed(std::move(formatUsed));
@@ -85,14 +86,15 @@ void TakeOne::RenderObject::LoadMaterial(std::ifstream& pFile)
     pFile.read(reinterpret_cast<char*>(&materialFormat), sizeof(materialFormat));
     materialLoader.SetMaterialFormat(std::move(materialFormat));
 
-    char* texPaths = new char[texStringSize];
+    char* texPaths = new char[texStringSize+1];
     pFile.read(texPaths, texStringSize);
+    texPaths[texStringSize] = 0;
 
     std::stringstream ss((std::string(texPaths)));
     std::string item;
-    while (std::getline(ss, item, ' '))
+    while (std::getline(ss, item, '&'))
     {
-        item = "../res/textures/" + item;
+        item = mObjPath + "/" + item;
         Texture texture(item, Texture::INVERT_Y);
         mMaterial->SetTexture(std::move(texture));
     }

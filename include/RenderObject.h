@@ -19,6 +19,7 @@ namespace TakeOne
         inline Mesh& GetMesh() { return *mMesh; }
         inline Material& GetMaterial() { return *mMaterial; }
 
+        std::string mObjPath;
     private:
         void LoadMesh(std::ifstream& pFile);
         void LoadMaterial(std::ifstream& pFile);

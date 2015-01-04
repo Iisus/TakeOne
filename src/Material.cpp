@@ -8,9 +8,9 @@ TakeOne::Material::Material()
     InitGlUniformFPs();
 }
 
-void TakeOne::Material::SetProgram(std::unique_ptr<Program> pProgram)
+void TakeOne::Material::SetProgram(std::shared_ptr<Program> pProgram)
 {
-    mProgram = std::move(pProgram);
+    mProgram = pProgram;
 }
 
 void TakeOne::Material::SetTexture(Texture&& pTexture)

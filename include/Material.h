@@ -20,7 +20,7 @@ namespace TakeOne
         void SetShaderParam(const std::string& pName, T pValue, int pCount = 1);
         void SetTexture(Texture&& pTexture);
         void SetTexture(const std::string& pUniformName, Texture&& pTexture);
-        void SetProgram(std::unique_ptr<Program> pProgram);
+        void SetProgram(std::shared_ptr<Program> pProgram);
         void Use();
         void Reload();
 
@@ -30,7 +30,7 @@ namespace TakeOne
         //alias for the lambda used in std::map
         using glUniformFP = void(*)(int, int, void*);
 
-        std::unique_ptr<Program> mProgram;
+        std::shared_ptr<Program> mProgram;
         std::vector<Texture> mTextures;
         std::map<std::string, std::unique_ptr<ShaderParamBase>> mShaderParams;
         std::map<std::type_index, glUniformFP> mGlUniformFPs;

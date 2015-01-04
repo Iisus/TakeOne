@@ -7,6 +7,10 @@
 
 using namespace std;
 
+string gSource;
+string gName;
+string gDest;
+
 void saveObjectToFile(string dest, const vector<unsigned int>& header, const vector<float>& vbo,
         const vector<unsigned int> ibo, const vector<unsigned int>& mtlHeader, const vector<float>& mtlValues,
         const string& texPaths)
@@ -48,7 +52,7 @@ void loadFloat(const aiMaterial* mtl, vector<unsigned int>& header, vector<float
     values.push_back(property);
 }
 
-void loadMaterial(const aiMaterial* mtl, vector<unsigned int>& header, vector<float>& values, string& textures)
+void loadMaterial(const aiMaterial* mtl, vector<unsigned int>& header, vector<float>& values, const string& dest, string& textures)
 {
     loadColor(mtl, header, values, AI_MATKEY_COLOR_AMBIENT);
     loadColor(mtl, header, values, AI_MATKEY_COLOR_DIFFUSE);
@@ -67,17 +71,31 @@ void loadMaterial(const aiMaterial* mtl, vector<unsigned int>& header, vector<fl
     {
         aiString path;
         mtl->GetTexture(aiTextureType_DIFFUSE, i, &path);
-        textures += path.data;
-        textures += " ";
+        string pathFormated = path.data;
+        std::replace( pathFormated.begin(), pathFormated.end(), '\\', '/');
+        textures += pathFormated;
+        if(i < mtl->GetTextureCount(aiTextureType_DIFFUSE) - 1)
+        {
+            textures += "&";
+        }
+
+        //copy the texture in the package
+#ifdef PLATFORM_LINUX
+        system(("cp \"" + gSource + pathFormated + "\" \"" + dest + "\"").c_str());
+#endif
     }
     header.push_back(textures.size());
 }
 
-void loadScene(const aiScene* scene, const aiNode* node, string destPath)
+void loadScene(const aiScene* scene, const aiNode* node)
 {
     for(int i=0; i < node->mNumMeshes; i++)
     {
-        string destFile = destPath + node->mName.C_Str() + ".t1o";
+        string objDest = gDest + node->mName.C_Str();
+#ifdef PLATFORM_LINUX
+        system(("mkdir \"" + objDest + "\"").c_str());
+#endif
+        string destFile = objDest + "/obj.t1o";
 
         const aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
 
@@ -85,7 +103,7 @@ void loadScene(const aiScene* scene, const aiNode* node, string destPath)
         vector<float> mtlValues;
         string texPaths("");
 
-        loadMaterial(scene->mMaterials[mesh->mMaterialIndex], mtlHeader, mtlValues, texPaths);
+        loadMaterial(scene->mMaterials[mesh->mMaterialIndex], mtlHeader, mtlValues, objDest, texPaths);
 
         //header:pnct v_size i_size
         vector<unsigned int> header;
@@ -143,16 +161,24 @@ void loadScene(const aiScene* scene, const aiNode* node, string destPath)
 
     for(int n = 0; n < node->mNumChildren; ++n)
     {
-        loadScene(scene, node->mChildren[n], destPath);
+        loadScene(scene, node->mChildren[n]);
     }
 }
 
 int main(int argc, char *argv[])
 {
-    const char* source = argv[1];
-    string dest = argc>2 ? argv[2] : "";
+    if(argc<3)
+    {
+        cout<<"Invalid number of arguments."<<endl;
+        return 0;
+    }
+    gSource = argv[1];
+    gName = argv[2];
+    gDest = argc>3 ? argv[3] : "";
 
-    cout<<dest<<endl;
+    cout<<"Source: "<<gSource<<endl
+        <<"File Name: "<<gName<<endl
+        <<"Destination: "<<gDest<<endl;
 
     const aiScene* scene;
     if(argc < 2)
@@ -160,13 +186,13 @@ int main(int argc, char *argv[])
         cout<<"You need to provide the source"<<endl;
         return 0;
     }
-    if(! (scene = aiImportFile(source,aiProcessPreset_TargetRealtime_MaxQuality)) )
+    if(!(scene = aiImportFile((gSource+gName).c_str(),aiProcessPreset_TargetRealtime_MaxQuality)))
     {
-        cout<<"Cannot load file " << source << endl;
+        cout<<"Cannot load file " << gSource + gName << endl;
         return 0;
     }
 
-    loadScene(scene, scene->mRootNode, dest);
+    loadScene(scene, scene->mRootNode);
 
     cout<<"Success!"<<endl;
     return 0;
