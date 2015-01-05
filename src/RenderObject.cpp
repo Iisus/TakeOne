@@ -94,6 +94,8 @@ void TakeOne::RenderObject::LoadMaterial(std::ifstream& pFile)
     texPaths[texStringSize] = 0;
 
     std::stringstream ss((std::string(texPaths)));
+    delete[] texPaths;
+
     std::string item;
     while (std::getline(ss, item, '&'))
     {
