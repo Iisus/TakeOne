@@ -105,13 +105,13 @@ int main(void)
     light.attenuation = 0.01f;
     light.ambientCoefficient = 0.001f;
 
-    TakeOne::Transform streetTransform;
-    streetTransform.SetScale(glm::vec3(0.8f));
+    TakeOne::Node streetTransform;
+    streetTransform.GetTransform().SetScale(glm::vec3(0.8f));
 
     for (auto &obj : StreetEnv)
     {
         obj.GetRenderObject()->GetMaterial().SetShaderParam("camera", Camera);
-        obj.GetRenderObject()->GetMaterial().SetShaderParam("model", streetTransform.GetTransform());
+        obj.GetRenderObject()->GetMaterial().SetShaderParam("model", streetTransform.GetTransform().GetTransformMatrix());
 
         obj.GetRenderObject()->GetMaterial().SetShaderParam("light.position", light.position);
         obj.GetRenderObject()->GetMaterial().SetShaderParam("light.intensities", light.intensities);
@@ -121,7 +121,7 @@ int main(void)
 
     for (auto &duck : ducks)
     {
-        duck.GetTransform().SetParent(&streetTransform);
+        duck.GetTransform().SetParent(&streetTransform.GetTransform());
 
         duck.GetRenderObject()->GetMaterial().SetShaderParam("camera", Camera);
         duck.GetRenderObject()->GetMaterial().SetShaderParam("light.position", light.position);
@@ -139,7 +139,7 @@ int main(void)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         // 1rst attribute buffer : vertices
 
-        streetTransform.SetRotation(glm::angleAxis(static_cast<float>(lightPos), glm::vec3(0.0f, 1.0f, 0.0f)));
+        streetTransform.GetTransform().SetRotation(glm::angleAxis(static_cast<float>(lightPos), glm::vec3(0.0f, 1.0f, 0.0f)));
 
         float i=0;
         for(auto &duck : ducks)
@@ -152,9 +152,9 @@ int main(void)
 
         for(auto& obj : StreetEnv)
         {
-            //obj.GetTransform().SetRotation(glm::angleAxis(static_cast<float>(lightPos), glm::vec3(0.0f, 1.0f, 0.0f)));
+            //obj.GetTransformMatrix().SetRotation(glm::angleAxis(static_cast<float>(lightPos), glm::vec3(0.0f, 1.0f, 0.0f)));
             //obj.ApplyTransformation("model");
-            obj.GetRenderObject()->GetMaterial().SetShaderParam("model", streetTransform.GetTransform());
+            //obj.GetRenderObject()->GetMaterial().SetShaderParam("model", streetTransform.GetTransformMatrix());
             obj.GetRenderObject()->Render();
         }
 

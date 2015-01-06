@@ -59,13 +59,13 @@ const std::vector<TakeOne::Transform*> *TakeOne::Transform::GetChildren() const
 }
 
 
-glm::mat4 TakeOne::Transform::GetTransform()
+glm::mat4 TakeOne::Transform::GetTransformMatrix()
 {
     UpdateIfDirty();
     return mWorldTransform;
 }
 
-glm::mat4 TakeOne::Transform::GetLocalTransform()
+glm::mat4 TakeOne::Transform::GetLocalTransformMatrix()
 {
     return glm::mat4(
             glm::vec4(mScale[0],0,0,0),
@@ -114,11 +114,11 @@ void TakeOne::Transform::UpdateIfDirty()
         if(mParent)
         {
             mParent->UpdateIfDirty();
-            mWorldTransform = mParent->mWorldTransform * GetLocalTransform();
+            mWorldTransform = mParent->mWorldTransform * GetLocalTransformMatrix();
         }
         else
         {
-            mWorldTransform = GetLocalTransform();
+            mWorldTransform = GetLocalTransformMatrix();
         }
 
         mDirty = false;

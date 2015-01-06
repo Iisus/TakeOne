@@ -20,8 +20,8 @@ namespace TakeOne
         void RemoveChild(Transform* const);
         const std::vector<Transform*> *GetChildren() const;
 
-        glm::mat4 GetTransform();
-        glm::mat4 GetLocalTransform();
+        glm::mat4 GetTransformMatrix();
+        glm::mat4 GetLocalTransformMatrix();
 
         void SetPosition(const glm::vec3& pPosition);
         void SetScale(const glm::vec3& pScale);
