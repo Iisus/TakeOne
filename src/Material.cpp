@@ -39,6 +39,7 @@ void TakeOne::Material::Use()
     for(const auto& texture:mTextures)
         texture.Bind();
 
+    //TODO: Try switch instead of map
     //send the uniforms to the shader
     for (auto it=mShaderParams.begin(); it!=mShaderParams.end(); ++it)
     {
