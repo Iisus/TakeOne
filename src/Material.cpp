@@ -29,7 +29,12 @@ void TakeOne::Material::Use()
 {
     assert(mProgram != nullptr && "The program from material must be set!");
 
-    mProgram->Use();
+    static std::shared_ptr<Program> sLastProgram = mProgram;
+    if(sLastProgram != mProgram)
+    {
+        mProgram->Use();
+        sLastProgram = mProgram;
+    }
 
     for(const auto& texture:mTextures)
         texture.Bind();

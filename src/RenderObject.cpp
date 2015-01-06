@@ -4,7 +4,7 @@
 #include <sstream>
 
 TakeOne::RenderObject::RenderObject()
-        : mMesh(new Mesh), mMaterial(new Material)
+        : mMesh(new Mesh), mMaterial(new Material), mRenderable(true)
 {
 
 }
@@ -35,8 +35,11 @@ void TakeOne::RenderObject::Load(const std::string &pObjPath)
 
 void TakeOne::RenderObject::Render()
 {
-    mMaterial->Use();
-    mMesh->Render();
+    if(mRenderable)
+    {
+        mMaterial->Use();
+        mMesh->Render();
+    }
 }
 
 void TakeOne::RenderObject::LoadMesh(std::ifstream& pFile)
@@ -91,6 +94,8 @@ void TakeOne::RenderObject::LoadMaterial(std::ifstream& pFile)
     texPaths[texStringSize] = 0;
 
     std::stringstream ss((std::string(texPaths)));
+    delete[] texPaths;
+
     std::string item;
     while (std::getline(ss, item, '&'))
     {

@@ -9,6 +9,7 @@ namespace TakeOne
     {
     public:
         Transform();
+        Transform(Transform* pParent);
         Transform(const Transform&) = delete;
         Transform& operator=(const Transform&) = delete;
         ~Transform();

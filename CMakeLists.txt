@@ -92,6 +92,6 @@ else(PLATFORM STREQUAL "Win32")
     set_source_files_properties(
         ${SOURCE_FILES}
         PROPERTIES
-        COMPILE_FLAGS "-Weverything -Wno-c++98-compat-pedantic -Wno-c++98-compat -Wno-padded"
+        COMPILE_FLAGS "-Weverything -Wno-c++98-compat-pedantic -Wno-c++98-compat -Wno-padded -Wno-exit-time-destructors"
         )
 endif(PLATFORM STREQUAL "Win32")

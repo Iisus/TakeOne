@@ -7,6 +7,12 @@ TakeOne::Transform::Transform()
 {
 
 }
+TakeOne::Transform::Transform(Transform* pParent)
+        : Transform()
+{
+    mParent = pParent;
+}
+
 
 TakeOne::Transform::~Transform()
 {
@@ -61,16 +67,11 @@ glm::mat4 TakeOne::Transform::GetTransform()
 
 glm::mat4 TakeOne::Transform::GetLocalTransform()
 {
-    return glm::scale(
-            glm::rotate(
-                    glm::translate(
-                            glm::mat4(),
-                            mPosition
-                    ),
-                    glm::angle(mRotation),
-                    glm::axis(mRotation)
-            ),
-           mScale);
+    return glm::mat4(
+            glm::vec4(mScale[0],0,0,0),
+            glm::vec4(0,mScale[1],0,0),
+            glm::vec4(0,0,mScale[2],0),
+            glm::vec4(mPosition,1)) * glm::mat4_cast(mRotation);
 }
 
 void TakeOne::Transform::SetPosition(const glm::vec3& pPosition)
