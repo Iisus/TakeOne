@@ -29,7 +29,7 @@ void TakeOne::Material::Use()
 {
     assert(mProgram != nullptr && "The program from material must be set!");
 
-    static std::shared_ptr<Program> sLastProgram = mProgram;
+    static std::shared_ptr<Program> sLastProgram = nullptr;
     if(sLastProgram != mProgram)
     {
         mProgram->Use();

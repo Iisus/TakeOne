@@ -15,6 +15,7 @@
 #include "Raster.h"
 
 #include "RenderNode.h"
+#include "CameraNode.h"
 
 struct Light {
     glm::vec3 position;
@@ -22,6 +23,16 @@ struct Light {
     float attenuation; //new this article
     float ambientCoefficient; //new this article
 };
+
+void DrawLine(glm::vec3 pStart, glm::vec3 pEnd, glm::vec3 pColor = glm::vec3(0.0f, 0.0f, 0.0f), float pWidth = 1.0f)
+{
+    glLineWidth(pWidth);
+    glColor3fv(&pColor[0]);
+    glBegin(GL_LINES);
+    glVertex3fv(&pStart[0]);
+    glVertex3fv(&pEnd[0]);
+    glEnd();
+}
 
 int main(void)
 {
@@ -37,7 +48,7 @@ int main(void)
     duckRO->GetMaterial().SetProgram(textureMapProgram);
     duckRO->Load("../res/objects/Duck/");
 
-    std::vector<TakeOne::RenderNode> ducks(300);
+    std::vector<TakeOne::RenderNode> ducks(1);
     for (auto& duck : ducks)
         duck.SetRenderObject(duckRO);
 
@@ -85,19 +96,15 @@ int main(void)
     StreetEnv[28].GetRenderObject()->Load("../res/objects/StreetEnv/g Object010");
     StreetEnv[29].GetRenderObject()->Load("../res/objects/StreetEnv/g Plane001");
 
-
-    glClearColor(63.0f / 255.0f, 75.0f / 255.0f, 82.0f / 255.0f, 1.0);
-    // Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 1000 units
-    glm::mat4 Projection = static_cast<glm::mat4>(glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 1000.0f));
-// Camera matrix
-    glm::mat4 View = glm::lookAt(
-            glm::vec3(40, 40, 40), // Camera is at (4,3,3), in World Space
-            glm::vec3(0, 0, 0), // and looks at the origin
-            glm::vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
-    );
-
-    glm::mat4 Camera = static_cast<glm::mat4>((Projection * View));
-
+    TakeOne::CameraNode camera(TakeOne::CameraType::PERSPECTIVE);
+    camera.SetClearColor(glm::vec4(63.0f / 255.0f, 75.0f / 255.0f, 82.0f / 255.0f, 1.0));
+    camera.SetPerspective(45.0f, 4.0f / 3.0f, 0.1f, 1000.0f);
+    //camera.SetPitch(1.0);
+    camera.GetTransform().SetPosition(glm::vec3(40, 40, 40));
+    camera.SetYaw(0.8);
+    //camera.SetRoll(1.0);
+    camera.SetPitch(-0.6);
+    //camera.LookAt(glm::vec3(0, 0, 0));
 
     Light light;
     light.position = glm::vec3(-8.0f, 8.0f, 10.0f);
@@ -110,7 +117,7 @@ int main(void)
 
     for (auto &obj : StreetEnv)
     {
-        obj.GetRenderObject()->GetMaterial().SetShaderParam("camera", Camera);
+        obj.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());
         obj.GetRenderObject()->GetMaterial().SetShaderParam("model", streetTransform.GetTransform().GetTransformMatrix());
 
         obj.GetRenderObject()->GetMaterial().SetShaderParam("light.position", light.position);
@@ -121,9 +128,13 @@ int main(void)
 
     for (auto &duck : ducks)
     {
-        duck.GetTransform().SetParent(&streetTransform.GetTransform());
+        //duck.GetTransform().SetParent(&streetTransform.GetTransform());
+        duck.GetTransform().SetScale(glm::vec3(0.05));
+        duck.GetTransform().SetPosition(glm::vec3(0, 0, -10));
+        duck.GetTransform().SetRotation(glm::angleAxis(glm::pi<float>()/2, glm::vec3(0.3f, 0.3f, 0.3f)));
+        duck.ApplyTransformation("model");
 
-        duck.GetRenderObject()->GetMaterial().SetShaderParam("camera", Camera);
+        duck.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());
         duck.GetRenderObject()->GetMaterial().SetShaderParam("light.position", light.position);
         duck.GetRenderObject()->GetMaterial().SetShaderParam("light.intensities", light.intensities);
         duck.GetRenderObject()->GetMaterial().SetShaderParam("light.attenuation", light.attenuation);
@@ -132,6 +143,12 @@ int main(void)
 
     double lightPos=0;
 
+    float speed = 0.05f; // 3 units / second
+    float mouseSpeed = 0.005f;
+    float horizontalAngle = 0;
+    float verticalAngle = 0;
+    glm::vec3 position = glm::vec3(0.0f);
+
     while (!engine.ShouldClose())
 	{
         lightPos+=0.001;
@@ -139,24 +156,75 @@ int main(void)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         // 1rst attribute buffer : vertices
 
-        streetTransform.GetTransform().SetRotation(glm::angleAxis(static_cast<float>(lightPos), glm::vec3(0.0f, 1.0f, 0.0f)));
+        //streetTransform.GetTransform().SetRotation(glm::angleAxis(static_cast<float>(lightPos), glm::vec3(0.0f, 1.0f, 0.0f)));
+
+
+//        double xPos, yPos;
+//        glfwGetCursorPos(engine.GetWindow(), &xPos, &yPos);
+//        glfwSetCursorPos(engine.GetWindow(), 1024/2, 768/2);
+//        horizontalAngle += mouseSpeed * float(1024/2 - xPos );
+//        verticalAngle   += mouseSpeed * float( 768/2 - yPos );
+//        //camera.SetYaw(horizontalAngle*0.0174532925);
+//        camera.GetTransform().SetRotation(glm::angleAxis(horizontalAngle, glm::vec3(0, 1, 0)) * glm::angleAxis(verticalAngle, glm::vec3(1, 0, 0)));
+//
+//        glm::vec3 direction(
+//            cos(verticalAngle) * sin(horizontalAngle),
+//            sin(verticalAngle),
+//            cos(verticalAngle) * cos(horizontalAngle)
+//        );
+//
+//        glm::vec3 right = glm::vec3(
+//            sin(horizontalAngle - 3.14f/2.0f),
+//            0,
+//            cos(horizontalAngle - 3.14f/2.0f)
+//        );
+//
+//        glm::vec3 up = glm::cross( right, direction );
+//
+//        // Move forward
+//        if (glfwGetKey(engine.GetWindow(), GLFW_KEY_W ) == GLFW_PRESS){
+//            position -= direction * speed;
+//        }
+//// Move backward
+//        if (glfwGetKey(engine.GetWindow(), GLFW_KEY_S ) == GLFW_PRESS){
+//            position += direction * speed;
+//        }
+//// Strafe right
+//        if (glfwGetKey(engine.GetWindow(), GLFW_KEY_D ) == GLFW_PRESS){
+//            position -= right * speed;
+//        }
+//// Strafe left
+//        if (glfwGetKey(engine.GetWindow(), GLFW_KEY_A ) == GLFW_PRESS){
+//            position += right * speed;
+//        }
+//
+//        camera.GetTransform().SetPosition(position);
+
 
         float i=0;
         for(auto &duck : ducks)
         {
-            duck.GetTransform().SetPosition(glm::vec3(i++, (sin(lightPos) + 1) * 10, 0.0f));
-            duck.GetTransform().SetScale(glm::vec3((cos(lightPos * 5) + 1) * 0.01 + 0.005));
-            duck.ApplyTransformation("model");
+            //duck.GetTransform().SetPosition(glm::vec3(i++, (sin(lightPos) + 1) * 10, 0.0f));
+            //duck.GetTransform().SetScale(glm::vec3((cos(lightPos * 5) + 1) * 0.01 + 0.005));
+            //duck.ApplyTransformation("model");
+            duck.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());
             duck.GetRenderObject()->Render();
         }
 
         for(auto& obj : StreetEnv)
         {
+            for(auto& obj1 : StreetEnv)
+            {
+                DrawLine(obj1.GetTransform().GetPosition(), obj.GetTransform().GetPosition());
+            }
             //obj.GetTransformMatrix().SetRotation(glm::angleAxis(static_cast<float>(lightPos), glm::vec3(0.0f, 1.0f, 0.0f)));
             //obj.ApplyTransformation("model");
             //obj.GetRenderObject()->GetMaterial().SetShaderParam("model", streetTransform.GetTransformMatrix());
+            obj.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());
             obj.GetRenderObject()->Render();
         }
+
+        camera.GetClearColor();
 
         engine.Update();
 	}

@@ -18,6 +18,9 @@ namespace TakeOne
 		void Update();
 		bool ShouldClose();
 
+		//TODO: Remove this:
+		GLFWwindow* GetWindow() { return mWindow; }
+
 	private:
 		//private methods
         void InitGlew();
