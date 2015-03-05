@@ -18,19 +18,19 @@ namespace TakeOne
         ~CameraNode();
 
         inline void SetCameraType(CameraType pCameraType) { mCameraType = pCameraType; }
-        inline CameraType GetCameraType() { return mCameraType; }
+        inline CameraType GetCameraType() const { return mCameraType; }
 
         void SetClearColor(const glm::vec4& pClearColor);
-        inline glm::vec4 GetClearColor() { return mClearColor; }
+        const glm::vec4 GetClearColor() const { return mClearColor; }
 
         void SetYawPitchRoll(const glm::vec3& pYawPitchRoll);
         glm::vec3 GetYawPitchRoll();
         void SetYaw(float pYaw);
-        float GetYaw();
+        float GetYaw() const;
         void SetPitch(float pPitch);
-        float GetPitch();
+        float GetPitch() const;
         void SetRoll(float pRoll);
-        float GetRoll();
+        float GetRoll() const;
 
         void LookAt(const glm::vec3& pLookAt, const glm::vec3& pUp = glm::vec3(0.0f, 1.0f, 0.0f));
         glm::vec3 GetFrontDir();

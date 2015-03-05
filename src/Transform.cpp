@@ -65,7 +65,7 @@ glm::mat4 TakeOne::Transform::GetTransformMatrix()
     return mWorldTransform;
 }
 
-glm::mat4 TakeOne::Transform::GetLocalTransformMatrix()
+glm::mat4 TakeOne::Transform::GetLocalTransformMatrix() const
 {
     return glm::mat4(
             glm::vec4(mScale[0],0,0,0),
@@ -92,17 +92,17 @@ void TakeOne::Transform::SetRotation(const glm::quat& pRotation)
     mRotation = pRotation;
 }
 
-glm::vec3 TakeOne::Transform::GetPosition()
+glm::vec3 TakeOne::Transform::GetPosition() const
 {
     return mPosition;
 }
 
-glm::vec3 TakeOne::Transform::GetScale()
+glm::vec3 TakeOne::Transform::GetScale() const
 {
     return mScale;
 }
 
-glm::quat TakeOne::Transform::GetRotation()
+glm::quat TakeOne::Transform::GetRotation() const
 {
     return mRotation;
 }

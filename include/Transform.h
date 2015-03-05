@@ -21,15 +21,15 @@ namespace TakeOne
         const std::vector<Transform*> *GetChildren() const;
 
         glm::mat4 GetTransformMatrix();
-        glm::mat4 GetLocalTransformMatrix();
+        glm::mat4 GetLocalTransformMatrix() const;
 
         void SetPosition(const glm::vec3& pPosition);
         void SetScale(const glm::vec3& pScale);
         void SetRotation(const glm::quat& pRotation);
 
-        glm::vec3 GetPosition();
-        glm::vec3 GetScale();
-        glm::quat GetRotation();
+        glm::vec3 GetPosition() const;
+        glm::vec3 GetScale() const;
+        glm::quat GetRotation() const;
 
     private:
         void UpdateIfDirty();

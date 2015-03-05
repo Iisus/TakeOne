@@ -44,12 +44,13 @@ void TakeOne::CameraNode::SetYaw(float pYaw)
             glm::yawPitchRoll(
                 pYaw,
                 glm::pitch(mTransform.GetRotation()),
-                glm::roll(mTransform.GetRotation()))
+                glm::roll(mTransform.GetRotation())
+            )
         )
     );
 }
 
-float TakeOne::CameraNode::GetYaw()
+float TakeOne::CameraNode::GetYaw() const
 {
     return glm::yaw(mTransform.GetRotation());
 }
@@ -67,7 +68,7 @@ void TakeOne::CameraNode::SetPitch(float pPitch)
     );
 }
 
-float TakeOne::CameraNode::GetPitch()
+float TakeOne::CameraNode::GetPitch() const
 {
     return glm::pitch(mTransform.GetRotation());
 }
@@ -85,7 +86,7 @@ void TakeOne::CameraNode::SetRoll(float pRoll)
     );
 }
 
-float TakeOne::CameraNode::GetRoll()
+float TakeOne::CameraNode::GetRoll() const
 {
     return glm::roll(mTransform.GetRotation());
 }
