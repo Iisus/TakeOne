@@ -23,14 +23,13 @@ namespace TakeOne
         void SetClearColor(const glm::vec4& pClearColor);
         const glm::vec4 GetClearColor() const { return mClearColor; }
 
-        void SetYawPitchRoll(const glm::vec3& pYawPitchRoll);
-        glm::vec3 GetYawPitchRoll();
-        void SetYaw(float pYaw);
-        float GetYaw() const;
-        void SetPitch(float pPitch);
-        float GetPitch() const;
-        void SetRoll(float pRoll);
-        float GetRoll() const;
+        void SetAngleAxis(const glm::vec4& pAngleAxis);
+        void SetAngleAxis(float pAngle, const glm::vec3& pAxis);
+        glm::vec4 GetAngleAxis() const;
+        float GetAngle() const;
+        glm::vec3 GetAxis() const;
+        void Rotate(const glm::vec4& pAngleAxis);
+        void Rotate(float pAngle, const glm::vec3& pAxis);
 
         void LookAt(const glm::vec3& pLookAt, const glm::vec3& pUp = glm::vec3(0.0f, 1.0f, 0.0f));
         glm::vec3 GetFrontDir();

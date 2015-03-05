@@ -27,69 +27,42 @@ void TakeOne::CameraNode::SetClearColor(const glm::vec4& pClearColor)
     glClearColor(mClearColor.r, mClearColor.g, mClearColor.b, mClearColor.a);
 }
 
-void TakeOne::CameraNode::SetYawPitchRoll(const glm::vec3& pYawPitchRoll)
+void TakeOne::CameraNode::SetAngleAxis(const glm::vec4& pAngleAxis)
 {
-    mTransform.SetRotation(glm::toQuat(glm::eulerAngleYXZ(pYawPitchRoll.x, pYawPitchRoll.y, pYawPitchRoll.z)));
+    mTransform.SetRotation(glm::angleAxis(pAngleAxis.x, glm::vec3(pAngleAxis.y, pAngleAxis.z, pAngleAxis.w)));
 }
 
-glm::vec3 TakeOne::CameraNode::GetYawPitchRoll()
+void TakeOne::CameraNode::SetAngleAxis(float pAngle, const glm::vec3& pAxis)
 {
-    auto euler = glm::eulerAngles(mTransform.GetRotation());
-    return glm::vec3(euler.y, euler.x, euler.z);
+    mTransform.SetRotation(glm::angleAxis(pAngle, pAxis));
 }
 
-void TakeOne::CameraNode::SetYaw(float pYaw)
+glm::vec4 TakeOne::CameraNode::GetAngleAxis() const
+{
+    auto quat = mTransform.GetRotation();
+    return glm::vec4(glm::angle(quat), glm::axis(quat));
+}
+
+float TakeOne::CameraNode::GetAngle() const
+{
+    return glm::angle(mTransform.GetRotation());
+}
+
+glm::vec3 TakeOne::CameraNode::GetAxis() const
+{
+    return glm::axis(mTransform.GetRotation());
+}
+
+void TakeOne::CameraNode::Rotate(const glm::vec4& pAngleAxis)
 {
     mTransform.SetRotation(
-        glm::toQuat(
-            glm::yawPitchRoll(
-                pYaw,
-                glm::pitch(mTransform.GetRotation()),
-                glm::roll(mTransform.GetRotation())
-            )
-        )
+        mTransform.GetRotation() * glm::angleAxis(pAngleAxis.x, glm::vec3(pAngleAxis.y, pAngleAxis.z, pAngleAxis.w))
     );
 }
 
-float TakeOne::CameraNode::GetYaw() const
+void TakeOne::CameraNode::Rotate(float pAngle, const glm::vec3& pAxis)
 {
-    return glm::yaw(mTransform.GetRotation());
-}
-
-void TakeOne::CameraNode::SetPitch(float pPitch)
-{
-    mTransform.SetRotation(
-        glm::toQuat(
-            glm::yawPitchRoll(
-                glm::yaw(mTransform.GetRotation()),
-                pPitch,
-                glm::roll(mTransform.GetRotation())
-            )
-        )
-    );
-}
-
-float TakeOne::CameraNode::GetPitch() const
-{
-    return glm::pitch(mTransform.GetRotation());
-}
-
-void TakeOne::CameraNode::SetRoll(float pRoll)
-{
-    mTransform.SetRotation(
-        glm::toQuat(
-            glm::yawPitchRoll(
-                glm::yaw(mTransform.GetRotation()),
-                glm::pitch(mTransform.GetRotation()),
-                pRoll
-            )
-        )
-    );
-}
-
-float TakeOne::CameraNode::GetRoll() const
-{
-    return glm::roll(mTransform.GetRotation());
+    mTransform.SetRotation(mTransform.GetRotation() * glm::angleAxis(pAngle, pAxis));
 }
 
 void TakeOne::CameraNode::LookAt(const glm::vec3& pLookAt, const glm::vec3& pUp)

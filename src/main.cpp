@@ -160,7 +160,7 @@ int main(void)
         // 1rst attribute buffer : vertices
 
 
-        float mouseSpeed = 0.005f;
+        float mouseSpeed = 0.0005f;
         double xPos, yPos;
         glfwGetCursorPos(engine.GetWindow(), &xPos, &yPos);
         glfwSetCursorPos(engine.GetWindow(), 1024/2, 768/2);
@@ -168,10 +168,8 @@ int main(void)
         horizontalAngle -= mouseSpeed * float( xPos - 1024/2 );
         verticalAngle   -= mouseSpeed * float( yPos - 768/2 );
 
-        camera.SetYawPitchRoll(glm::vec3(horizontalAngle, verticalAngle, 0));
-//        camera.SetYawPitchRoll(camera.GetYawPitchRoll());
-//        camera.SetYaw(horizontalAngle);
-//        camera.SetPitch(verticalAngle);
+        camera.SetAngleAxis(horizontalAngle, glm::vec3(0, 1, 0));
+        camera.Rotate(verticalAngle, glm::vec3(1, 0, 0));
 
         static glm::vec3 camPos(0.0f, 10.0f, 0.0f);
 
