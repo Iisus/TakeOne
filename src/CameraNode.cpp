@@ -29,12 +29,13 @@ void TakeOne::CameraNode::SetClearColor(const glm::vec4& pClearColor)
 
 void TakeOne::CameraNode::SetYawPitchRoll(const glm::vec3& pYawPitchRoll)
 {
-    mTransform.SetRotation(glm::toQuat(glm::orientate3(pYawPitchRoll)));
+    mTransform.SetRotation(glm::toQuat(glm::eulerAngleYXZ(pYawPitchRoll.x, pYawPitchRoll.y, pYawPitchRoll.z)));
 }
 
 glm::vec3 TakeOne::CameraNode::GetYawPitchRoll()
 {
-    return glm::eulerAngles(mTransform.GetRotation());
+    auto euler = glm::eulerAngles(mTransform.GetRotation());
+    return glm::vec3(euler.y, euler.x, euler.z);
 }
 
 void TakeOne::CameraNode::SetYaw(float pYaw)
@@ -106,17 +107,17 @@ void TakeOne::CameraNode::LookAt(const glm::vec3& pLookAt, const glm::vec3& pUp)
 
 glm::vec3 TakeOne::CameraNode::GetFrontDir()
 {
-    return glm::normalize(glm::mat3_cast(mTransform.GetRotation()/2.0f)[0]);
+    return glm::normalize(glm::mat3_cast(mTransform.GetRotation())[2]);
 }
 
 glm::vec3 TakeOne::CameraNode::GetUpDir()
 {
-    return glm::normalize(glm::mat3_cast(mTransform.GetRotation()/2.0f)[1]);
+    return glm::normalize(glm::mat3_cast(mTransform.GetRotation())[1]);
 }
 
 glm::vec3 TakeOne::CameraNode::GetRightDir()
 {
-    return glm::normalize(glm::mat3_cast(mTransform.GetRotation()/2.0f)[2]);
+    return glm::normalize(glm::mat3_cast(mTransform.GetRotation())[0]);
 }
 
 void TakeOne::CameraNode::SetPerspective(float pFOV, float pAspectRatio, float pNearPlane, float pFarPlane)

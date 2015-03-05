@@ -2,7 +2,6 @@
 
 #include "Transform.h"
 #include <string>
-#include <memory>
 
 namespace TakeOne
 {

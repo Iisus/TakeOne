@@ -136,8 +136,8 @@ int main(void)
     {
         //duck.GetTransform().SetParent(&streetTransform.GetTransform());
         duck.GetTransform().SetScale(glm::vec3(0.05));
-        duck.GetTransform().SetPosition(glm::vec3(0, 0, -10));
-        duck.GetTransform().SetRotation(glm::angleAxis(glm::pi<float>()/2, glm::vec3(0.3f, 0.3f, 0.3f)));
+        duck.GetTransform().SetPosition(glm::vec3(0, 0, -30));
+        duck.GetTransform().SetRotation(glm::angleAxis(glm::pi<float>()/4, glm::vec3(0.0f, 1.0f, 0.0f)));
         duck.ApplyTransformation("model");
 
         duck.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());
@@ -152,8 +152,6 @@ int main(void)
     float speed = 0.05f; // 3 units / second
     float horizontalAngle = 0;
     float verticalAngle = 0;
-    //glm::vec3 position = glm::vec3(1.0f, 0.0f, 0.0f);
-    float position=0.0f;
     while (!engine.ShouldClose())
 	{
         lightPos+=0.001;
@@ -161,61 +159,48 @@ int main(void)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         // 1rst attribute buffer : vertices
 
-        static glm::vec3 camPos(0.0f, 0.0f, 0.0f);
-        // Move forward
-        if (glfwGetKey(engine.GetWindow(), GLFW_KEY_W ) == GLFW_PRESS){
-            camPos.z -= speed;
-        }
-
-        if (glfwGetKey(engine.GetWindow(), GLFW_KEY_S ) == GLFW_PRESS){
-            camPos.z += speed;
-        }
-
-        if (glfwGetKey(engine.GetWindow(), GLFW_KEY_D ) == GLFW_PRESS){
-            camPos.x += speed;
-        }
-
-        if (glfwGetKey(engine.GetWindow(), GLFW_KEY_A ) == GLFW_PRESS){
-            camPos.x -= speed;
-        }
-
-        if (glfwGetKey(engine.GetWindow(), GLFW_KEY_Q ) == GLFW_PRESS){
-            camPos.y -= speed;
-        }
-
-        if (glfwGetKey(engine.GetWindow(), GLFW_KEY_E ) == GLFW_PRESS){
-            camPos.y += speed;
-        }
-
 
         float mouseSpeed = 0.005f;
         double xPos, yPos;
         glfwGetCursorPos(engine.GetWindow(), &xPos, &yPos);
         glfwSetCursorPos(engine.GetWindow(), 1024/2, 768/2);
 
-        static double xPrev = xPos, yPrev = yPos;
-
         horizontalAngle -= mouseSpeed * float( xPos - 1024/2 );
         verticalAngle   -= mouseSpeed * float( yPos - 768/2 );
-        xPrev = xPos; yPrev = yPos;
 
-//        glm::vec3 direction(
-//            cos(verticalAngle) * sin(horizontalAngle),
-//            sin(verticalAngle),
-//            cos(verticalAngle) * cos(horizontalAngle)
-//        );
+        camera.SetYawPitchRoll(glm::vec3(horizontalAngle, verticalAngle, 0));
+//        camera.SetYawPitchRoll(camera.GetYawPitchRoll());
+//        camera.SetYaw(horizontalAngle);
+//        camera.SetPitch(verticalAngle);
 
-        //camera.SetYaw(glm::radians(horizontalAngle));
-        //camera.SetPitch(glm::radians(verticalAngle));
-        camera.GetTransform().SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
-        camera.GetTransform().SetRotation( glm::angleAxis(horizontalAngle, glm::vec3(0.0, 1.0, 0.0)) *
-        glm::angleAxis(verticalAngle, glm::vec3(1.0, 0.0, 0.0))
-        );
+        static glm::vec3 camPos(0.0f, 10.0f, 0.0f);
 
-        camera.GetTransform().SetPosition(camera.GetTransform().GetRotation() * camPos);
+        if (glfwGetKey(engine.GetWindow(), GLFW_KEY_W ) == GLFW_PRESS){
+            camPos -= camera.GetFrontDir() * speed;
+        }
 
+        if (glfwGetKey(engine.GetWindow(), GLFW_KEY_S ) == GLFW_PRESS){
+            camPos += camera.GetFrontDir() * speed;
+        }
 
-        float i=0;
+        if (glfwGetKey(engine.GetWindow(), GLFW_KEY_D ) == GLFW_PRESS){
+            camPos += camera.GetRightDir() * speed;
+        }
+
+        if (glfwGetKey(engine.GetWindow(), GLFW_KEY_A ) == GLFW_PRESS){
+            camPos -= camera.GetRightDir() * speed;
+        }
+
+        if (glfwGetKey(engine.GetWindow(), GLFW_KEY_Q ) == GLFW_PRESS){
+            camPos -= camera.GetUpDir() * speed;
+        }
+
+        if (glfwGetKey(engine.GetWindow(), GLFW_KEY_E ) == GLFW_PRESS){
+            camPos += camera.GetUpDir() * speed;
+        }
+
+        camera.GetTransform().SetPosition(camPos);
+
         for(auto &duck : ducks)
         {
             //duck.GetTransform().SetPosition(glm::vec3(i++, (sin(lightPos) + 1) * 10, 0.0f));
@@ -231,7 +216,7 @@ int main(void)
             {
                 DrawLine(obj1.GetTransform().GetPosition(), obj.GetTransform().GetPosition());
             }
-            //obj.GetTransformMatrix().SetRotation(glm::angleAxis(static_cast<float>(lightPos), glm::vec3(0.0f, 1.0f, 0.0f)));
+            //obj.GetTransform().SetRotation(glm::angleAxis(glm::pi<float>()/7, glm::vec3(0.0f, 1.0f, 0.0f)));
             //obj.ApplyTransformation("model");
             //obj.GetRenderObject()->GetMaterial().SetShaderParam("model", streetTransform.GetTransformMatrix());
             obj.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());

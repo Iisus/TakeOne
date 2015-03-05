@@ -1,5 +1,5 @@
 #include "Transform.h"
-#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtx/transform.hpp"
 #include <algorithm>
 
 TakeOne::Transform::Transform()
@@ -67,11 +67,7 @@ glm::mat4 TakeOne::Transform::GetTransformMatrix()
 
 glm::mat4 TakeOne::Transform::GetLocalTransformMatrix() const
 {
-    return glm::mat4(
-            glm::vec4(mScale[0],0,0,0),
-            glm::vec4(0,mScale[1],0,0),
-            glm::vec4(0,0,mScale[2],0),
-            glm::vec4(mPosition,1)) * glm::mat4_cast(mRotation);
+    return glm::translate(mPosition) * glm::mat4_cast(mRotation) * glm::scale(mScale);
 }
 
 void TakeOne::Transform::SetPosition(const glm::vec3& pPosition)
