@@ -103,7 +103,7 @@ int main(void)
 
     TakeOne::CameraNode camera(TakeOne::CameraType::PERSPECTIVE);
     camera.SetClearColor(glm::vec4(63.0f / 255.0f, 75.0f / 255.0f, 82.0f / 255.0f, 1.0));
-    camera.SetPerspective(45.0f, 4.0f / 3.0f, 0.1f, 1000.0f);
+    camera.SetPerspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 1000.0f);
     //camera.SetPitch(1.0);
     //camera.GetTransform().SetPosition(glm::vec3(40, 40, 0));
     //camera.SetYaw(M_PI_2);
