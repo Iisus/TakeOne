@@ -30,5 +30,5 @@ std::shared_ptr<TakeOne::RenderObject> TakeOne::RenderNode::GetRenderObject()
 void TakeOne::RenderNode::ApplyTransformation(const std::string& pUniformName)
 {
     if(mRenderObject)
-        mRenderObject->GetMaterial().SetShaderParam(pUniformName, mTransform.GetTransformMatrix());
+        mRenderObject->GetMaterial().SetShaderParam(pUniformName, mTransform->GetTransformMatrix());
 }

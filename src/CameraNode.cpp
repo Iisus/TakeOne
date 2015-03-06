@@ -3,12 +3,6 @@
 #include <glm/gtx/euler_angles.hpp>
 #include <GL/glew.h>
 
-TakeOne::CameraNode::CameraNode()
-        : CameraNode(CameraType::PERSPECTIVE)
-{
-
-}
-
 TakeOne::CameraNode::CameraNode(TakeOne::CameraType pCameraType)
         : mCameraType(pCameraType), mNearPlane(0.0f), mFarPlane(100.0f), mFOV(45.0f), mAspectRatio(4.0f/3.0f),
           mLeft(-1.0f), mRight(1.0f), mBottom(-1.0f), mTop(1.0f), mProjection(0.0f)
@@ -27,50 +21,55 @@ void TakeOne::CameraNode::SetClearColor(const glm::vec4& pClearColor)
     glClearColor(mClearColor.r, mClearColor.g, mClearColor.b, mClearColor.a);
 }
 
+glm::vec4 TakeOne::CameraNode::GetClearColor() const
+{
+    return mClearColor;
+}
+
 void TakeOne::CameraNode::SetAngleAxis(const glm::vec4& pAngleAxis)
 {
-    mTransform.SetRotation(glm::angleAxis(pAngleAxis.x, glm::vec3(pAngleAxis.y, pAngleAxis.z, pAngleAxis.w)));
+    mTransform->SetRotation(glm::angleAxis(pAngleAxis.x, glm::vec3(pAngleAxis.y, pAngleAxis.z, pAngleAxis.w)));
 }
 
 void TakeOne::CameraNode::SetAngleAxis(float pAngle, const glm::vec3& pAxis)
 {
-    mTransform.SetRotation(glm::angleAxis(pAngle, pAxis));
+    mTransform->SetRotation(glm::angleAxis(pAngle, pAxis));
 }
 
 glm::vec4 TakeOne::CameraNode::GetAngleAxis() const
 {
-    auto quat = mTransform.GetRotation();
+    auto quat = mTransform->GetRotation();
     return glm::vec4(glm::angle(quat), glm::axis(quat));
 }
 
 float TakeOne::CameraNode::GetAngle() const
 {
-    return glm::angle(mTransform.GetRotation());
+    return glm::angle(mTransform->GetRotation());
 }
 
 glm::vec3 TakeOne::CameraNode::GetAxis() const
 {
-    return glm::axis(mTransform.GetRotation());
+    return glm::axis(mTransform->GetRotation());
 }
 
 void TakeOne::CameraNode::Rotate(const glm::vec4& pAngleAxis)
 {
-    mTransform.SetRotation(
-        mTransform.GetRotation() * glm::angleAxis(pAngleAxis.x, glm::vec3(pAngleAxis.y, pAngleAxis.z, pAngleAxis.w))
+    mTransform->SetRotation(
+        mTransform->GetRotation() * glm::angleAxis(pAngleAxis.x, glm::vec3(pAngleAxis.y, pAngleAxis.z, pAngleAxis.w))
     );
 }
 
 void TakeOne::CameraNode::Rotate(float pAngle, const glm::vec3& pAxis)
 {
-    mTransform.SetRotation(mTransform.GetRotation() * glm::angleAxis(pAngle, pAxis));
+    mTransform->SetRotation(mTransform->GetRotation() * glm::angleAxis(pAngle, pAxis));
 }
 
 void TakeOne::CameraNode::LookAt(const glm::vec3& pLookAt, const glm::vec3& pUp)
 {
-    mTransform.SetRotation(
+    mTransform->SetRotation(
         glm::toQuat(
             glm::lookAt(
-                mTransform.GetPosition(),
+                mTransform->GetPosition(),
                 pLookAt,
                 pUp
             )
@@ -78,19 +77,19 @@ void TakeOne::CameraNode::LookAt(const glm::vec3& pLookAt, const glm::vec3& pUp)
     );
 }
 
-glm::vec3 TakeOne::CameraNode::GetFrontDir()
+glm::vec3 TakeOne::CameraNode::GetFrontDir() const
 {
-    return glm::normalize(glm::mat3_cast(mTransform.GetRotation())[2]);
+    return glm::normalize(glm::mat3_cast(mTransform->GetRotation())[2]);
 }
 
-glm::vec3 TakeOne::CameraNode::GetUpDir()
+glm::vec3 TakeOne::CameraNode::GetUpDir() const
 {
-    return glm::normalize(glm::mat3_cast(mTransform.GetRotation())[1]);
+    return glm::normalize(glm::mat3_cast(mTransform->GetRotation())[1]);
 }
 
-glm::vec3 TakeOne::CameraNode::GetRightDir()
+glm::vec3 TakeOne::CameraNode::GetRightDir() const
 {
-    return glm::normalize(glm::mat3_cast(mTransform.GetRotation())[0]);
+    return glm::normalize(glm::mat3_cast(mTransform->GetRotation())[0]);
 }
 
 void TakeOne::CameraNode::SetPerspective(float pFOV, float pAspectRatio, float pNearPlane, float pFarPlane)

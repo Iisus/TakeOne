@@ -7,10 +7,11 @@ namespace TakeOne
     class Texture
     {
     public:
-        Texture();
-        Texture(const Texture& pTexture);
-        Texture(Texture&& pTexture);
-        Texture(const std::string pTexturePath, unsigned int pTextureFlags);
+        Texture(const std::string pTexturePath = "", unsigned int pTextureFlags = 0);
+        Texture(const Texture&) = delete;
+        Texture& operator=(const Texture&) = delete;
+        Texture(Texture&&);
+        Texture& operator=(Texture&&);
         ~Texture();
 
         void Load(unsigned int pTextureId = 0);

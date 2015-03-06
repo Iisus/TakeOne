@@ -160,7 +160,7 @@ int main(void)
         // 1rst attribute buffer : vertices
 
 
-        float mouseSpeed = 0.0005f;
+        float mouseSpeed = 0.005f;
         double xPos, yPos;
         glfwGetCursorPos(engine.GetWindow(), &xPos, &yPos);
         glfwSetCursorPos(engine.GetWindow(), 1024/2, 768/2);

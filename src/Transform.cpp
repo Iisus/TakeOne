@@ -2,17 +2,11 @@
 #include "glm/gtx/transform.hpp"
 #include <algorithm>
 
-TakeOne::Transform::Transform()
-        : mWorldTransform(glm::mat4()), mPosition(glm::vec3(0.0f)), mScale(glm::vec3(1.0f)), mRotation(glm::quat()), mDirty(true), mParent(nullptr)
+TakeOne::Transform::Transform(Transform* const pParent)
+        : mWorldTransform(glm::mat4()), mPosition(glm::vec3(0.0f)), mScale(glm::vec3(1.0f)), mRotation(glm::quat()), mDirty(true), mParent(pParent)
 {
 
 }
-TakeOne::Transform::Transform(Transform* pParent)
-        : Transform()
-{
-    mParent = pParent;
-}
-
 
 TakeOne::Transform::~Transform()
 {
@@ -32,7 +26,7 @@ void TakeOne::Transform::SetParent(TakeOne::Transform* const pParent)
     }
 }
 
-TakeOne::Transform* TakeOne::Transform::GetParent() const
+TakeOne::Transform* const TakeOne::Transform::GetParent() const
 {
     return mParent;
 }
@@ -53,9 +47,9 @@ void TakeOne::Transform::RemoveChild(TakeOne::Transform* const pChild)
     pChild->mParent = nullptr;
 }
 
-const std::vector<TakeOne::Transform*> *TakeOne::Transform::GetChildren() const
+const std::vector<TakeOne::Transform*>& TakeOne::Transform::GetChildren() const
 {
-    return &mChildren;
+    return mChildren;
 }
 
 

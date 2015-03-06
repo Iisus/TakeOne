@@ -13,15 +13,14 @@ namespace TakeOne
     class CameraNode : public Node
     {
     public:
-        CameraNode();
-        CameraNode(CameraType pCameraType);
-        ~CameraNode();
+        CameraNode(CameraType pCameraType = CameraType::PERSPECTIVE);
+        ~CameraNode(); //empty
 
-        inline void SetCameraType(CameraType pCameraType) { mCameraType = pCameraType; }
-        inline CameraType GetCameraType() const { return mCameraType; }
+        void SetCameraType(CameraType pCameraType) { mCameraType = pCameraType; }
+        CameraType GetCameraType() const { return mCameraType; }
 
         void SetClearColor(const glm::vec4& pClearColor);
-        const glm::vec4 GetClearColor() const { return mClearColor; }
+        glm::vec4 GetClearColor() const;
 
         void SetAngleAxis(const glm::vec4& pAngleAxis);
         void SetAngleAxis(float pAngle, const glm::vec3& pAxis);
@@ -32,25 +31,26 @@ namespace TakeOne
         void Rotate(float pAngle, const glm::vec3& pAxis);
 
         void LookAt(const glm::vec3& pLookAt, const glm::vec3& pUp = glm::vec3(0.0f, 1.0f, 0.0f));
-        glm::vec3 GetFrontDir();
-        glm::vec3 GetUpDir();
-        glm::vec3 GetRightDir();
+        glm::vec3 GetFrontDir() const;
+        glm::vec3 GetUpDir() const;
+        glm::vec3 GetRightDir() const;
 
         void SetPerspective(float pFOV, float pAspectRatio, float pNearPlane, float pFarPlane);
         void SetOrthographic(float pLeft, float pRight, float pTop, float pBottom, float pNearPlane, float pFarPlane);
 
-        inline float GetNearPlane() { return mNearPlane; }
-        inline float GetFarPlane() { return mFarPlane; }
-        inline float GetFOV() { assert(mCameraType == CameraType::PERSPECTIVE); return mFOV; }
-        inline float GetAspectRatio() { assert(mCameraType == CameraType::PERSPECTIVE); return mAspectRatio; }
-        inline float GetLeft() { assert(mCameraType == CameraType::ORTHOGRAPHIC); return mLeft; }
-        inline float GetRight() { assert(mCameraType == CameraType::ORTHOGRAPHIC); return mRight; }
-        inline float GetTop() { assert(mCameraType == CameraType::ORTHOGRAPHIC); return mTop; }
-        inline float GetBottom() { assert(mCameraType == CameraType::ORTHOGRAPHIC); return mBottom; }
+        float GetNearPlane() const { return mNearPlane; }
+        float GetFarPlane() const { return mFarPlane; }
+        float GetFOV() const { assert(mCameraType == CameraType::PERSPECTIVE); return mFOV; }
+        float GetAspectRatio() const { assert(mCameraType == CameraType::PERSPECTIVE); return mAspectRatio; }
+        float GetLeft() const { assert(mCameraType == CameraType::ORTHOGRAPHIC); return mLeft; }
+        float GetRight() const { assert(mCameraType == CameraType::ORTHOGRAPHIC); return mRight; }
+        float GetTop() const { assert(mCameraType == CameraType::ORTHOGRAPHIC); return mTop; }
+        float GetBottom() const { assert(mCameraType == CameraType::ORTHOGRAPHIC); return mBottom; }
 
-        inline glm::mat4 GetViewMatrix() { return glm::inverse(mTransform.GetTransformMatrix()); }
-        inline glm::mat4 GetProjectionMatrix() { return mProjection; }
-        inline glm::mat4 GetViewProjectionMatrix() { return mProjection * glm::inverse(mTransform.GetTransformMatrix()); }
+        inline glm::mat4 GetProjectionMatrix() const { return mProjection; }
+        //non const because GetTransformMatrix updates it's members if dirty
+        inline glm::mat4 GetViewMatrix() { return glm::inverse(mTransform->GetTransformMatrix()); }
+        inline glm::mat4 GetViewProjectionMatrix() { return mProjection * glm::inverse(mTransform->GetTransformMatrix()); }
 
     private:
 

@@ -8,17 +8,16 @@ namespace TakeOne
     class Transform
     {
     public:
-        Transform();
-        Transform(Transform* pParent);
+        Transform(Transform* const pParent = nullptr);
         Transform(const Transform&) = delete;
         Transform& operator=(const Transform&) = delete;
         ~Transform();
 
-        void SetParent(Transform* pParent);
-        Transform* GetParent() const;
+        void SetParent(Transform* const pParent);
+        Transform* const GetParent() const;
         void AddChild(Transform* const pChild);
         void RemoveChild(Transform* const);
-        const std::vector<Transform*> *GetChildren() const;
+        const std::vector<Transform*>& GetChildren() const;
 
         glm::mat4 GetTransformMatrix();
         glm::mat4 GetLocalTransformMatrix() const;

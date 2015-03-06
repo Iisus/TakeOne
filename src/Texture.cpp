@@ -3,28 +3,38 @@
 #include "Log.h"
 #include "SOIL.h"
 
-TakeOne::Texture::Texture()
-        : mTexturePath(""), mTextureFlags(0), mTextureId(0)
-{
-
-}
-
-TakeOne::Texture::Texture(const TakeOne::Texture& pTexture)
-        : mTexturePath(pTexture.mTexturePath), mTextureFlags(pTexture.mTextureFlags), mTextureId(pTexture.mTextureId)
-{
-
-}
-
-TakeOne::Texture::Texture(TakeOne::Texture&& pTexture)
-        : mTexturePath(std::move(pTexture.mTexturePath)), mTextureFlags(std::move(pTexture.mTextureFlags)), mTextureId(std::move(pTexture.mTextureId))
-{
-
-}
-
 TakeOne::Texture::Texture(std::string pTexturePath, unsigned int pTextureFlags)
         : mTexturePath(pTexturePath), mTextureFlags(pTextureFlags), mTextureId(0)
 {
 
+}
+
+
+TakeOne::Texture::Texture(TakeOne::Texture &&pTexture)
+{
+    mTexturePath = std::move(pTexture.mTexturePath);
+    mTextureFlags = std::move(pTexture.mTextureFlags);
+    mTextureId = std::move(pTexture.mTextureId);
+
+    pTexture.mTexturePath = "";
+    pTexture.mTextureFlags = 0;
+    pTexture.mTextureId = 0;
+}
+
+TakeOne::Texture& TakeOne::Texture::operator=(TakeOne::Texture &&pTexture)
+{
+    if(this != &pTexture)
+    {
+        Unload();
+        mTexturePath = std::move(pTexture.mTexturePath);
+        mTextureFlags = std::move(pTexture.mTextureFlags);
+        mTextureId = std::move(pTexture.mTextureId);
+
+        pTexture.mTexturePath = "";
+        pTexture.mTextureFlags = 0;
+        pTexture.mTextureId = 0;
+    }
+    return *this;
 }
 
 TakeOne::Texture::~Texture()
