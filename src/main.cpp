@@ -169,16 +169,16 @@ int main(void)
         verticalAngle   -= mouseSpeed * float( yPos - 768/2 );
 
         camera.SetAngleAxis(horizontalAngle, glm::vec3(0, 1, 0));
-        camera.Rotate(verticalAngle, glm::vec3(1, 0, 0));
+        camera.Rotate(verticalAngle, glm::vec3(1,0,0));
 
         static glm::vec3 camPos(0.0f, 10.0f, 0.0f);
 
         if (glfwGetKey(engine.GetWindow(), GLFW_KEY_W ) == GLFW_PRESS){
-            camPos -= camera.GetFrontDir() * speed;
+            camPos += camera.GetFrontDir() * speed;
         }
 
         if (glfwGetKey(engine.GetWindow(), GLFW_KEY_S ) == GLFW_PRESS){
-            camPos += camera.GetFrontDir() * speed;
+            camPos -= camera.GetFrontDir() * speed;
         }
 
         if (glfwGetKey(engine.GetWindow(), GLFW_KEY_D ) == GLFW_PRESS){
@@ -220,8 +220,6 @@ int main(void)
             obj.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());
             obj.GetRenderObject()->Render();
         }
-
-        camera.GetClearColor();
 
         engine.Update();
 	}

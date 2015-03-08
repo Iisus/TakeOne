@@ -79,17 +79,17 @@ void TakeOne::CameraNode::LookAt(const glm::vec3& pLookAt, const glm::vec3& pUp)
 
 glm::vec3 TakeOne::CameraNode::GetFrontDir() const
 {
-    return glm::normalize(glm::mat3_cast(mTransform->GetRotation())[2]);
+    return glm::normalize(mTransform->GetRotation() * glm::vec3(0.0f, 0.0f, -1.0f));
 }
 
 glm::vec3 TakeOne::CameraNode::GetUpDir() const
 {
-    return glm::normalize(glm::mat3_cast(mTransform->GetRotation())[1]);
+    return glm::normalize(mTransform->GetRotation() * glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
 glm::vec3 TakeOne::CameraNode::GetRightDir() const
 {
-    return glm::normalize(glm::mat3_cast(mTransform->GetRotation())[0]);
+    return glm::normalize(mTransform->GetRotation() * glm::vec3(1.0f, 0.0f, 0.0f));
 }
 
 void TakeOne::CameraNode::SetPerspective(float pFOV, float pAspectRatio, float pNearPlane, float pFarPlane)
