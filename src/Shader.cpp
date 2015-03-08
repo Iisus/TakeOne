@@ -9,6 +9,28 @@ TakeOne::Shader::Shader(const std::string &pShaderPath, ShaderType pShaderType)
     Reload();
 }
 
+TakeOne::Shader::Shader(Shader&& pOther)
+        : mShaderPath(std::move(pOther.mShaderPath)), mShaderType(std::move(pOther.mShaderType)),
+          mShaderId(std::move(pOther.mShaderId))
+{
+    pOther.mShaderId = 0;
+}
+
+TakeOne::Shader& TakeOne::Shader::operator=(Shader&& pOther)
+{
+    if(this != &pOther)
+    {
+        Unload();
+
+        mShaderPath = std::move(pOther.mShaderPath);
+        mShaderType = std::move(pOther.mShaderType);
+        mShaderId = std::move(pOther.mShaderId);
+
+        pOther.mShaderId = 0;
+    }
+    return *this;
+}
+
 TakeOne::Shader::~Shader()
 {
     Unload();
@@ -16,7 +38,6 @@ TakeOne::Shader::~Shader()
 
 void TakeOne::Shader::Reload()
 {
-    Unload();
     Compile(TakeOne::FileLoader::LoadTextFile(mShaderPath));
 }
 
@@ -32,6 +53,8 @@ TakeOne::ShaderType TakeOne::Shader::GetShaderType() const
 
 void TakeOne::Shader::Compile(const std::string& pShaderSource)
 {
+    Unload();
+
     //Create Shder
     unsigned int type = GL_VERTEX_SHADER;
     if(mShaderType == ShaderType::FRAGMENT)

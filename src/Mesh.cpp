@@ -22,6 +22,8 @@ TakeOne::Mesh& TakeOne::Mesh::operator=(Mesh&& pOther)
 {
     if(this != &pOther)
     {
+        Release();
+
         mVAO = std::move(pOther.mVAO);
         mVBO = std::move(pOther.mVBO);
         mIBO = std::move(pOther.mIBO);

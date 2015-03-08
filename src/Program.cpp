@@ -14,6 +14,29 @@ TakeOne::Program::Program(const std::string& pVertexPath, const std::string& pFr
     Load(pVertexPath, pFragmentPath);
 }
 
+TakeOne::Program::Program(Program&& pOther)
+        : mVertex(std::move(pOther.mVertex)), mFragment(std::move(pOther.mFragment)),
+          mProgramId(std::move(pOther.mProgramId))
+{
+    //Reset only the mProgramId for the other object, so that the program is not destroyed (see ~Program())
+    pOther.mProgramId = 0;
+}
+
+TakeOne::Program& TakeOne::Program::operator=(Program&& pOther)
+{
+    if(this != &pOther)
+    {
+        Unload();
+
+        mVertex = std::move(pOther.mVertex);
+        mFragment = std::move(pOther.mFragment);
+        mProgramId = std::move(pOther.mProgramId);
+
+        pOther.mProgramId = 0;
+    }
+    return *this;
+}
+
 TakeOne::Program::~Program()
 {
     Unload();
@@ -21,9 +44,10 @@ TakeOne::Program::~Program()
 
 void TakeOne::Program::Load(const std::string& pVertexPath, const std::string& pFragmentPath)
 {
+    Unload();
     //Load shaders
-    mFragment   = std::unique_ptr<Shader>(new Shader(pVertexPath, ShaderType::VERTEX));
-    mVertex     = std::unique_ptr<Shader>(new Shader(pFragmentPath, ShaderType::FRAGMENT));
+    mFragment = std::make_unique<Shader>(pVertexPath, ShaderType::VERTEX);
+    mVertex = std::make_unique<Shader>(pFragmentPath, ShaderType::FRAGMENT);
 
     //Create and link program
     Link();

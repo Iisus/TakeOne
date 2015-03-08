@@ -12,6 +12,10 @@ namespace TakeOne
     public:
         Program();
         Program(const std::string& pVertexPath, const std::string& pFragmentPath);
+        Program(const Program&) = delete;
+        Program& operator=(const Program&) = delete;
+        Program(Program&&);
+        Program& operator=(Program&&);
         ~Program();
 
         void Load(const std::string& pVertexPath, const std::string& pFragmentPath);

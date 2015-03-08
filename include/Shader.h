@@ -13,6 +13,10 @@ namespace TakeOne
     {
     public:
         Shader(const std::string &pShaderPath, ShaderType pShaderType);
+        Shader(const Shader&) = delete;
+        Shader& operator=(const Shader&) = delete;
+        Shader(Shader&&);
+        Shader& operator=(Shader&&);
         ~Shader();
 
         void Reload();
