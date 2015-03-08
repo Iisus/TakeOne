@@ -36,6 +36,15 @@ void DrawLine(glm::vec3 pStart, glm::vec3 pEnd, glm::vec3 pColor = glm::vec3(0.0
     glEnd();
 }
 
+float cameraFov = 45.0f;
+
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+{
+    auto tempFov = cameraFov+yoffset*-1;
+    if(tempFov > 0 && tempFov < 120)
+        cameraFov = tempFov;
+}
+
 int main(void)
 {
     TakeOne::Engine engine(1024, 768, "TakeOne");
@@ -149,9 +158,12 @@ int main(void)
 
     double lightPos=0;
 
-    float speed = 0.05f; // 3 units / second
+    float speed = 0.01f; // 3 units / second
     float horizontalAngle = 0;
     float verticalAngle = 0;
+
+    glfwSetScrollCallback(engine.GetWindow(), scroll_callback);
+
     while (!engine.ShouldClose())
 	{
         lightPos+=0.001;
@@ -159,8 +171,7 @@ int main(void)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         // 1rst attribute buffer : vertices
 
-
-        float mouseSpeed = 0.005f;
+        float mouseSpeed = 0.0005f;
         double xPos, yPos;
         glfwGetCursorPos(engine.GetWindow(), &xPos, &yPos);
         glfwSetCursorPos(engine.GetWindow(), 1024/2, 768/2);
@@ -170,6 +181,8 @@ int main(void)
 
         camera.SetAngleAxis(horizontalAngle, glm::vec3(0, 1, 0));
         camera.Rotate(verticalAngle, glm::vec3(1,0,0));
+
+        camera.SetPerspective(glm::radians(cameraFov), 4.0f / 3.0f, 0.1f, 1000.0f);
 
         static glm::vec3 camPos(0.0f, 10.0f, 0.0f);
 
