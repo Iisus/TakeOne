@@ -1,11 +1,5 @@
 #include "RenderNode.h"
 
-TakeOne::RenderNode::RenderNode()
-        : mRenderObject(nullptr)
-{
-
-}
-
 TakeOne::RenderNode::RenderNode(std::shared_ptr<RenderObject> pRenderObject)
         : mRenderObject(pRenderObject)
 {

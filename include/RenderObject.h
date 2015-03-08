@@ -10,17 +10,16 @@ namespace TakeOne
     class RenderObject
     {
     public:
-        RenderObject();
-        RenderObject(const std::string& pObjPath);
+        RenderObject(const std::string& pObjPath = "");
 
         void Load(const std::string& pObjPath);
-        void Render();
+        void Render() const;
 
-        inline Mesh& GetMesh() { return *mMesh; }
-        inline Material& GetMaterial() { return *mMaterial; }
+        Mesh& GetMesh() const { return *mMesh; }
+        Material& GetMaterial() const { return *mMaterial; }
 
-        inline bool IsRenderable() { return mRenderable; }
-        inline void SetRenderable(bool pRenderable) { mRenderable = pRenderable; }
+        bool IsRenderable() const { return mRenderable; }
+        void SetRenderable(bool pRenderable) { mRenderable = pRenderable; }
 
     private:
         void LoadMesh(std::ifstream& pFile);

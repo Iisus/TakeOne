@@ -3,10 +3,37 @@
 #include "Mesh.h"
 #include <fstream>
 
-TakeOne::Mesh::Mesh()
-        : mVAO(0), mVBO(0), mIBO(0)
+TakeOne::Mesh::Mesh() :
+    mVAO(0), mVBO(0), mIBO(0)
 {
 
+}
+
+TakeOne::Mesh::Mesh(Mesh&& pOther) :
+    mVAO(std::move(pOther.mVAO)), mVBO(std::move(pOther.mVBO)), mIBO(std::move(pOther.mIBO)),
+    mIndicesType(std::move(pOther.mIndicesType)), mIndices(std::move(pOther.mIndices)),
+    mVertices(std::move(pOther.mVertices)), mAttribsUsed(std::move(pOther.mAttribsUsed))
+{
+    //Reset only the mVAO for the other object, so that the buffers are not destroyed (see ~Mesh())
+    pOther.mVAO = 0;
+}
+
+TakeOne::Mesh& TakeOne::Mesh::operator=(Mesh&& pOther)
+{
+    if(this != &pOther)
+    {
+        mVAO = std::move(pOther.mVAO);
+        mVBO = std::move(pOther.mVBO);
+        mIBO = std::move(pOther.mIBO);
+        mIndicesType = std::move(pOther.mIndicesType);
+        mIndices = std::move(pOther.mIndices);
+        mVertices = std::move(pOther.mVertices);
+        mAttribsUsed = std::move(pOther.mAttribsUsed);
+
+        //Reset only the mVAO for the other object, so that the buffers are not destroyed (see ~Mesh())
+        pOther.mVAO = 0;
+    }
+    return *this;
 }
 
 TakeOne::Mesh::~Mesh()
@@ -21,13 +48,11 @@ void TakeOne::Mesh::Render()
     //Bind vertex data
     glBindBuffer(GL_ARRAY_BUFFER, mVBO);
 
-    unsigned int attribLocation;
-    if(mAttribsUsed[static_cast<unsigned int>(VertexFormat::POSITION)])
+    if(mAttribsUsed[Vertex::POSITION])
     {
-        attribLocation = static_cast<unsigned int>(VertexFormat::POSITION);
-        glEnableVertexAttribArray(attribLocation);
+        glEnableVertexAttribArray(Vertex::POSITION);
         glVertexAttribPointer(
-                attribLocation,
+                Vertex::POSITION,
                 3,
                 GL_FLOAT,
                 GL_FALSE,
@@ -36,12 +61,11 @@ void TakeOne::Mesh::Render()
         );
     }
 
-    if(mAttribsUsed[static_cast<unsigned int>(VertexFormat::NORMAL)])
+    if(mAttribsUsed[Vertex::NORMAL])
     {
-        attribLocation = static_cast<unsigned int>(VertexFormat::NORMAL);
-        glEnableVertexAttribArray(attribLocation);
+        glEnableVertexAttribArray(Vertex::NORMAL);
         glVertexAttribPointer(
-                attribLocation,
+                Vertex::NORMAL,
                 3,
                 GL_FLOAT,
                 GL_FALSE,
@@ -50,12 +74,11 @@ void TakeOne::Mesh::Render()
         );
     }
 
-    if(mAttribsUsed[static_cast<unsigned int>(VertexFormat::COLOR)])
+    if(mAttribsUsed[Vertex::COLOR])
     {
-        attribLocation = static_cast<unsigned int>(VertexFormat::COLOR);
-        glEnableVertexAttribArray(attribLocation);
+        glEnableVertexAttribArray(Vertex::COLOR);
         glVertexAttribPointer(
-                attribLocation,
+                Vertex::COLOR,
                 3,
                 GL_FLOAT,
                 GL_FALSE,
@@ -64,12 +87,11 @@ void TakeOne::Mesh::Render()
         );
     }
 
-    if(mAttribsUsed[static_cast<unsigned int>(VertexFormat::TEXCOORD)])
+    if(mAttribsUsed[Vertex::TEXCOORD])
     {
-        attribLocation = static_cast<unsigned int>(VertexFormat::TEXCOORD);
-        glEnableVertexAttribArray(attribLocation);
+        glEnableVertexAttribArray(Vertex::TEXCOORD);
         glVertexAttribPointer(
-                attribLocation,
+                Vertex::TEXCOORD,
                 2,
                 GL_FLOAT,
                 GL_FALSE,
@@ -103,6 +125,8 @@ void TakeOne::Mesh::Release()
 
 void TakeOne::Mesh::Setup()
 {
+    Release();
+
     glGenVertexArrays(1, &mVAO);
     glBindVertexArray(mVAO);
 

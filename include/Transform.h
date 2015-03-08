@@ -11,10 +11,12 @@ namespace TakeOne
         Transform(Transform* const pParent = nullptr);
         Transform(const Transform&) = delete;
         Transform& operator=(const Transform&) = delete;
+        Transform(Transform&&) = delete;
+        Transform& operator=(Transform&&) = delete;
         ~Transform();
 
         void SetParent(Transform* const pParent);
-        Transform* const GetParent() const;
+        const Transform* GetParent() const;
         void AddChild(Transform* const pChild);
         void RemoveChild(Transform* const);
         const std::vector<Transform*>& GetChildren() const;

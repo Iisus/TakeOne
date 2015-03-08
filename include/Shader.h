@@ -1,5 +1,4 @@
 #pragma once
-#include "GL/glew.h"
 #include <string>
 
 namespace TakeOne
@@ -18,8 +17,8 @@ namespace TakeOne
 
         void Reload();
 
-        unsigned int GetShaderId();
-        ShaderType GetShaderType();
+        unsigned int GetShaderId() const;
+        ShaderType GetShaderType() const;
 
     private:
         void Compile(const std::string& pShaderSource);

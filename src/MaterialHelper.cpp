@@ -41,7 +41,7 @@ void TakeOne::MaterialHelper::SetMaterialFormat(MaterialFormat&& pMaterialFormat
     mMaterialFormat = std::move(pMaterialFormat);
 }
 
-void TakeOne::MaterialHelper::SetFormatUsed(std::vector<unsigned int> pFormatsUsed)
+void TakeOne::MaterialHelper::SetFormatUsed(std::vector<unsigned int>&& pFormatsUsed)
 {
     mFormatsUsed = std::move(pFormatsUsed);
 }

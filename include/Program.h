@@ -17,8 +17,8 @@ namespace TakeOne
         void Load(const std::string& pVertexPath, const std::string& pFragmentPath);
         void Reload();
         void Unload();
-        void Use();
-        int GetUniformLocation(const std::string& pName);
+        void Use() const;
+        int GetUniformLocation(const std::string& pName) const;
 
     private:
         void Link();

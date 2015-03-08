@@ -46,7 +46,7 @@ namespace TakeOne
 
         void Apply(Material& pMaterial);
         void SetMaterialFormat(MaterialFormat&& pMaterialFormat);
-        void SetFormatUsed(std::vector<unsigned int> pFormatsUsed);
+        void SetFormatUsed(std::vector<unsigned int>&& pFormatsUsed);
 
     private:
         MaterialFormat mMaterialFormat;

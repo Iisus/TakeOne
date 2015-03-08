@@ -1,6 +1,7 @@
 #include "Shader.h"
 #include "FileLoader.h"
 #include "Log.h"
+#include "GL/glew.h"
 
 TakeOne::Shader::Shader(const std::string &pShaderPath, ShaderType pShaderType)
         : mShaderPath(pShaderPath), mShaderType(pShaderType), mShaderId(0)
@@ -19,12 +20,12 @@ void TakeOne::Shader::Reload()
     Compile(TakeOne::FileLoader::LoadTextFile(mShaderPath));
 }
 
-unsigned int TakeOne::Shader::GetShaderId()
+unsigned int TakeOne::Shader::GetShaderId() const
 {
     return mShaderId;
 }
 
-TakeOne::ShaderType TakeOne::Shader::GetShaderType()
+TakeOne::ShaderType TakeOne::Shader::GetShaderType() const
 {
     return mShaderType;
 }

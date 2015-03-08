@@ -26,7 +26,7 @@ void TakeOne::Transform::SetParent(TakeOne::Transform* const pParent)
     }
 }
 
-TakeOne::Transform* const TakeOne::Transform::GetParent() const
+const TakeOne::Transform* TakeOne::Transform::GetParent() const
 {
     return mParent;
 }

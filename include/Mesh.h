@@ -6,22 +6,22 @@
 
 namespace TakeOne
 {
-    enum class VertexFormat : unsigned int
-    {
-        POSITION,
-        NORMAL,
-        COLOR,
-        TEXCOORD,
-
-        Count
-    };
-
     struct Vertex
     {
         glm::vec3 position;
         glm::vec3 normal;
         glm::vec3 color;
         glm::vec2 texCoord;
+
+        enum VertexFormat : unsigned int
+        {
+            POSITION,
+            NORMAL,
+            COLOR,
+            TEXCOORD,
+
+            Count
+        };
     };
 
     class Mesh
@@ -30,6 +30,10 @@ namespace TakeOne
 
     public:
         Mesh();
+        Mesh(const Mesh&) = delete;
+        Mesh& operator=(const Mesh&) = delete;
+        Mesh(Mesh&&);
+        Mesh& operator=(Mesh&&);
         ~Mesh();
 
         void Render();
@@ -37,9 +41,9 @@ namespace TakeOne
 
     protected:
         //accessed from RenderObject
-        void SetVertices(std::vector<Vertex> pVertices) { mVertices = std::move(pVertices); }
-        void SetIndices(std::vector<unsigned int> pIndices) { mIndices = std::move(pIndices); }
-        void SetAttribsUsed(std::vector<unsigned int> pAttribsUsed) { mAttribsUsed = std::move(pAttribsUsed); }
+        void SetVertices(std::vector<Vertex>&& pVertices) { mVertices = std::move(pVertices); }
+        void SetIndices(std::vector<unsigned int>&& pIndices) { mIndices = std::move(pIndices); }
+        void SetAttribsUsed(std::vector<unsigned int>&& pAttribsUsed) { mAttribsUsed = std::move(pAttribsUsed); }
 
         void Setup();
 

@@ -1,5 +1,6 @@
 #include "Program.h"
 #include "Log.h"
+#include "GL/glew.h"
 
 TakeOne::Program::Program()
         : mProgramId(0)
@@ -8,7 +9,7 @@ TakeOne::Program::Program()
 }
 
 TakeOne::Program::Program(const std::string& pVertexPath, const std::string& pFragmentPath)
-        : mProgramId(0)
+        : Program()
 {
     Load(pVertexPath, pFragmentPath);
 }
@@ -45,12 +46,12 @@ void TakeOne::Program::Unload()
     }
 }
 
-void TakeOne::Program::Use()
+void TakeOne::Program::Use() const
 {
     glUseProgram(mProgramId);
 }
 
-int TakeOne::Program::GetUniformLocation(const std::string& pName)
+int TakeOne::Program::GetUniformLocation(const std::string& pName) const
 {
     return glGetUniformLocation(mProgramId, pName.c_str());
 }

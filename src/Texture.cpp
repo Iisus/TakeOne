@@ -3,19 +3,17 @@
 #include "Log.h"
 #include "SOIL.h"
 
-TakeOne::Texture::Texture(std::string pTexturePath, unsigned int pTextureFlags)
-        : mTexturePath(pTexturePath), mTextureFlags(pTextureFlags), mTextureId(0)
+TakeOne::Texture::Texture(std::string pTexturePath, unsigned int pTextureFlags) :
+    mTexturePath(pTexturePath), mTextureFlags(pTextureFlags), mTextureId(0)
 {
 
 }
 
 
-TakeOne::Texture::Texture(TakeOne::Texture &&pTexture)
+TakeOne::Texture::Texture(TakeOne::Texture &&pTexture) :
+    mTexturePath(std::move(pTexture.mTexturePath)), mTextureFlags(std::move(pTexture.mTextureFlags)),
+    mTextureId(std::move(pTexture.mTextureId))
 {
-    mTexturePath = std::move(pTexture.mTexturePath);
-    mTextureFlags = std::move(pTexture.mTextureFlags);
-    mTextureId = std::move(pTexture.mTextureId);
-
     pTexture.mTexturePath = "";
     pTexture.mTextureFlags = 0;
     pTexture.mTextureId = 0;

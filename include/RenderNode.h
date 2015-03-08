@@ -9,8 +9,7 @@ namespace TakeOne
     class RenderNode : public Node
     {
     public:
-        RenderNode();
-        RenderNode(std::shared_ptr<RenderObject> pRenderObject);
+        RenderNode(std::shared_ptr<RenderObject> pRenderObject = nullptr);
         ~RenderNode();
 
         void SetRenderObject(std::shared_ptr<RenderObject> pRenderObject);
