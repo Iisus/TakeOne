@@ -6,15 +6,14 @@
 #include "GL/glew.h"
 #include <string>
 #include <vector>
-#include <typeindex>
-#include <map>
+#include <unordered_map>
 
 namespace TakeOne
 {
     class Material
     {
     public:
-        Material();
+        Material(std::shared_ptr<Program> pProgram = nullptr);
 
         template<typename T>
         void SetShaderParam(const std::string& pName, T pValue, int pCount = 1);
@@ -25,15 +24,10 @@ namespace TakeOne
         void Reload();
 
     private:
-        void InitGlUniformFPs();
-
-        //alias for the lambda used in std::map
-        using glUniformFP = void(*)(int, int, void*);
 
         std::shared_ptr<Program> mProgram;
         std::vector<Texture> mTextures;
-        std::map<std::string, std::unique_ptr<ShaderParamBase>> mShaderParams;
-        std::map<std::type_index, glUniformFP> mGlUniformFPs;
+        std::unordered_map<std::string, std::unique_ptr<ShaderParamBase>> mShaderParams;
     };
 }
 

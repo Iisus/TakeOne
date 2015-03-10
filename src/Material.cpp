@@ -2,10 +2,9 @@
 
 #include "Material.h"
 
-TakeOne::Material::Material()
-        : mProgram(nullptr)
+TakeOne::Material::Material(std::shared_ptr<Program> pProgram)
+        : mProgram(pProgram)
 {
-    InitGlUniformFPs();
 }
 
 void TakeOne::Material::SetProgram(std::shared_ptr<Program> pProgram)
@@ -41,15 +40,9 @@ void TakeOne::Material::Use()
 
     //TODO: Try switch instead of map
     //send the uniforms to the shader
-    for (auto it=mShaderParams.begin(); it!=mShaderParams.end(); ++it)
+    for (auto& kv : mShaderParams)
     {
-        //call glUniform* function from the map
-        mGlUniformFPs[it->second->GetTypeIndex()]
-                (
-                        it->second->GetId(),
-                        it->second->GetCount(),
-                        it->second->GetValue()
-                );
+        kv.second->SendToShader();
     }
 }
 
@@ -58,106 +51,4 @@ void TakeOne::Material::Reload()
     assert(mProgram != nullptr && "The program from material must be set!");
 
     mProgram->Reload();
-}
-
-void TakeOne::Material::InitGlUniformFPs()
-{
-    //primitives
-    mGlUniformFPs = std::map<std::type_index, glUniformFP>
-        {
-            {
-                typeid(float),
-                [](int id, int count, void* value){
-                    glUniform1fv(id, count, static_cast<float*>(value));
-                }
-            },
-            {
-                typeid(int),
-                [](int id, int count, void* value){
-                        glUniform1iv(id, count, static_cast<int*>(value));
-                }
-            },
-            {
-                typeid(unsigned int),
-                    [](int id, int count, void* value){
-                        glUniform1uiv(id, count, static_cast<unsigned int*>(value));
-                    }
-            },
-
-        //vectors
-            {
-                typeid(glm::vec2),
-                    [](int id, int count, void* value){
-                        glUniform2fv(id, count, static_cast<float*>(value));
-                    }
-            },
-            {
-                typeid(glm::vec3),
-                    [](int id, int count, void* value){
-                        glUniform3fv(id, count, static_cast<float*>(value));
-                    }
-            },
-            {
-                typeid(glm::vec4),
-                    [](int id, int count, void* value){
-                        glUniform4fv(id, count, static_cast<float*>(value));
-                    }
-            },
-
-        //matrices
-            {
-                typeid(glm::mat2),
-                    [](int id, int count, void* value){
-                        glUniformMatrix2fv(id, count, GL_FALSE, static_cast<float*>(value));
-                    }
-            },
-            {
-                typeid(glm::mat2x3),
-                    [](int id, int count, void* value){
-                        glUniformMatrix2x3fv(id, count, GL_FALSE, static_cast<float*>(value));
-                    }
-            },
-            {
-                typeid(glm::mat2x4),
-                    [](int id, int count, void* value){
-                        glUniformMatrix2x4fv(id, count, GL_FALSE, static_cast<float*>(value));
-                    }
-            },
-            {
-                typeid(glm::mat3),
-                    [](int id, int count, void* value){
-                        glUniformMatrix3fv(id, count, GL_FALSE, static_cast<float*>(value));
-                    }
-            },
-            {
-                typeid(glm::mat3x2),
-                    [](int id, int count, void* value){
-                        glUniformMatrix3x2fv(id, count, GL_FALSE, static_cast<float*>(value));
-                    }
-            },
-            {
-                typeid(glm::mat3x4),
-                    [](int id, int count, void* value){
-                        glUniformMatrix3x4fv(id, count, GL_FALSE, static_cast<float*>(value));
-                    }
-            },
-            {
-                typeid(glm::mat4),
-                    [](int id, int count, void* value){
-                        glUniformMatrix4fv(id, count, GL_FALSE, static_cast<float*>(value));
-                    }
-            },
-            {
-                typeid(glm::mat4x2),
-                    [](int id, int count, void* value){
-                        glUniformMatrix4x2fv(id, count, GL_FALSE, static_cast<float*>(value));
-                    }
-            },
-            {
-                typeid(glm::mat4x3),
-                    [](int id, int count, void* value){
-                        glUniformMatrix4x3fv(id, count, GL_FALSE, static_cast<float*>(value));
-                    }
-            }
-        };
 }

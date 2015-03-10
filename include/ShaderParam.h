@@ -1,7 +1,5 @@
 #pragma once
 
-#include <typeindex>
-
 namespace TakeOne
 {
     //Use as base for ShaderParam so it can be used in std::vector
@@ -9,11 +7,7 @@ namespace TakeOne
     {
     public:
         virtual ~ShaderParamBase();
-
-        virtual int GetId() = 0;
-        virtual std::type_index GetTypeIndex() = 0;
-        virtual int GetCount() = 0;
-        virtual void* GetValue() = 0;
+        virtual void SendToShader() = 0;
     };
 
     template<typename T>
@@ -21,10 +15,7 @@ namespace TakeOne
     {
     public:
         ShaderParam(int pId, T pValue, int pCount);
-        int GetId();
-        std::type_index GetTypeIndex();
-        int GetCount();
-        void* GetValue();
+        void SendToShader();
         void SetValue(T pValue);
 
     private:
