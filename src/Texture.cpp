@@ -46,10 +46,10 @@ void TakeOne::Texture::Load(unsigned int pTextureId)
 
     mTextureId = SOIL_load_OGL_texture
             (
-                    mTexturePath.c_str(),
-                    SOIL_LOAD_AUTO,
-                    mTextureId ? mTextureId : SOIL_CREATE_NEW_ID,
-                    mTextureFlags
+                mTexturePath.c_str(),
+                SOIL_LOAD_AUTO,
+                mTextureId ? mTextureId : SOIL_CREATE_NEW_ID,
+                mTextureFlags
             );
     if(!mTextureId)
     {
@@ -72,11 +72,11 @@ void TakeOne::Texture::LoadFromBuffer(const unsigned char* const pBuffer, int pS
 
     mTextureId = SOIL_load_OGL_texture_from_memory
             (
-                    pBuffer,
-                    pSize,
-                    SOIL_LOAD_AUTO,
-                    mTextureId ? mTextureId : SOIL_CREATE_NEW_ID, //if the texture was already loaded, overwrite it
-                    mTextureFlags
+                pBuffer,
+                pSize,
+                SOIL_LOAD_AUTO,
+                mTextureId ? mTextureId : SOIL_CREATE_NEW_ID, //if the texture was already loaded, overwrite it
+                mTextureFlags
             );
 
     if(!mTextureId)

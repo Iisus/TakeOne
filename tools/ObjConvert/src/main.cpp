@@ -10,6 +10,7 @@ using namespace std;
 string gSource;
 string gName;
 string gDest;
+ofstream gSceneFile;
 
 void saveObjectToFile(string dest, const vector<unsigned int>& header, const vector<float>& vbo,
         const vector<unsigned int> ibo, const vector<unsigned int>& mtlHeader, const vector<float>& mtlValues,
@@ -95,6 +96,7 @@ void loadScene(const aiScene* scene, const aiNode* node)
 #ifdef PLATFORM_LINUX
         system(("mkdir \"" + objDest + "\"").c_str());
 #endif
+        gSceneFile << objDest << endl;
         string destFile = objDest + "/obj.t1o";
 
         const aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
@@ -192,8 +194,12 @@ int main(int argc, char *argv[])
         return 0;
     }
 
+    gSceneFile.open(gDest + "/scene.txt");
+
     loadScene(scene, scene->mRootNode);
 
     cout<<"Success!"<<endl;
+
+    gSceneFile.close();
     return 0;
 }

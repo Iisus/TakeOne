@@ -3,8 +3,8 @@
 #include "Log.h"
 #include <sstream>
 
-TakeOne::RenderObject::RenderObject(const std::string &pObjPath)
-        : mMesh(new Mesh), mMaterial(new Material), mRenderable(true)
+TakeOne::RenderObject::RenderObject(std::shared_ptr<Program> pProgram, const std::string &pObjPath)
+        : mMesh(new Mesh), mMaterial(new Material(pProgram)), mRenderable(true)
 {
     Load(pObjPath);
 }

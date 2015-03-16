@@ -10,7 +10,7 @@ namespace TakeOne
     class RenderObject
     {
     public:
-        RenderObject(const std::string& pObjPath = "");
+        RenderObject(std::shared_ptr<Program> pProgram, const std::string& pObjPath = "");
 
         void Load(const std::string& pObjPath);
         void Render() const;
