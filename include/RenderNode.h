@@ -10,6 +10,10 @@ namespace TakeOne
     {
     public:
         RenderNode(std::shared_ptr<RenderObject> pRenderObject = nullptr);
+        RenderNode(const RenderNode&) = delete;
+        RenderNode& operator= (const RenderNode&) = delete;
+        RenderNode(RenderNode&&);
+        RenderNode& operator= (RenderNode&&);
         ~RenderNode();
 
         void SetRenderObject(std::shared_ptr<RenderObject> pRenderObject);

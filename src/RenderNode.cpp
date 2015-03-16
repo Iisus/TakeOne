@@ -6,6 +6,22 @@ TakeOne::RenderNode::RenderNode(std::shared_ptr<RenderObject> pRenderObject)
 
 }
 
+TakeOne::RenderNode::RenderNode(RenderNode&& pOther)
+        : Node(std::move(pOther)), mRenderObject(std::move(pOther.mRenderObject))
+{
+
+}
+
+TakeOne::RenderNode& TakeOne::RenderNode::operator= (RenderNode&& pOther)
+{
+    if(this != &pOther)
+    {
+        Node::operator=(std::move(pOther));
+        mRenderObject = std::move(pOther.mRenderObject);
+    }
+    return *this;
+}
+
 TakeOne::RenderNode::~RenderNode()
 {
 
