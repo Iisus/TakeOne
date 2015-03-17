@@ -52,13 +52,14 @@ int main(void)
     auto textureMapProgram = std::make_shared<TakeOne::Program>("../res/shaders/SimpleTextureMap/vertex.glsl", "../res/shaders/SimpleTextureMap/fragment.glsl");
     auto colorProgram = std::make_shared<TakeOne::Program>("../res/shaders/SimpleColor/vertex.glsl", "../res/shaders/SimpleColor/fragment.glsl");
 
-    std::ifstream sceneFile("../res/objects/Kitchen/scene.txt");
+    std::string load = "../res/objects/house/";
+    std::ifstream sceneFile(load + "scene.txt");
 
     std::vector<TakeOne::RenderNode> kitchenNodes;
     std::string path;
     while(std::getline(sceneFile, path))
     {
-        kitchenNodes.emplace_back(std::make_shared<TakeOne::RenderObject>(textureMapProgram, "../res/objects/" + path));
+        kitchenNodes.emplace_back(std::make_shared<TakeOne::RenderObject>(textureMapProgram, load + path));
     }
 
 //    std::vector<TakeOne::RenderNode> StreetEnv(30);
@@ -132,13 +133,14 @@ int main(void)
     //camera.LookAt(glm::vec3(0, 0, 0));
 
     Light light;
-    light.position = glm::vec3(-8.0f, 8.0f, 10.0f);
-    light.intensities = glm::vec3(0.7f, 0.5f, 0.3f) * 1000.0f;
-    light.attenuation = 0.1f;
+    light.position = glm::vec3(0.0f, 50.0f, -10.0f);
+    light.intensities = glm::vec3(0.7f, 0.7f, 0.7f) * 20.0f;
+    light.attenuation = 0.01f;
     light.ambientCoefficient = 0.001f;
 
     TakeOne::Node streetTransform;
-    streetTransform.GetTransform().SetScale(glm::vec3(0.4f));
+    streetTransform.GetTransform().SetScale(glm::vec3(1.0f));
+    //streetTransform.GetTransform().SetRotation(glm::angleAxis(-glm::pi<float>()/2, glm::vec3(1.0f, 0.0f, 0.0f)));
     for (auto &obj : kitchenNodes)
     {
         obj.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());
@@ -185,7 +187,7 @@ int main(void)
 
     while (!engine.ShouldClose())
 	{
-        lightPos+=0.001;
+        lightPos+=0.01;
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         // 1rst attribute buffer : vertices
@@ -227,6 +229,10 @@ int main(void)
 
         if (glfwGetKey(engine.GetWindow(), GLFW_KEY_E ) == GLFW_PRESS){
             camPos += camera.GetUpDir() * speed;
+        }
+
+        if (glfwGetKey(engine.GetWindow(), GLFW_KEY_R ) == GLFW_PRESS){
+            textureMapProgram->Reload();
         }
 
         camera.GetTransform().SetPosition(camPos);

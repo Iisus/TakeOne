@@ -1,5 +1,4 @@
-//#version 330
-//out vec4 fragColor;
+////out vec4 fragColor;
 //
 //in vec4 fragmentColor;
 //void main(){
@@ -61,5 +60,6 @@ void main() {
 
     //final color (after gamma correction)
     vec3 gamma = vec3(1.0/2.2);
-    finalColor = vec4(pow(linearColor, gamma), surfaceColor.a);
+    //finalColor = vec4(pow(linearColor, gamma), 1.0f);
+    finalColor = vec4(surfaceColor.rgb, 1.0f);
 }

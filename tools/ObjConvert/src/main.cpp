@@ -3,6 +3,7 @@
 #include "assimp/postprocess.h"
 #include <iostream>
 #include <vector>
+#include <map>
 #include <fstream>
 
 using namespace std;
@@ -73,7 +74,11 @@ void loadMaterial(const aiMaterial* mtl, vector<unsigned int>& header, vector<fl
         aiString path;
         mtl->GetTexture(aiTextureType_DIFFUSE, i, &path);
         string pathFormated = path.data;
+#ifdef PLATFORM_LINUX
         std::replace( pathFormated.begin(), pathFormated.end(), '\\', '/');
+#elif defined(PLATFORM_WIN32)
+        std::replace( pathFormated.begin(), pathFormated.end(), '/', '\\');
+#endif
         textures += pathFormated;
         if(i < mtl->GetTextureCount(aiTextureType_DIFFUSE) - 1)
         {
@@ -83,6 +88,8 @@ void loadMaterial(const aiMaterial* mtl, vector<unsigned int>& header, vector<fl
         //copy the texture in the package
 #ifdef PLATFORM_LINUX
         system(("cp \"" + gSource + pathFormated + "\" \"" + dest + "\"").c_str());
+#elif defined(PLATFORM_WIN32)
+        system(("xcopy \"" + gSource + pathFormated + "\" \"" + dest + "\" /y").c_str());
 #endif
     }
     header.push_back(textures.size());
@@ -90,13 +97,25 @@ void loadMaterial(const aiMaterial* mtl, vector<unsigned int>& header, vector<fl
 
 void loadScene(const aiScene* scene, const aiNode* node)
 {
+    static map<string, int> meshNames;
     for(int i=0; i < node->mNumMeshes; i++)
     {
-        string objDest = gDest + node->mName.C_Str();
+        string name = node->mName.C_Str();
+        if(meshNames.find(node->mName.C_Str()) != meshNames.end())
+        {
+            meshNames[node->mName.C_Str()]++;
+            name += to_string(meshNames[node->mName.C_Str()]);
+        }
+        else
+            meshNames[node->mName.C_Str()] = 0;
+
+        string objDest = gDest + name;
 #ifdef PLATFORM_LINUX
         system(("mkdir \"" + objDest + "\"").c_str());
+#elif defined(PLATFORM_WIN32)
+        system(("mkdir \"" + objDest + "\"").c_str());
 #endif
-        gSceneFile << objDest << endl;
+        gSceneFile << name << endl;
         string destFile = objDest + "/obj.t1o";
 
         const aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
@@ -190,11 +209,13 @@ int main(int argc, char *argv[])
     }
     if(!(scene = aiImportFile((gSource+gName).c_str(),aiProcessPreset_TargetRealtime_MaxQuality)))
     {
-        cout<<"Cannot load file " << gSource + gName << endl;
+        cout<<"Cannot load file " << "\"" + gSource+gName + "\"" << endl;
         return 0;
     }
 
-    gSceneFile.open(gDest + "/scene.txt");
+    system(("mkdir \"" + gDest + "\"").c_str());
+
+    gSceneFile.open(gDest + "\\scene.txt");
 
     loadScene(scene, scene->mRootNode);
 

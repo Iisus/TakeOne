@@ -1,0 +1,308 @@
+g Box020
+defaultobject
+defaultobject
+g Box022
+defaultobject
+defaultobject
+defaultobject
+g Box023
+g Box024
+g Box025
+g Box026
+g Box027
+g Box028
+defaultobject
+defaultobject
+g Box030
+g Box031
+g Box032
+g Box033
+g Box034
+g Box035
+g Box036
+g Box037
+g Box038
+g Box039
+g Box041
+g Box042
+g Box043
+g Box044
+g Box046
+g Box062
+g Box063
+g Box064
+g Box065
+g Box066
+g Box067
+g Box068
+g Box069
+g Box070
+g Box071
+g Box072
+g Box073
+g Box074
+g Box075
+g Box076
+g Box077
+g Box078
+g Box079
+g Box080
+g Box081
+g Box082
+g Cylinder066
+g Cylinder067
+g Cylinder068
+g Box083
+g Sphere003
+g Box087
+g Sphere020
+g Sphere021
+g Sphere022
+g Sphere023
+g Plane001
+g Box088
+g Box104
+g Box132
+g Box133
+g Box134
+g Cylinder081
+g Cylinder082
+g Cylinder083
+g Cylinder084
+g Cylinder085
+g Cylinder086
+g Cylinder087
+g Cylinder088
+g Cylinder089
+g Cylinder090
+g Cylinder091
+g Cylinder092
+g Cylinder093
+g Cylinder094
+g Cylinder095
+g Cylinder096
+g Cylinder097
+g Cylinder098
+g Cylinder099
+g Cylinder100
+g Box135
+g Box136
+g Sphere024
+g Sphere025
+g Box141
+g Box142
+g Box143
+g Cylinder119
+g Cylinder120
+g Cylinder121
+g Cylinder122
+g ChamferBox003
+g ChamferBox004
+g Cylinder101
+g Cylinder102
+g Cylinder103
+g Cylinder104
+g Cylinder105
+g Cylinder106
+g Box006
+g Box007
+g Box008
+g Box009
+g Box010
+g Box014
+g Box015
+g Box016
+g Box017
+g Box018
+g Cylinder123
+g Cylinder128
+g Cylinder129
+g Cylinder130
+g Cylinder131
+g Cylinder132
+g Cylinder133
+g Cylinder134
+g Cylinder135
+g Cylinder136
+g Cylinder137
+g Cylinder138
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+g Box144
+g Plane002
+g Box005 sofa
+g sofa Box003
+g sofa Box004
+g Cylinder001 table
+g table Cylinder002
+g table Box001
+g Cylinder001 keitchenFBXASC032chair
+g keitchenFBXASC032chair Cylinder002
+g keitchenFBXASC032chair Cylinder003
+g keitchenFBXASC032chair Sphere001
+g Box011 sofa001
+g sofa001 Box012
+g sofa001 Box013
+g Cylinder005 tablekit
+g tablekit Cylinder006
+g tablekit Cylinder007
+g tablekit Cylinder008
+g tablekit Box021
+g Sphere002 keitchenFBXASC032chair001
+g keitchenFBXASC032chair001 Cylinder009
+g keitchenFBXASC032chair001 Cylinder010
+g keitchenFBXASC032chair001 Cylinder011
+g ChamferBox002 chair
+g chair Cylinder012
+g chair Cylinder013
+g chair Cylinder014
+g chair Cylinder015
+g chair Cylinder016
+g chair Cylinder017
+g chair ChamferBox001
+g Cylinder037 light
+g light Box047
+g light Cylinder036
+g Cylinder038 light001
+g light001 Cylinder039
+g light001 Box048
+g Cylinder040 light002
+g light002 Cylinder041
+g light002 Box049
+g Cylinder042 light003
+g light003 Cylinder043
+g light003 Box050
+g Cylinder044 light004
+g light004 Cylinder045
+g light004 Box051
+g Cylinder046 light005
+g light005 Cylinder047
+g light005 Box052
+g Cylinder050 light007
+g light007 Cylinder051
+g light007 Box054
+g Cylinder052 light008
+g light008 Cylinder053
+g light008 Box055
+g Cylinder054 light009
+g light009 Cylinder055
+g light009 Box056
+g Cylinder056 light010
+g light010 Cylinder057
+g light010 Box057
+g Cylinder058 light011
+g light011 Cylinder059
+g light011 Box058
+g Cylinder060 light012
+g light012 Cylinder061
+g light012 Box059
+g Cylinder062 light013
+g light013 Cylinder063
+g light013 Box060
+g Cylinder064 light014
+g light014 Cylinder065
+g light014 Box061
+g Sphere011 fruits
+g fruits Sphere004
+g fruits Sphere005
+g fruits Sphere006
+g fruits Sphere007
+g fruits Sphere008
+g fruits Sphere009
+g fruits Sphere010
+g fruits Sphere019
+g fruits Sphere012
+g fruits Sphere013
+g fruits Sphere014
+g fruits Sphere015
+g fruits Sphere016
+g fruits Sphere017
+g fruits Sphere018
+g fruits Cylinder069
+g Cylinder070 Group001
+g Group001 Cylinder071
+g Group001 Cylinder072
+g Group001 Cylinder073
+g Group001 Box085
+g Group001 Box086
+g Group001 Box084
+defaultobject
+defaultobject
+g Box089 Group002
+g Group002 Box090
+g Group002 Box091
+g Group002 Box092
+g Group002 Box093
+g Group002 Box094
+g Group002 Box095
+g Group002 Box096
+g Group002 Box097
+g Group002 Box098
+g Group002 Box099
+g Group002 Box100
+g Group002 Box101
+g Group002 Box102
+g Group002 Box103
+g Group002 Box105
+g Group002 Box106
+g Group002 Box107
+g Group002 Box108
+g Group002 Box109
+g Group002 Box110
+g Box111 Group003
+g Group003 Box112
+g Group003 Box113
+g Group003 Box114
+g Group003 Box115
+g Group003 Box116
+g Group003 Box117
+g Group003 Box118
+g Group003 Box119
+g Group003 Box120
+g Group003 Box121
+g Group003 Box122
+g Group003 Box123
+g Group003 Box124
+g Group003 Box125
+g Group003 Box126
+g Group003 Box127
+g Group003 Box128
+g Group003 Box129
+g Group003 Box130
+g Group003 Box131
+g ChamferBox005 chair002
+g chair002 ChamferBox006
+g chair002 Cylinder107
+g chair002 Cylinder108
+g chair002 Cylinder109
+g chair002 Cylinder110
+g chair002 Cylinder111
+g chair002 Cylinder112
+g ChamferBox007 chair003
+g chair003 ChamferBox008
+g chair003 Cylinder113
+g chair003 Cylinder114
+g chair003 Cylinder115
+g chair003 Cylinder116
+g chair003 Cylinder117
+g chair003 Cylinder118
+g Cylinder124 Group004
+g Group004 Cylinder125
+g Cylinder126 Group005
+g Group005 Cylinder127
+g Cylinder003 tv tv
+g tv tv Cylinder004
+g tv tv Box002
