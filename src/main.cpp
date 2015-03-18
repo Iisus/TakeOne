@@ -52,14 +52,14 @@ int main(void)
     auto textureMapProgram = std::make_shared<TakeOne::Program>("../res/shaders/SimpleTextureMap/vertex.glsl", "../res/shaders/SimpleTextureMap/fragment.glsl");
     auto colorProgram = std::make_shared<TakeOne::Program>("../res/shaders/SimpleColor/vertex.glsl", "../res/shaders/SimpleColor/fragment.glsl");
 
-    std::string load = "../res/objects/house/";
+    std::string load = "../res/objects/bottles/";
     std::ifstream sceneFile(load + "scene.txt");
 
     std::vector<TakeOne::RenderNode> kitchenNodes;
     std::string path;
     while(std::getline(sceneFile, path))
     {
-        kitchenNodes.emplace_back(std::make_shared<TakeOne::RenderObject>(textureMapProgram, load + path));
+        kitchenNodes.emplace_back(std::make_shared<TakeOne::RenderObject>(colorProgram, load + path));
     }
 
 //    std::vector<TakeOne::RenderNode> StreetEnv(30);
@@ -232,6 +232,7 @@ int main(void)
         }
 
         if (glfwGetKey(engine.GetWindow(), GLFW_KEY_R ) == GLFW_PRESS){
+            colorProgram->Reload();
             textureMapProgram->Reload();
         }
 

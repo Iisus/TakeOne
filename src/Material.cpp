@@ -28,11 +28,11 @@ void TakeOne::Material::Use()
 {
     assert(mProgram != nullptr && "The program from material must be set!");
 
-    static std::shared_ptr<Program> sLastProgram = nullptr;
-    if(sLastProgram != mProgram)
+    static int sLastProgramId = -1;
+    if(sLastProgramId != mProgram->GetLoadCounter())
     {
         mProgram->Use();
-        sLastProgram = mProgram;
+        sLastProgramId = mProgram->GetLoadCounter();
     }
 
     for(const auto& texture:mTextures)
