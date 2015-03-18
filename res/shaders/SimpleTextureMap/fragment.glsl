@@ -59,7 +59,7 @@ void main() {
     vec3 linearColor = ambient + attenuation*(diffuse + specular);
 
     //final color (after gamma correction)
-    vec3 gamma = vec3(1.0/2.2);
-    finalColor = vec4(pow(linearColor, gamma), 1.0f);
-    //finalColor = vec4(surfaceColor.rgb, 1.0f);
+    vec3 gamma = vec3(1.0/1.8);
+    //finalColor = vec4(pow(linearColor, gamma), 1.0f);
+    finalColor = vec4(surfaceColor.rgb, 1.0f);
 }

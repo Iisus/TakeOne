@@ -99,7 +99,7 @@ void TakeOne::RenderObject::LoadMaterial(std::ifstream& pFile)
     while (std::getline(ss, item, '&'))
     {
         item = mObjPath + "/" + item;
-        Texture texture(item, Texture::INVERT_Y);
+        Texture texture(item, Texture::INVERT_Y | Texture::COMPRESS_TO_DXT | Texture::TEXTURE_REPEATS | Texture::MIPMAPS);
         mMaterial->SetTexture(std::move(texture));
     }
 
