@@ -38,7 +38,7 @@ void DrawLine(glm::vec3 pStart, glm::vec3 pEnd, glm::vec3 pColor = glm::vec3(0.0
 
 float cameraFov = 45.0f;
 
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+void scroll_callback(GLFWwindow* /*window*/, double /*xoffset*/, double yoffset)
 {
     auto tempFov = cameraFov+yoffset*-1;
     if(tempFov > 0 && tempFov < 120)
@@ -52,7 +52,7 @@ int main(void)
     auto textureMapProgram = std::make_shared<TakeOne::Program>("../res/shaders/SimpleTextureMap/vertex.glsl", "../res/shaders/SimpleTextureMap/fragment.glsl");
     auto colorProgram = std::make_shared<TakeOne::Program>("../res/shaders/SimpleColor/vertex.glsl", "../res/shaders/SimpleColor/fragment.glsl");
 
-    std::string load = "../res/objects/ConceptHouse/";
+    std::string load = "../res/objects/StreetEnv/";
     std::ifstream sceneFile(load + "scene.txt");
 
     std::vector<TakeOne::RenderNode> kitchenNodes;
@@ -133,8 +133,8 @@ int main(void)
     //camera.LookAt(glm::vec3(0, 0, 0));
 
     Light light;
-    light.position = glm::vec3(0.0f, 50.0f, -10.0f);
-    light.intensities = glm::vec3(0.8f, 0.8f, 0.8f) * 20.0f;
+    light.position = glm::vec3(0.0f, 500.0f, -10.0f);
+    light.intensities = glm::vec3(0.8f, 0.8f, 0.8f) * 2000.0f;
     light.attenuation = 0.01f;
     light.ambientCoefficient = 0.00001f;
 
@@ -187,7 +187,7 @@ int main(void)
 
     while (!engine.ShouldClose())
 	{
-        lightPos+=0.01;
+        lightPos+=0.001;
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         // 1rst attribute buffer : vertices
@@ -238,8 +238,12 @@ int main(void)
 
         camera.GetTransform().SetPosition(camPos);
 
+        light.position.x = sin(lightPos) * 200;
+        light.position.z = cos(lightPos) * 200;
+
         for(auto &obj : kitchenNodes)
         {
+            obj.GetRenderObject()->GetMaterial().SetShaderParam("light.position", light.position);
             obj.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());
             obj.GetRenderObject()->Render();
         }

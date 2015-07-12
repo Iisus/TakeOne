@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.4)
 project(TakeOne)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y -Wall")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DENABLE_DEBUG=0")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DENABLE_DEBUG=1")
 
@@ -40,7 +40,9 @@ set(INCLUDE_DIRS
     include
     )
 
-FILE(GLOB SOURCE_FILES "src/*.cpp")
+FILE(GLOB_RECURSE SOURCE_FILES "src/*.cpp")
+FILE(GLOB_RECURSE HEADER_FILES "include/*.h")
+FILE(GLOB_RECURSE TEMPLATE_FILES "include/*.hpp")
 
 if(PLATFORM STREQUAL "Win32")
     set(LINK_FILES
@@ -64,11 +66,12 @@ include_directories(${INCLUDE_DIRS})
 include_directories(SYSTEM ${INCLUDE_LIB_DIRS})
 link_directories(${LINK_DIRS})
 
-add_executable(TakeOne ${SOURCE_FILES})
+add_executable(TakeOne ${SOURCE_FILES} ${HEADER_FILES} ${TEMPLATE_FILES})
 target_link_libraries(TakeOne ${LINK_FILES})
 
 #postbuild commands; copy dll's
 if(PLATFORM STREQUAL "Win32")
+
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static-libstdc++ -static-libgcc")
 
     add_custom_command(TARGET TakeOne POST_BUILD            # Adds a post-build event to MyTest
@@ -83,15 +86,15 @@ if(PLATFORM STREQUAL "Win32")
             ${CMAKE_CURRENT_LIST_DIR}/bin/                                            # <--this is out-file path
             )
 
-    set_source_files_properties(
-            ${SOURCE_FILES}
-            PROPERTIES
-            COMPILE_FLAGS "-Wall"
-            )
+#    set_source_files_properties(
+#            ${SOURCE_FILES}
+#            PROPERTIES
+#            COMPILE_FLAGS "-Wall"
+#            )
 else(PLATFORM STREQUAL "Win32")
-    set_source_files_properties(
-        ${SOURCE_FILES}
-        PROPERTIES
-        COMPILE_FLAGS "-Weverything -Wno-c++98-compat-pedantic -Wno-c++98-compat -Wno-padded -Wno-exit-time-destructors"
-        )
+#    set_source_files_properties(
+#        ${SOURCE_FILES}
+#        PROPERTIES
+#        COMPILE_FLAGS "-Weverything -Wno-c++98-compat-pedantic -Wno-c++98-compat -Wno-padded -Wno-exit-time-destructors"
+#        )
 endif(PLATFORM STREQUAL "Win32")

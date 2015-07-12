@@ -24,7 +24,7 @@ namespace TakeOne
         void Use() const;
         int GetUniformLocation(const std::string& pName) const;
 
-        static inline int GetLoadCounter() { return sLoadCounter; }
+        static inline unsigned int GetLoadCounter() { return sLoadCounter; }
     private:
         void Link();
 

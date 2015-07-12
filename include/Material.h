@@ -22,7 +22,7 @@ namespace TakeOne
         void SetProgram(std::shared_ptr<Program> pProgram);
         void Use();
         void Reload();
-
+        int GetTexturesCount();
     private:
 
         std::shared_ptr<Program> mProgram;

@@ -28,7 +28,7 @@ void TakeOne::Material::Use()
 {
     assert(mProgram != nullptr && "The program from material must be set!");
 
-    static int sLastProgramId = -1;
+    static unsigned int sLastProgramId = mProgram->GetLoadCounter() + 1;
     if(sLastProgramId != mProgram->GetLoadCounter())
     {
         mProgram->Use();
@@ -50,4 +50,9 @@ void TakeOne::Material::Reload()
     assert(mProgram != nullptr && "The program from material must be set!");
 
     mProgram->Reload();
+}
+
+int TakeOne::Material::GetTexturesCount()
+{
+    return mTextures.size();
 }

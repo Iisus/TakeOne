@@ -34,6 +34,8 @@ void TakeOne::MaterialHelper::Apply(Material& pMaterial)
 
     if(mFormatsUsed[SHININESS_STRENGTH])
         pMaterial.SetShaderParam("u_shininess_strength", mMaterialFormat.shininess_strength);
+
+    pMaterial.SetShaderParam("u_textures_count", pMaterial.GetTexturesCount());
 }
 
 void TakeOne::MaterialHelper::SetMaterialFormat(MaterialFormat&& pMaterialFormat)
