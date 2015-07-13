@@ -52,14 +52,14 @@ int main(void)
     auto textureMapProgram = std::make_shared<TakeOne::Program>("../res/shaders/SimpleTextureMap/vertex.glsl", "../res/shaders/SimpleTextureMap/fragment.glsl");
     auto colorProgram = std::make_shared<TakeOne::Program>("../res/shaders/SimpleColor/vertex.glsl", "../res/shaders/SimpleColor/fragment.glsl");
 
-    std::string load = "../res/objects/StreetEnv/";
-    std::ifstream sceneFile(load + "scene.txt");
+    std::string path = "../res/objects/House01/";
+    std::ifstream sceneFile(path + "scene.txt");
 
     std::vector<TakeOne::RenderNode> kitchenNodes;
-    std::string path;
-    while(std::getline(sceneFile, path))
+    std::string name;
+    while(std::getline(sceneFile, name))
     {
-        kitchenNodes.emplace_back(std::make_shared<TakeOne::RenderObject>(textureMapProgram, load + path));
+        kitchenNodes.emplace_back(std::make_shared<TakeOne::RenderObject>(textureMapProgram, path, name));
     }
 
 //    std::vector<TakeOne::RenderNode> StreetEnv(30);
@@ -133,8 +133,8 @@ int main(void)
     //camera.LookAt(glm::vec3(0, 0, 0));
 
     Light light;
-    light.position = glm::vec3(0.0f, 500.0f, -10.0f);
-    light.intensities = glm::vec3(0.8f, 0.8f, 0.8f) * 2000.0f;
+    light.position = glm::vec3(0.0f, 100.0f, -10.0f);
+    light.intensities = glm::vec3(0.8f, 0.8f, 0.8f) * 200.0f;
     light.attenuation = 0.01f;
     light.ambientCoefficient = 0.00001f;
 
@@ -270,7 +270,7 @@ int main(void)
 //        }
 
         engine.Update();
-	}
+    }
 
 	return 0;
 }

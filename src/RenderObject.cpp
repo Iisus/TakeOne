@@ -3,19 +3,26 @@
 #include "Log.h"
 #include <sstream>
 
-TakeOne::RenderObject::RenderObject(std::shared_ptr<Program> pProgram, const std::string &pObjPath)
+TakeOne::RenderObject::RenderObject(std::shared_ptr<Program> pProgram)
         : mMesh(new Mesh), mMaterial(new Material(pProgram)), mRenderable(true)
 {
-    Load(pObjPath);
+
 }
 
-void TakeOne::RenderObject::Load(const std::string &pObjPath)
+TakeOne::RenderObject::RenderObject(std::shared_ptr<Program> pProgram, const std::string &pObjPath, const std::string &pObjName)
+        : mMesh(new Mesh), mMaterial(new Material(pProgram)), mRenderable(true)
+{
+    Load(pObjPath, pObjName);
+}
+
+void TakeOne::RenderObject::Load(const std::string &pObjPath, const std::string &pObjName)
 {
     if(!pObjPath.empty())
     {
         mObjPath = pObjPath;
+        mObjName = mObjName;
         //The components in file are floats
-        std::ifstream file(mObjPath + "/obj.t1o", std::ios::binary);
+        std::ifstream file(mObjPath + pObjName + ".t1o", std::ios::binary);
         if (!file.is_open())
         {
             LOG_MSG("Error loading file \"%s\"", mObjPath.c_str());
@@ -96,10 +103,10 @@ void TakeOne::RenderObject::LoadMaterial(std::ifstream& pFile)
     delete[] texPaths;
 
     std::string item;
+
     while (std::getline(ss, item, '&'))
     {
-        item = mObjPath + "/" + item;
-        mMaterial->SetTexture(Texture(item, Texture::INVERT_Y | Texture::COMPRESS_TO_DXT | Texture::TEXTURE_REPEATS | Texture::MIPMAPS));
+        mMaterial->SetTexture(Texture(mObjPath + item, Texture::INVERT_Y | Texture::COMPRESS_TO_DXT | Texture::TEXTURE_REPEATS | Texture::MIPMAPS));
     }
 
     materialLoader.Apply(*mMaterial);

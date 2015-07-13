@@ -54,7 +54,7 @@ void loadFloat(const aiMaterial* mtl, vector<unsigned int>& header, vector<float
     values.push_back(property);
 }
 
-void loadMaterial(const aiMaterial* mtl, vector<unsigned int>& header, vector<float>& values, const string& dest, string& textures)
+void loadMaterial(const aiMaterial* mtl, vector<unsigned int>& header, vector<float>& values, string& textures)
 {
     loadColor(mtl, header, values, AI_MATKEY_COLOR_AMBIENT);
     loadColor(mtl, header, values, AI_MATKEY_COLOR_DIFFUSE);
@@ -74,23 +74,24 @@ void loadMaterial(const aiMaterial* mtl, vector<unsigned int>& header, vector<fl
         aiString path;
         mtl->GetTexture(aiTextureType_DIFFUSE, i, &path);
         string pathFormated = path.data;
+
+        //copy the texture in the package
 #ifdef PLATFORM_LINUX
-        std::replace( pathFormated.begin(), pathFormated.end(), '\\', '/');
+        system(("cp -rf \"" + gSource + pathFormated + "\" \"" + gDest + "\"").c_str());
 #elif defined(PLATFORM_WIN32)
-        std::replace( pathFormated.begin(), pathFormated.end(), '/', '\\');
+        system(("xcopy \"" + gSource + pathFormated + "\" \"" + gDest + "\" /y").c_str());
 #endif
+
+        //write the textures used in the file
+        auto lastSep = pathFormated.find_last_of("/\\");
+        if(lastSep != string::npos)
+            pathFormated = pathFormated.substr(lastSep+1);
+
         textures += pathFormated;
         if(i < mtl->GetTextureCount(aiTextureType_DIFFUSE) - 1)
         {
             textures += "&";
         }
-
-        //copy the texture in the package
-#ifdef PLATFORM_LINUX
-        system(("cp \"" + gSource + pathFormated + "\" \"" + dest + "\"").c_str());
-#elif defined(PLATFORM_WIN32)
-        system(("xcopy \"" + gSource + pathFormated + "\" \"" + dest + "\" /y").c_str());
-#endif
     }
     header.push_back(textures.size());
 }
@@ -110,13 +111,9 @@ void loadScene(const aiScene* scene, const aiNode* node)
             meshNames[node->mName.C_Str()] = 0;
 
         string objDest = gDest + name;
-#ifdef PLATFORM_LINUX
-        system(("mkdir \"" + objDest + "\"").c_str());
-#elif defined(PLATFORM_WIN32)
-        system(("mkdir \"" + objDest + "\"").c_str());
-#endif
         gSceneFile << name << endl;
-        string destFile = objDest + "/obj.t1o";
+
+        string destFile = objDest + ".t1o";
 
         const aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
 
@@ -124,7 +121,7 @@ void loadScene(const aiScene* scene, const aiNode* node)
         vector<float> mtlValues;
         string texPaths("");
 
-        loadMaterial(scene->mMaterials[mesh->mMaterialIndex], mtlHeader, mtlValues, objDest, texPaths);
+        loadMaterial(scene->mMaterials[mesh->mMaterialIndex], mtlHeader, mtlValues, texPaths);
 
         //header:pnct v_size i_size
         vector<unsigned int> header;
@@ -215,7 +212,11 @@ int main(int argc, char *argv[])
 
     system(("mkdir \"" + gDest + "\"").c_str());
 
+#ifdef PLATFORM_LINUX
+    gSceneFile.open(gDest + "/scene.txt");
+#elif defined(PLATFORM_WIN32)
     gSceneFile.open(gDest + "\\scene.txt");
+#endif
 
     loadScene(scene, scene->mRootNode);
 

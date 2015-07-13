@@ -10,9 +10,10 @@ namespace TakeOne
     class RenderObject
     {
     public:
-        RenderObject(std::shared_ptr<Program> pProgram, const std::string& pObjPath = "");
+        RenderObject(std::shared_ptr<Program> pProgram);
+        RenderObject(std::shared_ptr<Program> pProgram, const std::string& pObjPath, const std::string& pObjName);
 
-        void Load(const std::string& pObjPath);
+        void Load(const std::string& pObjPath, const std::string& pObjName);
         void Render() const;
 
         Mesh& GetMesh() const { return *mMesh; }
@@ -29,6 +30,7 @@ namespace TakeOne
         std::unique_ptr<Material> mMaterial;
 
         std::string mObjPath;
+        std::string mObjName;
         bool mRenderable;
     };
 }
