@@ -1,2 +1,4 @@
 /CMakeLists.txt.user
 /bin/
+/tools/ObjConvert/CMakeLists.txt.user
+/tools/ObjConvert/bin/

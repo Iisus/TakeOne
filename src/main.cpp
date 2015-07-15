@@ -134,9 +134,9 @@ int main(void)
 
     Light light;
     light.position = glm::vec3(0.0f, 100.0f, -10.0f);
-    light.intensities = glm::vec3(0.8f, 0.8f, 0.8f) * 200.0f;
+    light.intensities = glm::vec3(0.8f, 0.8f, 0.8f) * 600.0f;
     light.attenuation = 0.01f;
-    light.ambientCoefficient = 0.00001f;
+    light.ambientCoefficient = 0.0001f;
 
     TakeOne::Node streetTransform;
     streetTransform.GetTransform().SetScale(glm::vec3(1.0f));

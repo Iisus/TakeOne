@@ -53,7 +53,7 @@ void main() {
     //specular
     float specularCoefficient = 0.0;
     if(diffuseCoefficient > 0.0)
-        specularCoefficient = pow(max(0.0, dot(surfaceToCamera, reflect(-surfaceToLight, normal))), u_shininess);
+        specularCoefficient = pow(max(0.0, dot(surfaceToCamera, reflect(-surfaceToLight, normal))), 1 - u_shininess);
     vec3 specular = specularCoefficient * u_color_specular.rgb * light.intensities;
 
     //attenuation
@@ -65,6 +65,6 @@ void main() {
 
     //final color (after gamma correction)
     vec3 gamma = vec3(1.0/1.8);
-    //finalColor = vec4(pow(linearColor, gamma), 1.0f);
-    finalColor = vec4(surfaceColor.rgb, 1.0f);
+    finalColor = vec4(pow(linearColor, gamma), 1.2f);
+    //finalColor = vec4(surfaceColor.rgb, 1.0f);
 }
