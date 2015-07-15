@@ -15,14 +15,13 @@ void TakeOne::Material::SetProgram(std::shared_ptr<Program> pProgram)
 void TakeOne::Material::SetTexture(Texture&& pTexture)
 {
     mTextures.push_back(std::move(pTexture));
-    mTextures.back().Load();
 }
 
-void TakeOne::Material::SetTexture(const std::string& pUniformName, Texture&& pTexture)
-{
-    mTextures.push_back(std::move(pTexture));
-    mTextures.back().Load(static_cast<unsigned int>(mProgram->GetUniformLocation(pUniformName)));
-}
+//void TakeOne::Material::SetTexture(const std::string& pUniformName, Texture&& pTexture)
+//{
+//    mTextures.push_back(std::move(pTexture));
+//    mTextures.back().Load(static_cast<unsigned int>(mProgram->GetUniformLocation(pUniformName)));
+//}
 
 void TakeOne::Material::Use()
 {

@@ -1,20 +1,24 @@
 #pragma once
 
 #include <string>
+#include <unordered_map>
 
 namespace TakeOne
 {
     class Texture
     {
     public:
-        Texture(const std::string pTexturePath = "", unsigned int pTextureFlags = 0);
+        Texture();
+        Texture(const std::string pTexturePath, unsigned int pTextureFlags);
+
         Texture(const Texture&) = delete;
         Texture& operator=(const Texture&) = delete;
+
         Texture(Texture&&);
         Texture& operator=(Texture&&);
+
         ~Texture();
 
-        void Load(unsigned int pTextureId = 0);
         void LoadFromFile(const std::string pTexturePath, unsigned int pTextureFlags, unsigned int pTextureId = 0);
         void LoadFromBuffer(const unsigned char* const pBuffer, int pSize, unsigned int pTextureFlags, unsigned int pTextureId = 0);
         void Bind() const;
@@ -38,8 +42,13 @@ namespace TakeOne
         };
 
     private:
+        void Load(unsigned int pTextureId = 0);
+
         std::string mTexturePath;
         unsigned int mTextureFlags;
         unsigned int mTextureId;
+
+        //unordered_map< TexturPath, pair< TextureId, RefCount> >
+        static std::unordered_map<std::string, std::pair<int, int>> mUsedTextures;
     };
 }

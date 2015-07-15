@@ -3,10 +3,16 @@
 #include "Log.h"
 #include "SOIL.h"
 
-TakeOne::Texture::Texture(std::string pTexturePath, unsigned int pTextureFlags) :
-    mTexturePath(pTexturePath), mTextureFlags(pTextureFlags), mTextureId(0)
+std::unordered_map<std::string, std::pair<int, int>> TakeOne::Texture::mUsedTextures;
+
+TakeOne::Texture::Texture()
 {
 
+}
+
+TakeOne::Texture::Texture(std::string pTexturePath, unsigned int pTextureFlags)
+{
+    LoadFromFile(pTexturePath, pTextureFlags);
 }
 
 
@@ -40,23 +46,6 @@ TakeOne::Texture::~Texture()
     Unload();
 }
 
-void TakeOne::Texture::Load(unsigned int pTextureId)
-{
-    mTextureId = pTextureId;
-
-    mTextureId = SOIL_load_OGL_texture
-            (
-                mTexturePath.c_str(),
-                SOIL_LOAD_AUTO,
-                mTextureId ? mTextureId : SOIL_CREATE_NEW_ID,
-                mTextureFlags
-            );
-    if(!mTextureId)
-    {
-        LOG_MSG("Failed to load texture \"%s\".", mTexturePath.c_str());
-    }
-}
-
 void TakeOne::Texture::LoadFromFile(std::string pTexturePath, unsigned int pTextureFlags, unsigned int pTextureId)
 {
     mTexturePath = pTexturePath;
@@ -67,6 +56,8 @@ void TakeOne::Texture::LoadFromFile(std::string pTexturePath, unsigned int pText
 
 void TakeOne::Texture::LoadFromBuffer(const unsigned char* const pBuffer, int pSize, unsigned int pTextureFlags,  unsigned int pTextureId)
 {
+    Unload();
+
     mTextureFlags = pTextureFlags;
     mTextureId = pTextureId;
 
@@ -99,7 +90,47 @@ void TakeOne::Texture::Unload()
 {
     if (mTextureId!=0){
         Unbind();
-        glDeleteTextures(1, &mTextureId);
+
+        if(mUsedTextures.find(mTexturePath) != mUsedTextures.end() && mUsedTextures[mTexturePath].second > 1)
+        {
+            mUsedTextures[mTexturePath].second--;
+        }
+        else
+        {
+            glDeleteTextures(1, &mTextureId);
+            mUsedTextures.erase(mTexturePath);
+        }
+
         mTextureId = 0;
+    }
+}
+
+void TakeOne::Texture::Load(unsigned int pTextureId)
+{
+    //if the user doesn't want a specific texture id and the texture was already loaded
+    if(pTextureId == 0 && mUsedTextures.find(mTexturePath) != mUsedTextures.end())
+    {
+        mTextureId = mUsedTextures[mTexturePath].first;
+        mUsedTextures[mTexturePath].second++; //ref count
+    }
+    else
+    {
+        Unload();
+
+        mTextureId = pTextureId;
+
+        mTextureId = SOIL_load_OGL_texture
+                (
+                    mTexturePath.c_str(),
+                    SOIL_LOAD_AUTO,
+                    mTextureId ? mTextureId : SOIL_CREATE_NEW_ID,
+                    mTextureFlags
+                );
+        if(!mTextureId)
+        {
+            LOG_MSG("Failed to load texture \"%s\".", mTexturePath.c_str());
+        }
+
+        mUsedTextures[mTexturePath] = std::make_pair(mTextureId, 1);
     }
 }

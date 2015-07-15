@@ -52,7 +52,7 @@ int main(void)
     auto textureMapProgram = std::make_shared<TakeOne::Program>("../res/shaders/SimpleTextureMap/vertex.glsl", "../res/shaders/SimpleTextureMap/fragment.glsl");
     auto colorProgram = std::make_shared<TakeOne::Program>("../res/shaders/SimpleColor/vertex.glsl", "../res/shaders/SimpleColor/fragment.glsl");
 
-    std::string path = "../res/objects/House01/";
+    std::string path = "../res/objects/ConceptHouse01/";
     std::ifstream sceneFile(path + "scene.txt");
 
     std::vector<TakeOne::RenderNode> kitchenNodes;
