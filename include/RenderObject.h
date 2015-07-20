@@ -22,15 +22,18 @@ namespace TakeOne
         bool IsRenderable() const { return mRenderable; }
         void SetRenderable(bool pRenderable) { mRenderable = pRenderable; }
 
+    protected:
+        std::unique_ptr<Mesh> mMesh;
+        std::unique_ptr<Material> mMaterial;
+
+        bool mRenderable;
+
     private:
         void LoadMesh(std::ifstream& pFile);
         void LoadMaterial(std::ifstream& pFile);
 
-        std::unique_ptr<Mesh> mMesh;
-        std::unique_ptr<Material> mMaterial;
 
         std::string mObjPath;
         std::string mObjName;
-        bool mRenderable;
     };
 }

@@ -8,6 +8,11 @@ namespace TakeOne
 {
     struct Vertex
     {
+        Vertex(){}
+        Vertex(glm::vec3 _position, glm::vec3 _normal, glm::vec3 _color, glm::vec2 _texCoord) :
+            position(_position), normal(_normal), color(_color), texCoord(_texCoord)
+        { }
+
         glm::vec3 position;
         glm::vec3 normal;
         glm::vec3 color;
@@ -26,8 +31,6 @@ namespace TakeOne
 
     class Mesh
     {
-    friend class RenderObject;
-
     public:
         Mesh();
         Mesh(const Mesh&) = delete;
@@ -39,8 +42,6 @@ namespace TakeOne
         void Render();
         void Release();
 
-    protected:
-        //accessed from RenderObject
         void SetVertices(std::vector<Vertex>&& pVertices) { mVertices = std::move(pVertices); }
         void SetIndices(std::vector<unsigned int>&& pIndices) { mIndices = std::move(pIndices); }
         void SetAttribsUsed(std::vector<unsigned int>&& pAttribsUsed) { mAttribsUsed = std::move(pAttribsUsed); }
