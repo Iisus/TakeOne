@@ -19,6 +19,8 @@
 #include "RenderNode.h"
 #include "CameraNode.h"
 
+#include "BoxRenderObject.h"
+
 struct Light {
     glm::vec3 position;
     glm::vec3 intensities; //a.k.a. the color of the light
@@ -45,22 +47,33 @@ void scroll_callback(GLFWwindow* /*window*/, double /*xoffset*/, double yoffset)
         cameraFov = tempFov;
 }
 
+using namespace TakeOne;
+
 int main(void)
 {
     TakeOne::Engine engine(1024, 768, "TakeOne");
 
     auto textureMapProgram = std::make_shared<TakeOne::Program>("../res/shaders/SimpleTextureMap/vertex.glsl", "../res/shaders/SimpleTextureMap/fragment.glsl");
-    auto colorProgram = std::make_shared<TakeOne::Program>("../res/shaders/SimpleColor/vertex.glsl", "../res/shaders/SimpleColor/fragment.glsl");
 
-    std::string path = "../res/objects/ConceptHouse01/";
-    std::ifstream sceneFile(path + "scene.txt");
+    auto boxRender = std::make_shared<TakeOne::BoxRenderObject>(textureMapProgram);
+    TakeOne::RenderNode box(boxRender);
+    TakeOne::RenderNode box2(boxRender);
+    TakeOne::RenderNode box3(boxRender);
+    box.GetRenderObject()->GetMaterial().SetTexture(TakeOne::Texture("../res/objects/Castle/est10.jpg", Texture::INVERT_Y | Texture::COMPRESS_TO_DXT | Texture::TEXTURE_REPEATS | Texture::MIPMAPS));
+    box.GetRenderObject()->GetMaterial().SetShaderParam("u_textures_count", box.GetRenderObject()->GetMaterial().GetTexturesCount());
+    box.GetRenderObject()->GetMaterial().SetShaderParam("u_color_diffuse", glm::vec3(0.0f, 0.0f, 1.0f));
 
-    std::vector<TakeOne::RenderNode> kitchenNodes;
-    std::string name;
-    while(std::getline(sceneFile, name))
-    {
-        kitchenNodes.emplace_back(std::make_shared<TakeOne::RenderObject>(textureMapProgram, path, name));
-    }
+    //auto colorProgram = std::make_shared<TakeOne::Program>("../res/shaders/SimpleColor/vertex.glsl", "../res/shaders/SimpleColor/fragment.glsl");
+
+//    std::string path = "../res/objects/ConceptHouse01/";
+//    std::ifstream sceneFile(path + "scene.txt");
+
+//    std::vector<TakeOne::RenderNode> kitchenNodes;
+//    std::string name;
+//    while(std::getline(sceneFile, name))
+//    {
+//        kitchenNodes.emplace_back(std::make_shared<TakeOne::RenderObject>(textureMapProgram, path, name));
+//    }
 
 //    std::vector<TakeOne::RenderNode> StreetEnv(30);
 //    for (auto& block : StreetEnv)
@@ -74,7 +87,7 @@ int main(void)
 //    std::vector<TakeOne::RenderNode> ducks(1);
 //    for (auto& duck : ducks)
 //        duck.SetRenderObject(duckRO);
-//
+//BoxRenderObject
 //
 //    //load program
 //    for (unsigned int i = 0; i < 27; i++)
@@ -121,16 +134,6 @@ int main(void)
 //        StreetEnv[29].GetRenderObject()->Load("../res/objects/StreetEnv/g Plane001");
 //    }
 
-    TakeOne::CameraNode camera(TakeOne::CameraType::PERSPECTIVE);
-    camera.SetClearColor(glm::vec4(63.0f / 255.0f, 75.0f / 255.0f, 82.0f / 255.0f, 1.0));
-    camera.SetPerspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 1000.0f);
-    //camera.SetPitch(1.0);
-    //camera.GetTransform().SetPosition(glm::vec3(40, 40, 0));
-    //camera.SetYaw(M_PI_2);
-    //camera.SetPitch(-M_PI_4);
-    //camera.SetRoll(M_PI_2);
-    //camera.SetPitch(-0.6);
-    //camera.LookAt(glm::vec3(0, 0, 0));
 
     Light light;
     light.position = glm::vec3(0.0f, 100.0f, -10.0f);
@@ -138,19 +141,50 @@ int main(void)
     light.attenuation = 0.01f;
     light.ambientCoefficient = 0.0001f;
 
-    TakeOne::Node streetTransform;
-    streetTransform.GetTransform().SetScale(glm::vec3(1.0f));
-    //streetTransform.GetTransform().SetRotation(glm::angleAxis(-glm::pi<float>()/2, glm::vec3(1.0f, 0.0f, 0.0f)));
-    for (auto &obj : kitchenNodes)
-    {
-        obj.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());
-        obj.GetRenderObject()->GetMaterial().SetShaderParam("model", streetTransform.GetTransform().GetTransformMatrix());
+    TakeOne::CameraNode camera(TakeOne::CameraType::PERSPECTIVE);
+    camera.SetClearColor(glm::vec4(63.0f / 255.0f, 75.0f / 255.0f, 82.0f / 255.0f, 1.0));
+    camera.SetPerspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 1000.0f);
 
-        obj.GetRenderObject()->GetMaterial().SetShaderParam("light.position", light.position);
-        obj.GetRenderObject()->GetMaterial().SetShaderParam("light.intensities", light.intensities);
-        obj.GetRenderObject()->GetMaterial().SetShaderParam("light.attenuation", light.attenuation);
-        obj.GetRenderObject()->GetMaterial().SetShaderParam("light.ambientCoefficient", light.ambientCoefficient);
-    }
+    box.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());
+    box2.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());
+    box3.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());
+
+    box.ApplyTransformation("model");
+    box.GetRenderObject()->GetMaterial().SetShaderParam("light.position", light.position);
+    box.GetRenderObject()->GetMaterial().SetShaderParam("light.intensities", light.intensities);
+    box.GetRenderObject()->GetMaterial().SetShaderParam("light.attenuation", light.attenuation);
+    box.GetRenderObject()->GetMaterial().SetShaderParam("light.ambientCoefficient", light.ambientCoefficient);
+
+    box2.GetTransform().SetPosition(glm::vec3(17.0f));
+    box2.GetTransform().SetScale(glm::vec3(2.0f));
+    box2.ApplyTransformation("model");
+    box2.GetRenderObject()->GetMaterial().SetShaderParam("light.position", light.position);
+    box2.GetRenderObject()->GetMaterial().SetShaderParam("light.intensities", light.intensities);
+    box2.GetRenderObject()->GetMaterial().SetShaderParam("light.attenuation", light.attenuation);
+    box2.GetRenderObject()->GetMaterial().SetShaderParam("light.ambientCoefficient", light.ambientCoefficient);
+
+    box3.GetTransform().SetPosition(glm::vec3(3.0f, 5.0f, 10.0f));
+    box3.GetTransform().SetScale(glm::vec3(2.0f, .5f, .5f));
+    box3.GetTransform().SetRotation(glm::angleAxis(glm::pi<float>()/6.0f, glm::vec3(0.0f, 1.0f, 0.0f)));
+    box3.ApplyTransformation("model");
+    box3.GetRenderObject()->GetMaterial().SetShaderParam("light.position", light.position);
+    box3.GetRenderObject()->GetMaterial().SetShaderParam("light.intensities", light.intensities);
+    box3.GetRenderObject()->GetMaterial().SetShaderParam("light.attenuation", light.attenuation);
+    box3.GetRenderObject()->GetMaterial().SetShaderParam("light.ambientCoefficient", light.ambientCoefficient);
+
+//    TakeOne::Node streetTransform;
+//    streetTransform.GetTransform().SetScale(glm::vec3(1.0f));
+//    //streetTransform.GetTransform().SetRotation(glm::angleAxis(-glm::pi<float>()/2, glm::vec3(1.0f, 0.0f, 0.0f)));
+//    for (auto &obj : kitchenNodes)
+//    {
+//        obj.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());
+//        box.GetRenderObject()->GetMaterial().SetShaderParam("model", streetTransform.GetTransform().GetTransformMatrix());
+
+//        obj.GetRenderObject()->GetMaterial().SetShaderParam("light.position", light.position);
+//        obj.GetRenderObject()->GetMaterial().SetShaderParam("light.intensities", light.intensities);
+//        obj.GetRenderObject()->GetMaterial().SetShaderParam("light.attenuation", light.attenuation);
+//        obj.GetRenderObject()->GetMaterial().SetShaderParam("light.ambientCoefficient", light.ambientCoefficient);
+//    }
 //    for (auto &obj : StreetEnv)
 //    {
 //        obj.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());
@@ -179,7 +213,7 @@ int main(void)
 
     double lightPos=0;
 
-    float speed = 0.1f; // 3 units / second
+    float speed = 0.01f; // 3 units / second
     float horizontalAngle = 0;
     float verticalAngle = 0;
 
@@ -221,7 +255,7 @@ int main(void)
 
         camera.SetPerspective(glm::radians(cameraFov), 4.0f / 3.0f, 0.1f, 100000.0f);
 
-        static glm::vec3 camPos(0.0f, 10.0f, 0.0f);
+        static glm::vec3 camPos(0.0f, -5.0f, 5.0f);
 
         if (glfwGetKey(engine.GetWindow(), GLFW_KEY_W ) == GLFW_PRESS){
             camPos += camera.GetFrontDir() * speed;
@@ -248,21 +282,31 @@ int main(void)
         }
 
         if (glfwGetKey(engine.GetWindow(), GLFW_KEY_R ) == GLFW_PRESS){
-            colorProgram->Reload();
+            //colorProgram->Reload();
             textureMapProgram->Reload();
         }
 
         camera.GetTransform().SetPosition(camPos);
 
-        light.position.x = sin(lightPos) * 200;
-        light.position.z = cos(lightPos) * 200;
+//        light.position.x = sin(lightPos) * 200;
+//        light.position.z = cos(lightPos) * 200;
+        box.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());
+        box.ApplyTransformation("model");
+        box.GetRenderObject()->Render();
 
-        for(auto &obj : kitchenNodes)
-        {
-            obj.GetRenderObject()->GetMaterial().SetShaderParam("light.position", light.position);
-            obj.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());
-            obj.GetRenderObject()->Render();
-        }
+        box2.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());
+        box2.ApplyTransformation("model");
+        box2.GetRenderObject()->Render();
+
+        box3.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());
+        box3.ApplyTransformation("model");
+        box3.GetRenderObject()->Render();
+//        for(auto &obj : kitchenNodes)
+//        {
+//            obj.GetRenderObject()->GetMaterial().SetShaderParam("light.position", light.position);
+//            obj.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());
+//            obj.GetRenderObject()->Render();
+//        }
 //        for(auto &duck : ducks)
 //        {
 //            //duck.GetTransform().SetPosition(glm::vec3(i++, (sin(lightPos) + 1) * 10, 0.0f));
