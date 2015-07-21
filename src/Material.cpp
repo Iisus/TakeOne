@@ -17,12 +17,6 @@ void TakeOne::Material::SetTexture(Texture&& pTexture)
     mTextures.push_back(std::move(pTexture));
 }
 
-//void TakeOne::Material::SetTexture(const std::string& pUniformName, Texture&& pTexture)
-//{
-//    mTextures.push_back(std::move(pTexture));
-//    mTextures.back().Load(static_cast<unsigned int>(mProgram->GetUniformLocation(pUniformName)));
-//}
-
 void TakeOne::Material::Use()
 {
     assert(mProgram != nullptr && "The program from material must be set!");
