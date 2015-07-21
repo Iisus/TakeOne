@@ -37,7 +37,7 @@ void main() {
     vec3 surfacePos = vec3(model * vec4(fragVert, 1));
     vec4 surfaceColor = u_color_diffuse;
     
-    if( u_textures_count > 0 )
+    //if( u_textures_count > 0 )
         surfaceColor = texture(u_texture, fragTexCoord);
         
     vec3 surfaceToLight = normalize(light.position - surfacePos);

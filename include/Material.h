@@ -18,8 +18,6 @@ namespace TakeOne
         template<typename T>
         void SetShaderParam(const std::string& pName, T pValue, int pCount = 1);
         void SetTexture(Texture&& pTexture);
-        //!! Deprecated! TO BE REMOVED
-        //!! void SetTexture(const std::string& pUniformName, Texture&& pTexture);
         void SetProgram(std::shared_ptr<Program> pProgram);
         void Use();
         void Reload();

@@ -56,84 +56,11 @@ int main(void)
     auto textureMapProgram = std::make_shared<TakeOne::Program>("../res/shaders/SimpleTextureMap/vertex.glsl", "../res/shaders/SimpleTextureMap/fragment.glsl");
 
     auto boxRender = std::make_shared<TakeOne::BoxRenderObject>(textureMapProgram);
+    boxRender->GetMaterial().SetTexture(TakeOne::Texture("../res/objects/Castle/est10.jpg", Texture::INVERT_Y | Texture::COMPRESS_TO_DXT | Texture::TEXTURE_REPEATS | Texture::MIPMAPS));
+
     TakeOne::RenderNode box(boxRender);
     TakeOne::RenderNode box2(boxRender);
     TakeOne::RenderNode box3(boxRender);
-    box.GetRenderObject()->GetMaterial().SetTexture(TakeOne::Texture("../res/objects/Castle/est10.jpg", Texture::INVERT_Y | Texture::COMPRESS_TO_DXT | Texture::TEXTURE_REPEATS | Texture::MIPMAPS));
-    box.GetRenderObject()->GetMaterial().SetShaderParam("u_textures_count", box.GetRenderObject()->GetMaterial().GetTexturesCount());
-    box.GetRenderObject()->GetMaterial().SetShaderParam("u_color_diffuse", glm::vec3(0.0f, 0.0f, 1.0f));
-
-    //auto colorProgram = std::make_shared<TakeOne::Program>("../res/shaders/SimpleColor/vertex.glsl", "../res/shaders/SimpleColor/fragment.glsl");
-
-//    std::string path = "../res/objects/ConceptHouse01/";
-//    std::ifstream sceneFile(path + "scene.txt");
-
-//    std::vector<TakeOne::RenderNode> kitchenNodes;
-//    std::string name;
-//    while(std::getline(sceneFile, name))
-//    {
-//        kitchenNodes.emplace_back(std::make_shared<TakeOne::RenderObject>(textureMapProgram, path, name));
-//    }
-
-//    std::vector<TakeOne::RenderNode> StreetEnv(30);
-//    for (auto& block : StreetEnv)
-//        block.SetRenderObject(std::make_shared<TakeOne::RenderObject>());
-//
-//
-//    auto duckRO = std::make_shared<TakeOne::RenderObject>();
-//    duckRO->GetMaterial().SetProgram(textureMapProgram);
-//    duckRO->Load("../res/objects/Duck/");
-//
-//    std::vector<TakeOne::RenderNode> ducks(1);
-//    for (auto& duck : ducks)
-//        duck.SetRenderObject(duckRO);
-//BoxRenderObject
-//
-//    //load program
-//    for (unsigned int i = 0; i < 27; i++)
-//    {
-//        StreetEnv[i].GetRenderObject()->GetMaterial().SetProgram(textureMapProgram);
-//    }
-//    //load program
-//
-//    std::shared_ptr<TakeOne::Program> colorProgram(std::make_shared<TakeOne::Program>("../res/shaders/SimpleColor/vertex.glsl", "../res/shaders/SimpleColor/fragment.glsl"));
-//    for (unsigned int i = 27; i < 30; i++)
-//    {
-//        StreetEnv[i].GetRenderObject()->GetMaterial().SetProgram(colorProgram);
-//    }
-//    {
-//        StreetEnv[0].GetRenderObject()->Load("../res/objects/StreetEnv/g City_building_001");
-//        StreetEnv[1].GetRenderObject()->Load("../res/objects/StreetEnv/g City_building_004");
-//        StreetEnv[2].GetRenderObject()->Load("../res/objects/StreetEnv/g City_building_007");
-//        StreetEnv[3].GetRenderObject()->Load("../res/objects/StreetEnv/g City_building_008");
-//        StreetEnv[4].GetRenderObject()->Load("../res/objects/StreetEnv/g City_building_010");
-//        StreetEnv[5].GetRenderObject()->Load("../res/objects/StreetEnv/g City_building_011");
-//        StreetEnv[6].GetRenderObject()->Load("../res/objects/StreetEnv/g City_building_013");
-//        StreetEnv[7].GetRenderObject()->Load("../res/objects/StreetEnv/g City_building_014");
-//        StreetEnv[8].GetRenderObject()->Load("../res/objects/StreetEnv/g City_building_016");
-//        StreetEnv[9].GetRenderObject()->Load("../res/objects/StreetEnv/g City_building_017");
-//        StreetEnv[10].GetRenderObject()->Load("../res/objects/StreetEnv/g City_building_022");
-//        StreetEnv[11].GetRenderObject()->Load("../res/objects/StreetEnv/g City_building_023");
-//        StreetEnv[12].GetRenderObject()->Load("../res/objects/StreetEnv/g City_building_024");
-//        StreetEnv[13].GetRenderObject()->Load("../res/objects/StreetEnv/g City_building_026");
-//        StreetEnv[14].GetRenderObject()->Load("../res/objects/StreetEnv/g City_building_028");
-//        StreetEnv[15].GetRenderObject()->Load("../res/objects/StreetEnv/g City_building_030");
-//        StreetEnv[16].GetRenderObject()->Load("../res/objects/StreetEnv/g City_building_031");
-//        StreetEnv[17].GetRenderObject()->Load("../res/objects/StreetEnv/g City_building_032");
-//        StreetEnv[18].GetRenderObject()->Load("../res/objects/StreetEnv/g City_building_033");
-//        StreetEnv[19].GetRenderObject()->Load("../res/objects/StreetEnv/g City_building_034");
-//        StreetEnv[20].GetRenderObject()->Load("../res/objects/StreetEnv/g City_building_035");
-//        StreetEnv[21].GetRenderObject()->Load("../res/objects/StreetEnv/g City_building_036");
-//        StreetEnv[22].GetRenderObject()->Load("../res/objects/StreetEnv/g City_building_037");
-//        StreetEnv[23].GetRenderObject()->Load("../res/objects/StreetEnv/g City_building_038");
-//        StreetEnv[24].GetRenderObject()->Load("../res/objects/StreetEnv/g City_building_039");
-//        StreetEnv[25].GetRenderObject()->Load("../res/objects/StreetEnv/g City_building_040");
-//        StreetEnv[26].GetRenderObject()->Load("../res/objects/StreetEnv/g City_building_041");
-//        StreetEnv[27].GetRenderObject()->Load("../res/objects/StreetEnv/g Line002");
-//        StreetEnv[28].GetRenderObject()->Load("../res/objects/StreetEnv/g Object010");
-//        StreetEnv[29].GetRenderObject()->Load("../res/objects/StreetEnv/g Plane001");
-//    }
-
 
     Light light;
     light.position = glm::vec3(0.0f, 100.0f, -10.0f);
@@ -171,45 +98,6 @@ int main(void)
     box3.GetRenderObject()->GetMaterial().SetShaderParam("light.intensities", light.intensities);
     box3.GetRenderObject()->GetMaterial().SetShaderParam("light.attenuation", light.attenuation);
     box3.GetRenderObject()->GetMaterial().SetShaderParam("light.ambientCoefficient", light.ambientCoefficient);
-
-//    TakeOne::Node streetTransform;
-//    streetTransform.GetTransform().SetScale(glm::vec3(1.0f));
-//    //streetTransform.GetTransform().SetRotation(glm::angleAxis(-glm::pi<float>()/2, glm::vec3(1.0f, 0.0f, 0.0f)));
-//    for (auto &obj : kitchenNodes)
-//    {
-//        obj.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());
-//        box.GetRenderObject()->GetMaterial().SetShaderParam("model", streetTransform.GetTransform().GetTransformMatrix());
-
-//        obj.GetRenderObject()->GetMaterial().SetShaderParam("light.position", light.position);
-//        obj.GetRenderObject()->GetMaterial().SetShaderParam("light.intensities", light.intensities);
-//        obj.GetRenderObject()->GetMaterial().SetShaderParam("light.attenuation", light.attenuation);
-//        obj.GetRenderObject()->GetMaterial().SetShaderParam("light.ambientCoefficient", light.ambientCoefficient);
-//    }
-//    for (auto &obj : StreetEnv)
-//    {
-//        obj.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());
-//        obj.GetRenderObject()->GetMaterial().SetShaderParam("model", streetTransform.GetTransform().GetTransformMatrix());
-//
-//        obj.GetRenderObject()->GetMaterial().SetShaderParam("light.position", light.position);
-//        obj.GetRenderObject()->GetMaterial().SetShaderParam("light.intensities", light.intensities);
-//        obj.GetRenderObject()->GetMaterial().SetShaderParam("light.attenuation", light.attenuation);
-//        obj.GetRenderObject()->GetMaterial().SetShaderParam("light.ambientCoefficient", light.ambientCoefficient);
-//    }
-//
-//    for (auto &duck : ducks)
-//    {
-//        //duck.GetTransform().SetParent(&streetTransform.GetTransform());
-//        duck.GetTransform().SetScale(glm::vec3(0.05));
-//        duck.GetTransform().SetPosition(glm::vec3(0, 0, -30));
-//        duck.GetTransform().SetRotation(glm::angleAxis(glm::pi<float>()/4, glm::vec3(0.0f, 1.0f, 0.0f)));
-//        duck.ApplyTransformation("model");
-//
-//        duck.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());
-//        duck.GetRenderObject()->GetMaterial().SetShaderParam("light.position", light.position);
-//        duck.GetRenderObject()->GetMaterial().SetShaderParam("light.intensities", light.intensities);
-//        duck.GetRenderObject()->GetMaterial().SetShaderParam("light.attenuation", light.attenuation);
-//        duck.GetRenderObject()->GetMaterial().SetShaderParam("light.ambientCoefficient", light.ambientCoefficient);
-//    }
 
     double lightPos=0;
 
@@ -285,33 +173,6 @@ int main(void)
         box3.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());
         box3.ApplyTransformation("model");
         box3.GetRenderObject()->Render();
-//        for(auto &obj : kitchenNodes)
-//        {
-//            obj.GetRenderObject()->GetMaterial().SetShaderParam("light.position", light.position);
-//            obj.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());
-//            obj.GetRenderObject()->Render();
-//        }
-//        for(auto &duck : ducks)
-//        {
-//            //duck.GetTransform().SetPosition(glm::vec3(i++, (sin(lightPos) + 1) * 10, 0.0f));
-//            //duck.GetTransform().SetScale(glm::vec3((cos(lightPos * 5) + 1) * 0.01 + 0.005));
-//            //duck.ApplyTransformation("model");
-//            duck.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());
-//            duck.GetRenderObject()->Render();
-//        }
-//
-//        for(auto& obj : StreetEnv)
-//        {
-//            for(auto& obj1 : StreetEnv)
-//            {
-//                DrawLine(obj1.GetTransform().GetPosition(), obj.GetTransform().GetPosition());
-//            }
-//            //obj.GetTransform().SetRotation(glm::angleAxis(glm::pi<float>()/7, glm::vec3(0.0f, 1.0f, 0.0f)));
-//            //obj.ApplyTransformation("model");
-//            //obj.GetRenderObject()->GetMaterial().SetShaderParam("model", streetTransform.GetTransformMatrix());
-//            obj.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());
-//            obj.GetRenderObject()->Render();
-//        }
 
         engine.Update();
     }
