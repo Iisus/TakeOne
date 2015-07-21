@@ -56,17 +56,19 @@ int main(void)
     auto textureMapProgram = std::make_shared<TakeOne::Program>("../res/shaders/SimpleTextureMap/vertex.glsl", "../res/shaders/SimpleTextureMap/fragment.glsl");
 
     auto boxRender = std::make_shared<TakeOne::BoxRenderObject>(textureMapProgram);
-    boxRender->GetMaterial().SetTexture(TakeOne::Texture("../res/objects/Castle/est10.jpg", Texture::INVERT_Y | Texture::COMPRESS_TO_DXT | Texture::TEXTURE_REPEATS | Texture::MIPMAPS));
+    boxRender->GetMaterial().SetTexture(TakeOne::Texture("../res/objects/Castle/th_portugal_edit-lt.jpg", Texture::INVERT_Y | Texture::COMPRESS_TO_DXT | Texture::TEXTURE_REPEATS | Texture::MIPMAPS));
 
-    TakeOne::RenderNode box(boxRender);
+    auto loadedCube = std::make_shared<TakeOne::RenderObject>(textureMapProgram, "../res/objects/cube/", "Cube");
+
+    TakeOne::RenderNode box(loadedCube);
     TakeOne::RenderNode box2(boxRender);
     TakeOne::RenderNode box3(boxRender);
 
     Light light;
     light.position = glm::vec3(0.0f, 100.0f, -10.0f);
-    light.intensities = glm::vec3(0.8f, 0.8f, 0.8f) * 600.0f;
+    light.intensities = glm::vec3(0.8f, 0.8f, 0.8f) * 1000.0f;
     light.attenuation = 0.01f;
-    light.ambientCoefficient = 0.0001f;
+    light.ambientCoefficient = 0.0005f;
 
     TakeOne::CameraNode camera(TakeOne::CameraType::PERSPECTIVE);
     camera.SetClearColor(glm::vec4(63.0f / 255.0f, 75.0f / 255.0f, 82.0f / 255.0f, 1.0));
