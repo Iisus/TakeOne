@@ -186,7 +186,7 @@ int main(void)
     glfwSetScrollCallback(engine.GetWindow(), scroll_callback);
 
     while (!engine.ShouldClose())
-	{
+    {
         lightPos+=0.001;
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -194,8 +194,24 @@ int main(void)
 
         float mouseSpeed = 0.0005f;
         double xPos, yPos;
-        glfwGetCursorPos(engine.GetWindow(), &xPos, &yPos);
-        glfwSetCursorPos(engine.GetWindow(), 1024/2, 768/2);
+
+        static bool useMouseInput = true;
+
+        if(useMouseInput)
+        {
+            glfwGetCursorPos(engine.GetWindow(), &xPos, &yPos);
+            glfwSetCursorPos(engine.GetWindow(), 1024/2, 768/2);
+        }
+
+        static unsigned int timeSample = 0;
+        if (timeSample++ > 100 && glfwGetKey(engine.GetWindow(), GLFW_KEY_M ) == GLFW_PRESS)
+        {
+            timeSample = 0;
+            mouseSpeed = 0;
+            xPos = 1024/2;
+            yPos = 768/2;
+            useMouseInput = !useMouseInput;
+        }
 
         horizontalAngle -= mouseSpeed * float( xPos - 1024/2 );
         verticalAngle   -= mouseSpeed * float( yPos - 768/2 );
@@ -272,5 +288,5 @@ int main(void)
         engine.Update();
     }
 
-	return 0;
+    return 0;
 }
