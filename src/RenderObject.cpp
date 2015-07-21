@@ -77,7 +77,6 @@ void TakeOne::RenderObject::LoadMesh(std::ifstream& pFile)
 
 void TakeOne::RenderObject::LoadMaterial(std::ifstream& pFile)
 {
-
     MaterialHelper materialLoader;
 
     //The header contains the uniforms used(form: 11010, where 1 means that the uniform is used)
