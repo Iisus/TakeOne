@@ -57,18 +57,19 @@ int main(void)
 
     auto boxRender = std::make_shared<TakeOne::BoxRenderObject>(textureMapProgram);
     boxRender->GetMaterial().SetTexture(TakeOne::Texture("../res/objects/Castle/th_portugal_edit-lt.jpg", Texture::INVERT_Y | Texture::COMPRESS_TO_DXT | Texture::TEXTURE_REPEATS | Texture::MIPMAPS));
+    boxRender->GetMaterial().SetShaderParam("u_shininess", 0.f);
+    boxRender->GetMaterial().SetShaderParam("u_color_specular", glm::vec4(1.0f));
+    boxRender->GetMaterial().SetShaderParam("u_textures_count", 1);
 
-    auto loadedCube = std::make_shared<TakeOne::RenderObject>(textureMapProgram, "../res/objects/cube/", "Cube");
-
-    TakeOne::RenderNode box(loadedCube);
+    TakeOne::RenderNode box(boxRender);
     TakeOne::RenderNode box2(boxRender);
     TakeOne::RenderNode box3(boxRender);
 
     Light light;
-    light.position = glm::vec3(0.0f, 100.0f, -10.0f);
-    light.intensities = glm::vec3(0.8f, 0.8f, 0.8f) * 1000.0f;
+    light.position = glm::vec3(0.0f, 10.0f, -10.0f);
+    light.intensities = glm::vec3(2.8f, 2.8f, 2.6f);
     light.attenuation = 0.01f;
-    light.ambientCoefficient = 0.0005f;
+    light.ambientCoefficient = 0.05f;
 
     TakeOne::CameraNode camera(TakeOne::CameraType::PERSPECTIVE);
     camera.SetClearColor(glm::vec4(63.0f / 255.0f, 75.0f / 255.0f, 82.0f / 255.0f, 1.0));
@@ -111,7 +112,7 @@ int main(void)
 
     while (!engine.ShouldClose())
     {
-        lightPos+=0.001;
+        lightPos+=0.0001;
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         // 1rst attribute buffer : vertices
@@ -178,18 +179,23 @@ int main(void)
 
         camera.GetTransform().SetPosition(camPos);
 
-//        light.position.x = sin(lightPos) * 200;
-//        light.position.z = cos(lightPos) * 200;
+        light.position.x = sin(lightPos) * 50;
+        light.position.z = cos(lightPos) * 50;
+
+        box.GetTransform().SetPosition(light.position);
+
         box.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());
         box.ApplyTransformation("model");
         box.GetRenderObject()->Render();
 
         box2.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());
         box2.ApplyTransformation("model");
+        box2.GetRenderObject()->GetMaterial().SetShaderParam("light.position", light.position);
         box2.GetRenderObject()->Render();
 
         box3.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());
         box3.ApplyTransformation("model");
+        box3.GetRenderObject()->GetMaterial().SetShaderParam("light.position", light.position);
         box3.GetRenderObject()->Render();
 
         engine.Update();
