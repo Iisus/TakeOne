@@ -19,7 +19,7 @@
 #include "RenderNode.h"
 #include "CameraNode.h"
 
-#include "BoxRenderObject.h"
+#include "Primitives.h"
 
 struct Light {
     glm::vec3 position;
@@ -65,6 +65,9 @@ int main(void)
     TakeOne::RenderNode box2(boxRender);
     TakeOne::RenderNode box3(boxRender);
 
+    auto planeRender = std::make_shared<TakeOne::PlaneRenderObject>(textureMapProgram);
+    TakeOne::RenderNode plane(planeRender);
+
     Light light;
     light.position = glm::vec3(0.0f, 10.0f, -10.0f);
     light.intensities = glm::vec3(2.8f, 2.8f, 2.6f);
@@ -78,6 +81,8 @@ int main(void)
     box.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());
     box2.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());
     box3.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());
+    plane.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());
+    plane.ApplyTransformation("model");
 
     box.ApplyTransformation("model");
     box.GetRenderObject()->GetMaterial().SetShaderParam("light.position", light.position);
@@ -197,6 +202,9 @@ int main(void)
         box3.ApplyTransformation("model");
         box3.GetRenderObject()->GetMaterial().SetShaderParam("light.position", light.position);
         box3.GetRenderObject()->Render();
+
+        plane.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());
+        plane.GetRenderObject()->Render();
 
         engine.Update();
     }
