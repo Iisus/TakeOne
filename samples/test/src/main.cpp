@@ -21,6 +21,8 @@
 
 #include "Primitives.h"
 
+#define RES_FOLDER std::string("../../../res")
+
 struct Light {
     glm::vec3 position;
     glm::vec3 intensities; //a.k.a. the color of the light
@@ -53,11 +55,11 @@ int main(void)
 {
     TakeOne::Engine engine(1024, 768, "TakeOne");
 
-    auto textureMapProgram = std::make_shared<TakeOne::Program>("../res/shaders/SimpleTextureMap/vertex.glsl", "../res/shaders/SimpleTextureMap/fragment.glsl");
-    auto colorMapProgram = std::make_shared<TakeOne::Program>("../res/shaders/SimpleColor/vertex.glsl", "../res/shaders/SimpleColor/fragment.glsl");
+    auto textureMapProgram = std::make_shared<TakeOne::Program>(RES_FOLDER + "/shaders/SimpleTextureMap/vertex.glsl", RES_FOLDER + "/shaders/SimpleTextureMap/fragment.glsl");
+    auto colorMapProgram = std::make_shared<TakeOne::Program>(RES_FOLDER + "/shaders/SimpleColor/vertex.glsl", RES_FOLDER + "/shaders/SimpleColor/fragment.glsl");
 
     auto boxRender = std::make_shared<TakeOne::BoxRenderObject>(textureMapProgram);
-    boxRender->GetMaterial().SetTexture(TakeOne::Texture("../res/objects/Castle/th_portugal_edit-lt.jpg", Texture::INVERT_Y | Texture::COMPRESS_TO_DXT | Texture::TEXTURE_REPEATS | Texture::MIPMAPS));
+    boxRender->GetMaterial().SetTexture(TakeOne::Texture(RES_FOLDER + "/objects/Castle/th_portugal_edit-lt.jpg", Texture::INVERT_Y | Texture::COMPRESS_TO_DXT | Texture::TEXTURE_REPEATS | Texture::MIPMAPS));
     boxRender->GetMaterial().SetShaderParam("u_shininess", 0.f);
     boxRender->GetMaterial().SetShaderParam("u_color_specular", glm::vec4(1.0f));
     boxRender->GetMaterial().SetShaderParam("u_textures_count", 1);
@@ -67,15 +69,15 @@ int main(void)
     TakeOne::RenderNode box3(boxRender);
 
     auto planeRender = std::make_shared<TakeOne::PlaneRenderObject>(textureMapProgram);
-    planeRender->GetMaterial().SetTexture(TakeOne::Texture("../res/objects/Castle/window_withstone2.jpg", Texture::INVERT_Y | Texture::COMPRESS_TO_DXT | Texture::TEXTURE_REPEATS | Texture::MIPMAPS));
+    planeRender->GetMaterial().SetTexture(TakeOne::Texture(RES_FOLDER + "/objects/Castle/window_withstone2.jpg", Texture::INVERT_Y | Texture::COMPRESS_TO_DXT | Texture::TEXTURE_REPEATS | Texture::MIPMAPS));
     TakeOne::RenderNode plane(planeRender);
 
     auto sphereRender = std::make_shared<TakeOne::SphereRenderObject>(textureMapProgram, 3.0f, 100, 100);
-    sphereRender->GetMaterial().SetTexture(TakeOne::Texture("../res/objects/Castle/th_portugal_edit-lt.jpg", Texture::INVERT_Y | Texture::COMPRESS_TO_DXT | Texture::TEXTURE_REPEATS | Texture::MIPMAPS));
+    sphereRender->GetMaterial().SetTexture(TakeOne::Texture(RES_FOLDER + "/objects/Castle/th_portugal_edit-lt.jpg", Texture::INVERT_Y | Texture::COMPRESS_TO_DXT | Texture::TEXTURE_REPEATS | Texture::MIPMAPS));
     sphereRender->GetMaterial().SetShaderParam("u_shininess", 0.5f);
     sphereRender->GetMaterial().SetShaderParam("u_color_specular", glm::vec4(1.0f));
     sphereRender->GetMaterial().SetShaderParam("u_textures_count", 1);
-    TakeOne::RenderNode shpere(sphereRender);
+    TakeOne::RenderNode sphere(sphereRender);
 
     Light light;
     light.position = glm::vec3(0.0f, 10.0f, -10.0f);
@@ -91,12 +93,12 @@ int main(void)
     box2.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());
     box3.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());
     plane.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());
-    shpere.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());
+    sphere.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());
 
     plane.GetTransform().SetPosition(glm::vec3(0.0f, 2.0f, 4.0f));
     plane.GetTransform().SetScale(glm::vec3(1.0f, 1.0f, 1.0f));
     plane.ApplyTransformation("model");
-    shpere.ApplyTransformation("model");
+    sphere.ApplyTransformation("model");
 
     box.ApplyTransformation("model");
     box.GetRenderObject()->GetMaterial().SetShaderParam("light.position", light.position);
@@ -220,8 +222,8 @@ int main(void)
         plane.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());
         plane.GetRenderObject()->Render();
 
-        shpere.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());
-        shpere.GetRenderObject()->Render();
+        sphere.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());
+        sphere.GetRenderObject()->Render();
 
         engine.Update();
     }

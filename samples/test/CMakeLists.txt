@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.4)
-project(TakeOne)
+project(Sample_Test)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y -Wall")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DENABLE_DEBUG=0")
@@ -26,25 +26,25 @@ else(UNIX)
 endif(UNIX)
 
 set(LINK_DIRS
-    lib/GLFW/lib/${PLATFORM}
-    lib/GLEW/lib/${PLATFORM}
-    lib/soil/lib/${PLATFORM}
+     ../../bin/
+    ../../lib/GLFW/lib/${PLATFORM}
+    ../../lib/GLEW/lib/${PLATFORM}
+    ../../lib/soil/lib/${PLATFORM}
     )
 
 set(INCLUDE_LIB_DIRS
-    lib/GLFW/include
-    lib/GLEW/include
-    lib/glm
-    lib/soil/include
+    ../../lib/GLFW/include
+    ../../lib/GLEW/include
+    ../../lib/glm
+    ../../lib/soil/include
     )
 
 set(INCLUDE_DIRS
-    include
+    ../../include
     )
 
 FILE(GLOB_RECURSE SOURCE_FILES "src/*.cpp")
-FILE(GLOB_RECURSE HEADER_FILES "include/*.h")
-FILE(GLOB_RECURSE TEMPLATE_FILES "include/*.hpp")
+FILE(GLOB_RECURSE HEADER_FILES "src/*.h")
 
 if(PLATFORM STREQUAL "Win32")
     set(LINK_FILES
@@ -55,6 +55,7 @@ if(PLATFORM STREQUAL "Win32")
         )
 else(PLATFORM STREQUAL "Win32")
     set(LINK_FILES
+        TakeOne
         glfw
         GLEW
         GL
@@ -68,9 +69,9 @@ include_directories(${INCLUDE_DIRS})
 include_directories(SYSTEM ${INCLUDE_LIB_DIRS})
 link_directories(${LINK_DIRS})
 
-#add_executable(TakeOne ${SOURCE_FILES} ${HEADER_FILES} ${TEMPLATE_FILES})
-add_library(TakeOne SHARED ${SOURCE_FILES} ${HEADER_FILES} ${TEMPLATE_FILES})
-target_link_libraries(TakeOne ${LINK_FILES})
+add_executable(Sample_Test ${SOURCE_FILES} ${HEADER_FILES})
+#add_library(TakeOne SHARED ${SOURCE_FILES} ${HEADER_FILES})
+target_link_libraries(Sample_Test ${LINK_FILES})
 
 #postbuild commands; copy dll's
 if(PLATFORM STREQUAL "Win32")
