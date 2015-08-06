@@ -81,11 +81,6 @@ void TakeOne::Texture::Bind() const
     glBindTexture(GL_TEXTURE_2D, mTextureId);
 }
 
-void TakeOne::Texture::Unbind() const
-{
-    glBindTexture(GL_TEXTURE_2D, 0);
-}
-
 void TakeOne::Texture::Unload()
 {
     if (mTextureId!=0){
@@ -103,6 +98,11 @@ void TakeOne::Texture::Unload()
 
         mTextureId = 0;
     }
+}
+
+void TakeOne::Texture::Unbind()
+{
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void TakeOne::Texture::Load(unsigned int pTextureId)

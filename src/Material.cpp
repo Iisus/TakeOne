@@ -34,6 +34,9 @@ void TakeOne::Material::Use()
         sLastProgramId = mProgram->GetLoadCounter();
     }
 
+    if(mTextures.empty())
+        Texture::Unbind();
+
     for(const auto& texture:mTextures)
         texture.Bind();
 

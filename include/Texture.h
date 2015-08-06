@@ -22,8 +22,10 @@ namespace TakeOne
         void LoadFromFile(const std::string pTexturePath, unsigned int pTextureFlags, unsigned int pTextureId = 0);
         void LoadFromBuffer(const unsigned char* const pBuffer, int pSize, unsigned int pTextureFlags, unsigned int pTextureId = 0);
         void Bind() const;
-        void Unbind() const;
         void Unload();
+
+        //static because we need to unbind the last texture from the material
+        static void Unbind();
 
         //match SOIL flags, so SOIL is not exposed
         enum Flag : unsigned int
