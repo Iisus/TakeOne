@@ -67,6 +67,7 @@ int main(void)
     TakeOne::RenderNode box3(boxRender);
 
     auto planeRender = std::make_shared<TakeOne::PlaneRenderObject>(textureMapProgram);
+    planeRender->GetMaterial().SetTexture(TakeOne::Texture("../res/objects/Castle/window_withstone2.jpg", Texture::INVERT_Y | Texture::COMPRESS_TO_DXT | Texture::TEXTURE_REPEATS | Texture::MIPMAPS));
     TakeOne::RenderNode plane(planeRender);
 
     auto sphereRender = std::make_shared<TakeOne::SphereRenderObject>(textureMapProgram, 3.0f, 100, 100);
@@ -92,6 +93,8 @@ int main(void)
     plane.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());
     shpere.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());
 
+    plane.GetTransform().SetPosition(glm::vec3(0.0f, 2.0f, 4.0f));
+    plane.GetTransform().SetScale(glm::vec3(1.0f, 1.0f, 1.0f));
     plane.ApplyTransformation("model");
     shpere.ApplyTransformation("model");
 
@@ -215,7 +218,7 @@ int main(void)
         box3.GetRenderObject()->Render();
 
         plane.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());
-        //plane.GetRenderObject()->Render();
+        plane.GetRenderObject()->Render();
 
         shpere.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());
         shpere.GetRenderObject()->Render();
