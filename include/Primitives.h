@@ -15,4 +15,10 @@ namespace TakeOne
     public:
         PlaneRenderObject(const std::shared_ptr<Program>& pProgram);
     };
+
+    class SphereRenderObject : public RenderObject
+    {
+    public:
+        SphereRenderObject(const std::shared_ptr<Program>& pProgram, float pRadius, int pRings, int pSectors);
+    };
 }

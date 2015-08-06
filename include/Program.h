@@ -24,14 +24,12 @@ namespace TakeOne
         void Use() const;
         int GetUniformLocation(const std::string& pName) const;
 
-        static inline unsigned int GetLoadCounter() { return sLoadCounter; }
+        inline unsigned int GetLastProgramUsed() { return mProgramId; }
     private:
         void Link();
 
         std::unique_ptr<Shader> mVertex;
         std::unique_ptr<Shader> mFragment;
         unsigned int mProgramId;
-
-        static unsigned int sLoadCounter; //used as unique id to optimise binding
     };
 }

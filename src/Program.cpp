@@ -2,8 +2,6 @@
 #include "Log.h"
 #include "GL/glew.h"
 
-unsigned int TakeOne::Program::sLoadCounter = 0;
-
 TakeOne::Program::Program()
         : mProgramId(0)
 {
@@ -84,8 +82,6 @@ int TakeOne::Program::GetUniformLocation(const std::string& pName) const
 
 void TakeOne::Program::Link()
 {
-    sLoadCounter++;
-
     //Create the program
     mProgramId = glCreateProgram();
 

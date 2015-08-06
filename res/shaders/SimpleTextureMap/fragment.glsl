@@ -51,10 +51,8 @@ void main() {
     vec3 diffuse = diffuseCoefficient * surfaceColor.rgb * light.intensities;
 
     //specular
-    float specularCoefficient = 0.0;
-    if(diffuseCoefficient > 0.0)
-        specularCoefficient = pow(max(0.0, dot(surfaceToCamera, reflect(-surfaceToLight, normal))), 1 - u_shininess);
-    vec3 specular = specularCoefficient * u_color_specular.rgb * light.intensities;
+    float specularCoefficient = pow(max(0.0, dot(surfaceToCamera, reflect(-surfaceToLight, normal))), 1 - u_shininess);
+    vec3 specular = diffuseCoefficient * specularCoefficient * u_color_specular.rgb * light.intensities;
 
     //attenuation
     float distanceToLight = length(light.position - surfacePos);

@@ -21,11 +21,11 @@ void TakeOne::Material::Use()
 {
     assert(mProgram != nullptr && "The program from material must be set!");
 
-    static unsigned int sLastProgramId = mProgram->GetLoadCounter() + 1;
-    if(sLastProgramId != mProgram->GetLoadCounter())
+    static unsigned int sLastProgramId = 0;
+    if(!sLastProgramId || sLastProgramId != mProgram->GetLastProgramUsed())
     {
         mProgram->Use();
-        sLastProgramId = mProgram->GetLoadCounter();
+        sLastProgramId = mProgram->GetLastProgramUsed();
     }
 
     if(mTextures.empty())
