@@ -1,0 +1,372 @@
+g light_back
+g stoiki_4ern
+g 4ern_obod
+g chrome_obod
+g Object06
+g Object08
+g Plane01
+g Plane01
+g Object11
+defaultobject
+defaultobject
+defaultobject
+g Object10
+g Object13
+g window_back
+g Object16
+g Object18
+g Object18
+g Object42
+g Object19
+g Box02
+g Plane03
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+g Box09
+g window_side
+g Box10
+g Cylinder01
+g Plane05
+g Obj_498
+g Obj_500
+g Obj_486
+g Obj_476
+g Obj_477
+g Obj_488
+g Obj_479
+g Obj_480
+g Obj_481
+g Obj_490
+g Obj_483
+g Obj_491
+g Obj_485
+g Obj_492
+g Obj_494
+g Obj_493
+g Obj_497
+g Obj_496
+g Obj_495
+g Obj_482
+g Obj_489
+g Obj_478
+g Obj_484
+g Obj_487
+g Obj_475
+g Obj_526
+g Obj_527
+g Obj_528
+g Obj_529
+g Obj_530
+g Obj_531
+g Obj_532
+g Obj_533
+g Obj_534
+g Obj_535
+g Obj_536
+g Obj_537
+g Obj_538
+g Obj_539
+g Obj_540
+g Obj_541
+g Obj_542
+g Obj_543
+g Obj_544
+g Obj_545
+g Obj_546
+g Obj_547
+g Obj_548
+g Obj_549
+g Obj_550
+g Object145
+g Object20
+g light_back_inside
+g light_back_cil_inside_2
+g light_back_cil_2
+g light_back_cil_inside_1
+g light_back_cil_1
+g Cylinder09
+g Cylinder10
+g chrome_far07
+g Object159
+g Box11
+g chrome_far08
+g Object164
+g Object165
+g window_side_1
+g chrome_obod01
+g Object166
+g 4ern_obod01
+g stoiki_4ern01
+g Box12
+g Object168
+g Object170
+g Object174
+g Object175
+g Object22
+g Plane13
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+defaultobject
+g Object179
+g Object167
+g Text01
+g Text02
+g Obj_100
+g Obj_102
+g far_zad01
+g Plane02
+g stoiki_4ern02
+g Object04
+g Object184
+g stoiki_4ern03
+g dvornik2
+g dvornik05
+g Plane14
+g Box3
+g Cylinde9
+g interior_speed_h
+g Tube02
+g Line113
+g Box05
+g Box31
+g Box32
+g Box04
+g Cylinder043
+g Cylinder625
+g Box190
+g Box191
+g Box192
+g Box193
+g Box194
+g Box195
+g Box196
+g Box197
+g Box198
+g Line12
+g Box199
+g Box200
+g Box201
+g Box202
+g Box203
+g Box204
+g Line13
+g Box205
+g Box206
+g Box207
+g Box208
+g Box209
+g Box210
+g Box06
+g rudder
+g interior_pannel_lower
+g Line023
+g Tube173
+g Tube174
+g Box1470
+g Cylinder21
+g seat_front_03
+g pannel
+g Speed_WIndow
+g Computer
+g Object185
+g Box1471
+g window_head
+g Cylinder07
+g Cylinder626
+g ChamferBox01
+g ChamferBox02
+g BVM__Turner
+g BVM__black
+g BVM__Mirror
+g BVM__Turner_inside
+g BVM_
+g BVM_01
+g BVM__black01
+g BVM__Mirror01
+g BVM__Turner01
+g BVM__Turner_inside01
+g 7
+g 15
+g 13
+g 6
+g 8
+g 14
+g 10
+g 11
+g 5
+g 12
+g 1
+g 9
+g 3
+g 2
+g 4
+g 16
+g 17
+g 18
+g 19
+g 20
+g 21
+g 22
+g 23
+g 24
+g 25
+g 26
+g 27
+g 28
+g 29
+g 30
+g seat_front_04
+g seat_front_05
+g seat_front_06
+g Object187
+g Obj_743
+g disc_brake_black06
+g disc_brake06
+g Clipper07
+g diskz
+defaultobject
+defaultobject
+g Obj_608
+g Clipper02
+g disc_brake01
+g Object01
+g Clipper05
+g disc_brake_black04
+g disc_brake04
+g Obj_687
+g Obj_688
+defaultobject
+defaultobject
+g Obj_689
+g Obj_771
+defaultobject
+defaultobject
+g Obj_772
+g Object189
+g Clipper10
+g disc_brake_black08
+g disc_brake09
+g Obj_774
+g Obj_778
+g Clipper11
+g disc_brake_black09
+g disc_brake10
+g Obj_775
+defaultobject
+defaultobject
+g Obj_776
+g Object190
+g Obj_777

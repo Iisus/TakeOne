@@ -1,0 +1,22 @@
+g Turret
+g Turret1
+defaultobject
+defaultobject1
+defaultobject2
+defaultobject3
+g Manual_MG
+defaultobject4
+g Reactive_Armor
+g Wheels
+defaultobject5
+g Track
+g Body
+defaultobject6
+defaultobject7
+g RC_MG
+defaultobject8
+defaultobject9
+g Barrel
+g Alpha
+defaultobject10
+defaultobject11
