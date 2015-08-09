@@ -1,5 +1,8 @@
-/CMakeLists.txt.user
 /bin/
-/tools/ObjConvert/CMakeLists.txt.user
+/CMakeLists.txt.user
+
 /tools/ObjConvert/bin/
+/tools/ObjConvert/CMakeLists.txt.user
+
 /samples/test/bin/
+/samples/test/CMakeLists.txt.user
