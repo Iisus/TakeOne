@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.4)
 project(Sample_Test)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y -Wall")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wall")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DENABLE_DEBUG=0")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DENABLE_DEBUG=1")
 
@@ -41,10 +41,11 @@ set(INCLUDE_LIB_DIRS
 
 set(INCLUDE_DIRS
     ../../include
+    ../common
     )
 
-FILE(GLOB_RECURSE SOURCE_FILES "src/*.cpp")
-FILE(GLOB_RECURSE HEADER_FILES "src/*.h")
+FILE(GLOB_RECURSE SOURCE_FILES "src/*.cpp" "../common/*.cpp")
+FILE(GLOB_RECURSE HEADER_FILES "src/*.h" "../common/*.h")
 
 if(PLATFORM STREQUAL "Win32")
     set(LINK_FILES
@@ -70,8 +71,12 @@ include_directories(SYSTEM ${INCLUDE_LIB_DIRS})
 link_directories(${LINK_DIRS})
 
 add_executable(Sample_Test ${SOURCE_FILES} ${HEADER_FILES})
-#add_library(TakeOne SHARED ${SOURCE_FILES} ${HEADER_FILES})
+
 target_link_libraries(Sample_Test ${LINK_FILES})
+
+#copy resources from engine to /res/default/
+FILE(MAKE_DIRECTORY ../res/default/)
+FILE(COPY ../../res/ DESTINATION ../../res/default/)
 
 #postbuild commands; copy dll's
 if(PLATFORM STREQUAL "Win32")
@@ -90,15 +95,4 @@ if(PLATFORM STREQUAL "Win32")
             ${CMAKE_CURRENT_LIST_DIR}/bin/                                            # <--this is out-file path
             )
 
-#    set_source_files_properties(
-#            ${SOURCE_FILES}
-#            PROPERTIES
-#            COMPILE_FLAGS "-Wall"
-#            )
-else(PLATFORM STREQUAL "Win32")
-#    set_source_files_properties(
-#        ${SOURCE_FILES}
-#        PROPERTIES
-#        COMPILE_FLAGS "-Weverything -Wno-c++98-compat-pedantic -Wno-c++98-compat -Wno-padded -Wno-exit-time-destructors"
-#        )
 endif(PLATFORM STREQUAL "Win32")

@@ -13,6 +13,7 @@
 #include "Log.h"
 #include "Material.h"
 #include "RenderObject.h"
+#include "DefaultRes.h"
 
 #include "Raster.h"
 
@@ -21,7 +22,7 @@
 
 #include "Primitives.h"
 
-#define RES_FOLDER std::string("../../../res")
+#include "SampleUtil.h"
 
 struct Light {
     glm::vec3 position;
@@ -55,8 +56,10 @@ int main(void)
 {
     TakeOne::Engine engine(1024, 768, "TakeOne");
 
-    auto textureMapProgram = std::make_shared<TakeOne::Program>(RES_FOLDER + "/shaders/SimpleTextureMap/vertex.glsl", RES_FOLDER + "/shaders/SimpleTextureMap/fragment.glsl");
-    auto colorMapProgram = std::make_shared<TakeOne::Program>(RES_FOLDER + "/shaders/SimpleColor/vertex.glsl", RES_FOLDER + "/shaders/SimpleColor/fragment.glsl");
+    DefaultRes res(RES_FOLDER);
+
+    auto textureMapProgram = std::shared_ptr<Program>(std::move(res.SimpleTextureProgram()));
+    //auto colorMapProgram = std::make_shared<TakeOne::Program>(RES_FOLDER + "/shaders/SimpleColor/vertex.glsl", RES_FOLDER + "/shaders/SimpleColor/fragment.glsl");
 
     auto boxRender = std::make_shared<TakeOne::BoxRenderObject>(textureMapProgram);
     boxRender->GetMaterial().SetTexture(TakeOne::Texture(RES_FOLDER + "/objects/Castle/th_portugal_edit-lt.jpg", Texture::INVERT_Y | Texture::COMPRESS_TO_DXT | Texture::TEXTURE_REPEATS | Texture::MIPMAPS));

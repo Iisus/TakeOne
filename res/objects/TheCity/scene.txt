@@ -1,4 +1,0 @@
-g mesh01
-defaultobject
-g bldgs2
-g
