@@ -10,7 +10,7 @@ namespace TakeOne
     {
     public:
 
-        DefaultRes(std::string aResFolder);
+        DefaultRes(std::string pResFolder);
 
         inline std::unique_ptr<Program> SimpleTextureProgram() const
         {
