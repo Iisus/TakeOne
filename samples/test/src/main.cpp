@@ -58,35 +58,45 @@ int main(void)
 
     DefaultRes res(RES_FOLDER);
 
-    auto textureMapProgram = std::shared_ptr<Program>(std::move(res.SimpleTextureProgram()));
-    //auto colorMapProgram = std::make_shared<TakeOne::Program>(RES_FOLDER + "/shaders/SimpleColor/vertex.glsl", RES_FOLDER + "/shaders/SimpleColor/fragment.glsl");
+    auto textureMapProgram = std::shared_ptr<Program>(std::move(res.UberShaderProgram()));
 
     auto boxRender = std::make_shared<TakeOne::BoxRenderObject>(textureMapProgram);
-    boxRender->GetMaterial().SetTexture(TakeOne::Texture(RES_FOLDER + "/objects/Castle/th_portugal_edit-lt.jpg", Texture::INVERT_Y | Texture::COMPRESS_TO_DXT | Texture::TEXTURE_REPEATS | Texture::MIPMAPS));
-    boxRender->GetMaterial().SetShaderParam("u_shininess", 0.f);
-    boxRender->GetMaterial().SetShaderParam("u_color_specular", glm::vec4(1.0f));
-    boxRender->GetMaterial().SetShaderParam("u_textures_count", 1);
+    TakeOne::Texture t1, t2;
+
+    t1.LoadFromFile(RES_FOLDER + "textures/container2.png", Texture::INVERT_Y | Texture::COMPRESS_TO_DXT | Texture::TEXTURE_REPEATS | Texture::MIPMAPS);
+    t2.LoadFromFile(RES_FOLDER + "textures/container2_specular.png", Texture::INVERT_Y | Texture::COMPRESS_TO_DXT | Texture::TEXTURE_REPEATS | Texture::MIPMAPS);
+
+    boxRender->GetMaterial().SetTexture(std::move(t1));
+    boxRender->GetMaterial().SetTexture(std::move(t2));
+
+    boxRender->GetMaterial().SetShaderParam("material.diffuse",  0);
+    boxRender->GetMaterial().SetShaderParam("material.specular", 1);
+
+//    boxRender->GetMaterial().SetShaderParam("u_shininess", 0.f);
+//    boxRender->GetMaterial().SetShaderParam("u_color_specular", glm::vec4(1.0f));
+//    boxRender->GetMaterial().SetShaderParam("u_textures_count", 1);
+
 
     TakeOne::RenderNode box(boxRender);
     TakeOne::RenderNode box2(boxRender);
     TakeOne::RenderNode box3(boxRender);
 
-    auto planeRender = std::make_shared<TakeOne::PlaneRenderObject>(textureMapProgram);
-    planeRender->GetMaterial().SetTexture(TakeOne::Texture(RES_FOLDER + "/objects/Castle/window_withstone2.jpg", Texture::INVERT_Y | Texture::COMPRESS_TO_DXT | Texture::TEXTURE_REPEATS | Texture::MIPMAPS));
-    TakeOne::RenderNode plane(planeRender);
+//    auto planeRender = std::make_shared<TakeOne::PlaneRenderObject>(textureMapProgram);
+//    planeRender->GetMaterial().SetTexture(TakeOne::Texture(RES_FOLDER + "/objects/Castle/window_withstone2.jpg", Texture::INVERT_Y | Texture::COMPRESS_TO_DXT | Texture::TEXTURE_REPEATS | Texture::MIPMAPS));
+//    TakeOne::RenderNode plane(planeRender);
 
-    auto sphereRender = std::make_shared<TakeOne::SphereRenderObject>(textureMapProgram, 3.0f, 100, 100);
-    sphereRender->GetMaterial().SetTexture(TakeOne::Texture(RES_FOLDER + "/objects/Castle/th_portugal_edit-lt.jpg", Texture::INVERT_Y | Texture::COMPRESS_TO_DXT | Texture::TEXTURE_REPEATS | Texture::MIPMAPS));
-    sphereRender->GetMaterial().SetShaderParam("u_shininess", 0.5f);
-    sphereRender->GetMaterial().SetShaderParam("u_color_specular", glm::vec4(1.0f));
-    sphereRender->GetMaterial().SetShaderParam("u_textures_count", 1);
-    TakeOne::RenderNode sphere(sphereRender);
+//    auto sphereRender = std::make_shared<TakeOne::SphereRenderObject>(textureMapProgram, 3.0f, 100, 100);
+//    sphereRender->GetMaterial().SetTexture(TakeOne::Texture(RES_FOLDER + "/objects/Castle/th_portugal_edit-lt.jpg", Texture::INVERT_Y | Texture::COMPRESS_TO_DXT | Texture::TEXTURE_REPEATS | Texture::MIPMAPS));
+//    sphereRender->GetMaterial().SetShaderParam("u_shininess", 0.5f);
+//    sphereRender->GetMaterial().SetShaderParam("u_color_specular", glm::vec4(1.0f));
+//    sphereRender->GetMaterial().SetShaderParam("u_textures_count", 1);
+//    TakeOne::RenderNode sphere(sphereRender);
 
-    Light light;
-    light.position = glm::vec3(0.0f, 10.0f, -10.0f);
-    light.intensities = glm::vec3(2.8f, 2.8f, 2.6f);
-    light.attenuation = 0.01f;
-    light.ambientCoefficient = 0.05f;
+//    Light light;
+//    light.position = glm::vec3(0.0f, 10.0f, -10.0f);
+//    light.intensities = glm::vec3(2.8f, 2.8f, 2.6f);
+//    light.attenuation = 0.01f;
+//    light.ambientCoefficient = 0.05f;
 
     TakeOne::CameraNode camera(TakeOne::CameraType::PERSPECTIVE);
     camera.SetClearColor(glm::vec4(63.0f / 255.0f, 75.0f / 255.0f, 82.0f / 255.0f, 1.0));
@@ -95,44 +105,50 @@ int main(void)
     box.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());
     box2.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());
     box3.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());
-    plane.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());
-    sphere.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());
+//    plane.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());
+//    sphere.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());
 
-    plane.GetTransform().SetPosition(glm::vec3(0.0f, 2.0f, 4.0f));
-    plane.GetTransform().SetScale(glm::vec3(1.0f, 1.0f, 1.0f));
-    plane.ApplyTransformation("model");
-    sphere.ApplyTransformation("model");
+//    plane.GetTransform().SetPosition(glm::vec3(0.0f, 2.0f, 4.0f));
+//    plane.GetTransform().SetScale(glm::vec3(1.0f, 1.0f, 1.0f));
+//    plane.SendModelMatrix();
+//    sphere.SendModelMatrix();
 
-    box.ApplyTransformation("model");
-    box.GetRenderObject()->GetMaterial().SetShaderParam("light.position", light.position);
-    box.GetRenderObject()->GetMaterial().SetShaderParam("light.intensities", light.intensities);
-    box.GetRenderObject()->GetMaterial().SetShaderParam("light.attenuation", light.attenuation);
-    box.GetRenderObject()->GetMaterial().SetShaderParam("light.ambientCoefficient", light.ambientCoefficient);
+    box.SendModelMatrix();
+//    box.GetRenderObject()->GetMaterial().SetShaderParam("light.position", light.position);
+//    box.GetRenderObject()->GetMaterial().SetShaderParam("light.intensities", light.intensities);
+//    box.GetRenderObject()->GetMaterial().SetShaderParam("light.attenuation", light.attenuation);
+//    box.GetRenderObject()->GetMaterial().SetShaderParam("light.ambientCoefficient", light.ambientCoefficient);
 
     box2.GetTransform().SetPosition(glm::vec3(17.0f));
     box2.GetTransform().SetScale(glm::vec3(2.0f));
-    box2.ApplyTransformation("model");
-    box2.GetRenderObject()->GetMaterial().SetShaderParam("light.position", light.position);
-    box2.GetRenderObject()->GetMaterial().SetShaderParam("light.intensities", light.intensities);
-    box2.GetRenderObject()->GetMaterial().SetShaderParam("light.attenuation", light.attenuation);
-    box2.GetRenderObject()->GetMaterial().SetShaderParam("light.ambientCoefficient", light.ambientCoefficient);
+    box2.SendModelMatrix();
+//    box2.GetRenderObject()->GetMaterial().SetShaderParam("light.position", light.position);
+//    box2.GetRenderObject()->GetMaterial().SetShaderParam("light.intensities", light.intensities);
+//    box2.GetRenderObject()->GetMaterial().SetShaderParam("light.attenuation", light.attenuation);
+//    box2.GetRenderObject()->GetMaterial().SetShaderParam("light.ambientCoefficient", light.ambientCoefficient);
 
     box3.GetTransform().SetPosition(glm::vec3(3.0f, 5.0f, 10.0f));
     box3.GetTransform().SetScale(glm::vec3(2.0f, .5f, .5f));
     box3.GetTransform().SetRotation(glm::angleAxis(glm::pi<float>()/6.0f, glm::vec3(0.0f, 1.0f, 0.0f)));
-    box3.ApplyTransformation("model");
-    box3.GetRenderObject()->GetMaterial().SetShaderParam("light.position", light.position);
-    box3.GetRenderObject()->GetMaterial().SetShaderParam("light.intensities", light.intensities);
-    box3.GetRenderObject()->GetMaterial().SetShaderParam("light.attenuation", light.attenuation);
-    box3.GetRenderObject()->GetMaterial().SetShaderParam("light.ambientCoefficient", light.ambientCoefficient);
+    box3.SendModelMatrix();
+//    box3.GetRenderObject()->GetMaterial().SetShaderParam("light.position", light.position);
+//    box3.GetRenderObject()->GetMaterial().SetShaderParam("light.intensities", light.intensities);
+//    box3.GetRenderObject()->GetMaterial().SetShaderParam("light.attenuation", light.attenuation);
+//    box3.GetRenderObject()->GetMaterial().SetShaderParam("light.ambientCoefficient", light.ambientCoefficient);
 
     double lightPos=0;
 
-    float speed = 0.01f; // 3 units / second
+    float speed = 0.001f; // 3 units / second
     float horizontalAngle = 0;
     float verticalAngle = 0;
 
     glfwSetScrollCallback(engine.GetWindow(), scroll_callback);
+
+    // Positions of the point lights
+        glm::vec3 pointLightPositions[] = {
+            glm::vec3( 7.0f,  2.0f,  2.0f),
+            glm::vec3( 2.3f, -3.3f, -4.0f),
+        };
 
     while (!engine.ShouldClose())
     {
@@ -203,30 +219,69 @@ int main(void)
 
         camera.GetTransform().SetPosition(camPos);
 
-        light.position.x = sin(lightPos) * 50;
-        light.position.z = cos(lightPos) * 50;
+        //light.position.x = sin(lightPos) * 50;
+        //light.position.z = cos(lightPos) * 50;
 
-        box.GetTransform().SetPosition(light.position);
+        //box.GetTransform().SetPosition(light.position);
+
+       boxRender->GetMaterial().SetShaderParam("material.shininess", 32.0f);
+       // Directional light
+       boxRender->GetMaterial().SetShaderParam("dirLight.direction", glm::vec3(-0.2f, -1.0f, -0.3f));
+       boxRender->GetMaterial().SetShaderParam("dirLight.ambient", glm::vec3(0.05f, 0.05f, 0.05f));
+       boxRender->GetMaterial().SetShaderParam("dirLight.diffuse", glm::vec3(0.4f, 0.4f, 0.4f));
+       boxRender->GetMaterial().SetShaderParam("dirLight.specular", glm::vec3(0.5f, 0.5f, 0.5f));
+       // Point light 1
+       boxRender->GetMaterial().SetShaderParam("pointLight[0].position", pointLightPositions[0]);
+       boxRender->GetMaterial().SetShaderParam("pointLight[0].ambient", glm::vec3(0.05f, 0.05f, 0.05f));
+       boxRender->GetMaterial().SetShaderParam("pointLight[0].diffuse", glm::vec3(0.8f, 0.8f, 0.8f));
+       boxRender->GetMaterial().SetShaderParam("pointLight[0].specular", glm::vec3(1.0f, 1.0f, 1.0f));
+       boxRender->GetMaterial().SetShaderParam("pointLight[0].constantAttenuation", 1.0f);
+       boxRender->GetMaterial().SetShaderParam("pointLight[0].linearAttenuation", 0.09f);
+       boxRender->GetMaterial().SetShaderParam("pointLight[0].quadraticAttenuation", 0.032f);
+//       // Point light 2
+       boxRender->GetMaterial().SetShaderParam("pointLight[1].position", pointLightPositions[1]);
+       boxRender->GetMaterial().SetShaderParam("pointLight[1].ambient", glm::vec3(0.05f, 0.05f, 0.05f));
+       boxRender->GetMaterial().SetShaderParam("pointLight[1].diffuse", glm::vec3(0.8f, 0.8f, 0.8f));
+       boxRender->GetMaterial().SetShaderParam("pointLight[1].specular", glm::vec3(1.0f, 1.0f, 1.0f));
+       boxRender->GetMaterial().SetShaderParam("pointLight[1].constantAttenuation", 1.0f);
+       boxRender->GetMaterial().SetShaderParam("pointLight[1].linearAttenuation", 0.09f);
+       boxRender->GetMaterial().SetShaderParam("pointLight[1].quadraticAttenuation", 0.032f);
+
+
+       boxRender->GetMaterial().SetShaderParam("spotLight[0].position", glm::vec3(3.0f, 3.0f, 3.0f));
+       boxRender->GetMaterial().SetShaderParam("spotLight[0].direction", glm::vec3(-0.2f, -1.0f, -0.3f));
+       boxRender->GetMaterial().SetShaderParam("spotLight[0].ambient", glm::vec3(0.05f, 0.05f, 0.05f));
+       boxRender->GetMaterial().SetShaderParam("spotLight[0].diffuse", glm::vec3(1.0f, 0.8f, 0.8f));
+       boxRender->GetMaterial().SetShaderParam("spotLight[0].specular", glm::vec3(1.0f, 1.0f, 1.0f));
+       boxRender->GetMaterial().SetShaderParam("spotLight[0].constantAttenuation", 1.0f);
+       boxRender->GetMaterial().SetShaderParam("spotLight[0].cutOff", 0.6f);
+       boxRender->GetMaterial().SetShaderParam("spotLight[0].outerCutOff", 1.6f);
+
+       boxRender->GetMaterial().SetShaderParam("spotLight[0].linearAttenuation", 0.09f);
+       boxRender->GetMaterial().SetShaderParam("spotLight[0].quadraticAttenuation", 0.032f);
+
+
+
 
         box.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());
-        box.ApplyTransformation("model");
+        box.SendModelMatrix();
         box.GetRenderObject()->Render();
 
         box2.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());
-        box2.ApplyTransformation("model");
-        box2.GetRenderObject()->GetMaterial().SetShaderParam("light.position", light.position);
+        box2.SendModelMatrix();
+        //box2.GetRenderObject()->GetMaterial().SetShaderParam("light.position", light.position);
         box2.GetRenderObject()->Render();
 
         box3.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());
-        box3.ApplyTransformation("model");
-        box3.GetRenderObject()->GetMaterial().SetShaderParam("light.position", light.position);
+        box3.SendModelMatrix();
+        //box3.GetRenderObject()->GetMaterial().SetShaderParam("light.position", light.position);
         box3.GetRenderObject()->Render();
 
-        plane.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());
-        plane.GetRenderObject()->Render();
+//        plane.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());
+//        plane.GetRenderObject()->Render();
 
-        sphere.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());
-        sphere.GetRenderObject()->Render();
+//        sphere.GetRenderObject()->GetMaterial().SetShaderParam("camera", camera.GetViewProjectionMatrix());
+//        sphere.GetRenderObject()->Render();
 
         engine.Update();
     }

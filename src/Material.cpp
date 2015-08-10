@@ -31,8 +31,13 @@ void TakeOne::Material::Use()
     if(mTextures.empty())
         Texture::Unbind();
 
+    int texNumber = 0;
     for(const auto& texture:mTextures)
+    {
+        glActiveTexture(GL_TEXTURE0 + texNumber);
         texture.Bind();
+        texNumber++;
+    }
 
     //send the uniforms to the shader
     for (auto& kv : mShaderParams)
