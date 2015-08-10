@@ -1,7 +1,9 @@
 cmake_minimum_required(VERSION 2.8.4)
+
 project(TakeOne)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y -Wall")
+#C++14; all warnings
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wall")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DENABLE_DEBUG=0")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DENABLE_DEBUG=1")
 
@@ -9,6 +11,7 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/bin)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/bin)
 
+#for glm: use radians instead of degrees
 add_definitions(-DGLM_FORCE_RADIANS)
 
 if(UNIX)
@@ -77,27 +80,15 @@ if(PLATFORM STREQUAL "Win32")
 
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static-libstdc++ -static-libgcc")
 
-    add_custom_command(TARGET TakeOne POST_BUILD            # Adds a post-build event to MyTest
-            COMMAND ${CMAKE_COMMAND} -E copy_if_different   # which executes "cmake - E copy_if_different..."
-            ${CMAKE_CURRENT_LIST_DIR}/lib/GLEW/lib/Win32/glew32.dll                 # <--this is in-file
-            ${CMAKE_CURRENT_LIST_DIR}/bin/                                            # <--this is out-file path
+    add_custom_command(TARGET TakeOne POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            ${CMAKE_CURRENT_LIST_DIR}/lib/GLEW/lib/Win32/glew32.dll
+            ${CMAKE_CURRENT_LIST_DIR}/bin/
             )
 
-    add_custom_command(TARGET TakeOne POST_BUILD            # Adds a post-build event to MyTest
-            COMMAND ${CMAKE_COMMAND} -E copy_if_different   # which executes "cmake - E copy_if_different..."
-            ${CMAKE_CURRENT_LIST_DIR}/lib/GLFW/lib/Win32/glfw3.dll                  # <--this is in-file
-            ${CMAKE_CURRENT_LIST_DIR}/bin/                                            # <--this is out-file path
+    add_custom_command(TARGET TakeOne POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            ${CMAKE_CURRENT_LIST_DIR}/lib/GLFW/lib/Win32/glfw3.dll
+            ${CMAKE_CURRENT_LIST_DIR}/bin/
             )
-
-#    set_source_files_properties(
-#            ${SOURCE_FILES}
-#            PROPERTIES
-#            COMPILE_FLAGS "-Wall"
-#            )
-else(PLATFORM STREQUAL "Win32")
-#    set_source_files_properties(
-#        ${SOURCE_FILES}
-#        PROPERTIES
-#        COMPILE_FLAGS "-Weverything -Wno-c++98-compat-pedantic -Wno-c++98-compat -Wno-padded -Wno-exit-time-destructors"
-#        )
 endif(PLATFORM STREQUAL "Win32")
