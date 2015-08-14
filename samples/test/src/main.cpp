@@ -41,15 +41,6 @@ void DrawLine(glm::vec3 pStart, glm::vec3 pEnd, glm::vec3 pColor = glm::vec3(0.0
     glEnd();
 }
 
-float cameraFov = 45.0f;
-
-void scroll_callback(GLFWwindow* /*window*/, double /*xoffset*/, double yoffset)
-{
-    auto tempFov = cameraFov+yoffset*-1;
-    if(tempFov > 0 && tempFov < 120)
-        cameraFov = tempFov;
-}
-
 using namespace TakeOne;
 
 int main(void)
@@ -128,75 +119,109 @@ int main(void)
 
     double lightPos=0;
 
-    float speed = 0.01f; // 3 units / second
-    float horizontalAngle = 0;
-    float verticalAngle = 0;
+    float speed = 0.1f; // 3 units / second
 
-    glfwSetScrollCallback(engine.GetWindow(), scroll_callback);
+
+    float cameraFov = 45.0f;
+
+    engine.GetInput().MouseScrollAction([&cameraFov](double /*xoffset*/, double yoffset)
+    {
+        auto tempFov = cameraFov+yoffset*-1;
+        if(tempFov > 0 && tempFov < 120)
+            cameraFov = tempFov;
+    });
+
+    int cursorMode = GLFW_CURSOR_DISABLED;
+    engine.GetInput().SetCursorMode(cursorMode);
 
     while (!engine.ShouldClose())
     {
-        lightPos+=0.0001;
+        lightPos+=0.001;
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         // 1rst attribute buffer : vertices
 
         float mouseSpeed = 0.0005f;
-        double xPos, yPos;
 
         static bool useMouseInput = true;
 
-        if(useMouseInput)
+        engine.GetInput().MousePosAction(
+        [&camera, &mouseSpeed](double pXPos, double pYPos)
         {
-            glfwGetCursorPos(engine.GetWindow(), &xPos, &yPos);
-            glfwSetCursorPos(engine.GetWindow(), 1024/2, 768/2);
-        }
+            static float horizontalAngle = 0;
+            static float verticalAngle = 0;
 
-        static unsigned int timeSample = 0;
-        if (timeSample++ > 100 && glfwGetKey(engine.GetWindow(), GLFW_KEY_M ) == GLFW_PRESS)
+            static double oldX = pXPos, oldY = pYPos;
+
+            if(useMouseInput)
+            {
+                horizontalAngle -= mouseSpeed * float( pXPos - oldX);
+                verticalAngle   -= mouseSpeed * float( pYPos - oldY);
+
+                camera.SetAngleAxis(horizontalAngle, glm::vec3(0, 1, 0));
+                camera.Rotate(verticalAngle, glm::vec3(1,0,0));
+            }
+
+            oldX = pXPos;
+            oldY = pYPos;
+        });
+
+        static int pressedKey = GLFW_KEY_UNKNOWN;
+
+        engine.GetInput().KeyboardAction(
+        [&](int pKey, int /*pScancode*/, int pAction, int /*pMods*/)
         {
-            timeSample = 0;
-            mouseSpeed = 0;
-            xPos = 1024/2;
-            yPos = 768/2;
-            useMouseInput = !useMouseInput;
-        }
+            if (pKey == GLFW_KEY_M && pAction == GLFW_RELEASE)
+            {
+                if(cursorMode == GLFW_CURSOR_DISABLED)
+                {
+                    cursorMode = GLFW_CURSOR_NORMAL;
+                    //useMouseInput = false;
+                }
+                else
+                {
+                    cursorMode = GLFW_CURSOR_DISABLED;
+                    //useMouseInput = true;
+                }
 
-        horizontalAngle -= mouseSpeed * float( xPos - 1024/2 );
-        verticalAngle   -= mouseSpeed * float( yPos - 768/2 );
+                engine.GetInput().SetCursorMode(cursorMode);
+            }
 
-        camera.SetAngleAxis(horizontalAngle, glm::vec3(0, 1, 0));
-        camera.Rotate(verticalAngle, glm::vec3(1,0,0));
+            if(pKey == pressedKey && pAction == GLFW_RELEASE)
+                pressedKey = GLFW_KEY_UNKNOWN;
+            else if(pAction == GLFW_PRESS)
+                pressedKey = pKey;
+        });
 
         camera.SetPerspective(glm::radians(cameraFov), 4.0f / 3.0f, 0.1f, 100000.0f);
 
         static glm::vec3 camPos(0.0f, -5.0f, 5.0f);
 
-        if (glfwGetKey(engine.GetWindow(), GLFW_KEY_W ) == GLFW_PRESS){
+        if (pressedKey == GLFW_KEY_W){
             camPos += camera.GetFrontDir() * speed;
         }
 
-        if (glfwGetKey(engine.GetWindow(), GLFW_KEY_S ) == GLFW_PRESS){
+        if (pressedKey == GLFW_KEY_S){
             camPos -= camera.GetFrontDir() * speed;
         }
 
-        if (glfwGetKey(engine.GetWindow(), GLFW_KEY_D ) == GLFW_PRESS){
+        if (pressedKey == GLFW_KEY_D){
             camPos += camera.GetRightDir() * speed;
         }
 
-        if (glfwGetKey(engine.GetWindow(), GLFW_KEY_A ) == GLFW_PRESS){
+        if (pressedKey == GLFW_KEY_A){
             camPos -= camera.GetRightDir() * speed;
         }
 
-        if (glfwGetKey(engine.GetWindow(), GLFW_KEY_Q ) == GLFW_PRESS){
+        if (pressedKey == GLFW_KEY_Q){
             camPos -= camera.GetUpDir() * speed;
         }
 
-        if (glfwGetKey(engine.GetWindow(), GLFW_KEY_E ) == GLFW_PRESS){
+        if (pressedKey == GLFW_KEY_E){
             camPos += camera.GetUpDir() * speed;
         }
 
-        if (glfwGetKey(engine.GetWindow(), GLFW_KEY_R ) == GLFW_PRESS){
+        if (pressedKey == GLFW_KEY_R){
             //colorProgram->Reload();
             textureMapProgram->Reload();
         }

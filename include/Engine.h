@@ -3,6 +3,7 @@
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 #include <string>
+#include <Input.h>
 
 namespace TakeOne
 {
@@ -18,13 +19,14 @@ namespace TakeOne
         void Update();
         bool ShouldClose();
 
-        //TODO: Remove this:
-        GLFWwindow* GetWindow() { return mWindow; }
+        Input& GetInput();
 
     private:
         //private methods
         void InitGlew();
         static void ErrorCallback(int pError, const char* pDescription);
+
+        Input mInput;
 
         //private members
         GLFWwindow* mWindow; //reference to window object; managed by glfw library
