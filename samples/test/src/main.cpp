@@ -5,6 +5,7 @@
 #include <glm/gtx/transform.hpp>
 #include <iostream>
 #include <fstream>
+#include <unordered_map>
 #include <vector>
 #include <glm/gtx/euler_angles.hpp>
 #include <future>
@@ -166,62 +167,57 @@ int main(void)
             oldY = pYPos;
         });
 
-        static int pressedKey = GLFW_KEY_UNKNOWN;
+        static std::unordered_map<int, bool> pressedKeys = {};
 
         engine.GetInput().KeyboardAction(
         [&](int pKey, int /*pScancode*/, int pAction, int /*pMods*/)
         {
-            if (pKey == GLFW_KEY_M && pAction == GLFW_RELEASE)
-            {
-                if(cursorMode == GLFW_CURSOR_DISABLED)
-                {
-                    cursorMode = GLFW_CURSOR_NORMAL;
-                    //useMouseInput = false;
-                }
-                else
-                {
-                    cursorMode = GLFW_CURSOR_DISABLED;
-                    //useMouseInput = true;
-                }
-
-                engine.GetInput().SetCursorMode(cursorMode);
-            }
-
-            if(pKey == pressedKey && pAction == GLFW_RELEASE)
-                pressedKey = GLFW_KEY_UNKNOWN;
+            if(pAction == GLFW_RELEASE)
+                pressedKeys[pKey] = false;
             else if(pAction == GLFW_PRESS)
-                pressedKey = pKey;
+                pressedKeys[pKey] = true;
         });
 
         camera.SetPerspective(glm::radians(cameraFov), 4.0f / 3.0f, 0.1f, 100000.0f);
 
         static glm::vec3 camPos(0.0f, -5.0f, 5.0f);
 
-        if (pressedKey == GLFW_KEY_W){
+        //catch the release of M key
+        static bool key_m_before = pressedKeys[GLFW_KEY_M];
+        if (!pressedKeys[GLFW_KEY_M] && key_m_before){
+
+            cursorMode = (cursorMode == GLFW_CURSOR_DISABLED)
+                    ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED;
+
+            engine.GetInput().SetCursorMode(cursorMode);
+        }
+        key_m_before = pressedKeys[GLFW_KEY_M];
+
+        if (pressedKeys[GLFW_KEY_W]){
             camPos += camera.GetFrontDir() * speed;
         }
 
-        if (pressedKey == GLFW_KEY_S){
+        if (pressedKeys[GLFW_KEY_S]){
             camPos -= camera.GetFrontDir() * speed;
         }
 
-        if (pressedKey == GLFW_KEY_D){
+        if (pressedKeys[GLFW_KEY_D]){
             camPos += camera.GetRightDir() * speed;
         }
 
-        if (pressedKey == GLFW_KEY_A){
+        if (pressedKeys[GLFW_KEY_A]){
             camPos -= camera.GetRightDir() * speed;
         }
 
-        if (pressedKey == GLFW_KEY_Q){
+        if (pressedKeys[GLFW_KEY_Q]){
             camPos -= camera.GetUpDir() * speed;
         }
 
-        if (pressedKey == GLFW_KEY_E){
+        if (pressedKeys[GLFW_KEY_E]){
             camPos += camera.GetUpDir() * speed;
         }
 
-        if (pressedKey == GLFW_KEY_R){
+        if (pressedKeys[GLFW_KEY_R]){
             //colorProgram->Reload();
             textureMapProgram->Reload();
         }
