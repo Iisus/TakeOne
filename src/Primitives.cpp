@@ -144,12 +144,12 @@ TakeOne::SphereRenderObject::SphereRenderObject(const std::shared_ptr<Program>& 
     std::vector<unsigned int>::iterator i = indices.begin();
     for(r = 0; r < pRings-1; r++) for(s = 0; s < pSectors-1; s++)
     {
-        *i++ = r * pSectors + s;
         *i++ = r * pSectors + (s+1);
+        *i++ = r * pSectors + s;
         *i++ = (r+1) * pSectors + (s+1);
 
-        *i++ = r * pSectors + s;
         *i++ = (r+1) * pSectors + (s+1);
+        *i++ = r * pSectors + s;
         *i++ = (r+1) * pSectors + s;
     }
 

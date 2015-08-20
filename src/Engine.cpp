@@ -32,9 +32,11 @@ TakeOne::Engine::Engine(int pWidth, int pHeight, std::string pTitle)
 	//use the context created
 	glfwMakeContextCurrent(mWindow);
     //VSync: 0->off, 1->on
-    glfwSwapInterval(0);
+    glfwSwapInterval(1);
 
     InitGlew();
+
+    mInput.Init(mWindow);
 }
 
 TakeOne::Engine::~Engine()
@@ -71,6 +73,11 @@ bool TakeOne::Engine::ShouldClose()
     return glfwWindowShouldClose(mWindow) != 0 || glfwGetKey(mWindow, GLFW_KEY_ESCAPE ) == GLFW_PRESS;
 }
 
+TakeOne::Input& TakeOne::Engine::GetInput()
+{
+    return mInput;
+}
+
 void  TakeOne::Engine::InitGlew()
 {
     glewExperimental=GL_TRUE;
@@ -88,8 +95,8 @@ void  TakeOne::Engine::InitGlew()
     glEnable(GL_MULTISAMPLE);
 
     glEnable(GL_DEPTH_TEST);
-    glDisable(GL_CULL_FACE);
-    //glCullFace(GL_BACK);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
 }
 
 void TakeOne::Engine::ErrorCallback(int pError, const char* pDescription)
