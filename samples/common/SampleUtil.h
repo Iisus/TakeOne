@@ -3,6 +3,8 @@
 #include "Engine.h"
 #include "DefaultRes.h"
 
+#include "glm/glm.hpp"
+
 using namespace TakeOne;
 using namespace std;
 
