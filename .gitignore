@@ -6,3 +6,8 @@
 
 /samples/test/bin/
 /samples/test/CMakeLists.txt.user
+
+/samples/SpecularMap/bin/
+/samples/SpecularMap/CMakeLists.txt.user
+
+/samples/res/default/

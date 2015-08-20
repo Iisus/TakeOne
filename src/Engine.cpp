@@ -2,7 +2,8 @@
 #include "Log.h"
 #include "GL/glew.h"
 
-TakeOne::Engine::Engine(int pWidth, int pHeight, std::string pTitle)
+TakeOne::Engine::Engine(int pWidth, int pHeight, std::string pTitle) :
+    mWindowTitle(pTitle), mShouldClose(false)
 {
 	//init glfw
 	glfwSetErrorCallback(Engine::ErrorCallback);
@@ -12,7 +13,7 @@ TakeOne::Engine::Engine(int pWidth, int pHeight, std::string pTitle)
 	}
 
 	//create window
-	mWindow = glfwCreateWindow(pWidth, pHeight, pTitle.c_str(), NULL, NULL);
+    mWindow = glfwCreateWindow(pWidth, pHeight, mWindowTitle.c_str(), NULL, NULL);
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
@@ -45,32 +46,42 @@ TakeOne::Engine::~Engine()
 	glfwTerminate();
 }
 
-void TakeOne::Engine::Update()
-{
-    static double lastTime = glfwGetTime();
-    static int nbFrames = 0;
-    static char title[20];
-
-	//get the events, then swap buffers
-	glfwPollEvents();
-	glfwSwapBuffers(mWindow);
-
-    //TODO: remove this:
-    nbFrames++;
-    if(glfwGetTime() - lastTime >= 0.5)
-    {
-        sprintf(title, "%f", float(nbFrames));
-        glfwSetWindowTitle(mWindow, title);
-        nbFrames = 0;
-        lastTime+=0.5;
-    }
-
-}
-
 bool TakeOne::Engine::ShouldClose()
 {
 	//convert to bool before returning to avoid warning
-    return glfwWindowShouldClose(mWindow) != 0 || glfwGetKey(mWindow, GLFW_KEY_ESCAPE ) == GLFW_PRESS;
+    return glfwWindowShouldClose(mWindow) != 0 || glfwGetKey(mWindow, GLFW_KEY_ESCAPE ) == GLFW_PRESS || mShouldClose;
+}
+
+void TakeOne::Engine::SetShoudlClose(bool pShouldClose)
+{
+    mShouldClose = pShouldClose;
+}
+
+void TakeOne::Engine::SetUpdateCallback(UpdateCallback pCallback)
+{
+    mUpdateCallback = pCallback;
+}
+
+void TakeOne::Engine::SetDrawCallback(DrawCallback pCallback)
+{
+    mDrawCallback = pCallback;
+}
+
+void TakeOne::Engine::Run()
+{
+    double lastTime = glfwGetTime();
+    while(!ShouldClose())
+    {
+        double now = glfwGetTime();
+        double dt = now - lastTime;
+        lastTime = now;
+
+        mUpdateCallback(dt);
+        mDrawCallback();
+
+        //update engine
+        Update(dt);
+    }
 }
 
 TakeOne::Input& TakeOne::Engine::GetInput()
@@ -97,6 +108,32 @@ void  TakeOne::Engine::InitGlew()
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
+}
+
+void TakeOne::Engine::Update(double pDt)
+{
+    //calculate fps
+    static int updateRate = 4;  // 4 updates per sec.
+    static int frameCount = 0;
+    static double fps = 0.0;
+    static double dtAcc = 0.0;
+
+    frameCount++;
+    dtAcc += pDt;
+    if (dtAcc > 1.0/updateRate)
+    {
+        fps = frameCount / dtAcc ;
+        frameCount = 0;
+        dtAcc -= 1.0/updateRate;
+    }
+
+    glfwSetWindowTitle(mWindow, std::string(mWindowTitle +
+                                            "  FPS: "+ std::to_string(fps) +
+                                            "  DT: " + std::to_string(pDt)).c_str());
+
+    //get the events, then swap buffers
+    glfwPollEvents();
+    glfwSwapBuffers(mWindow);
 }
 
 void TakeOne::Engine::ErrorCallback(int pError, const char* pDescription)

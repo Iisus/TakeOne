@@ -4,7 +4,6 @@
 #include <functional>
 
 class GLFWwindow;
-class Engine;
 
 namespace TakeOne
 {
