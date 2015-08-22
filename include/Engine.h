@@ -1,18 +1,18 @@
 #pragma once
 
 #define GLFW_INCLUDE_NONE
+#include "Input.h"
+#include "State.h"
 #include <GLFW/glfw3.h>
 #include <string>
-#include <Input.h>
+#include <vector>
+#include <memory>
 
 namespace TakeOne
 {
     class Engine
     {
     public:
-        using UpdateCallback = void(*)(double);
-        using DrawCallback = void(*)();
-
         //public methods
         Engine(int pWidth, int pHeight, std::string pTitle);
         Engine(const Engine& Engine) = delete;
@@ -22,20 +22,20 @@ namespace TakeOne
         bool ShouldClose();
         void SetShoudlClose(bool pShouldClose = true);
 
-        void SetUpdateCallback(UpdateCallback pCallback);
-        void SetDrawCallback(DrawCallback pCallback);
         void Run();
+
+        void PushState(std::unique_ptr<State> pState);
+        std::unique_ptr<State> PopState();
 
         Input& GetInput();
 
     private:
         //private methods
         void InitGlew();
-        void Update(double pDt);
         static void ErrorCallback(int pError, const char* pDescription);
 
-        UpdateCallback mUpdateCallback;
-        DrawCallback mDrawCallback;
+        std::vector<std::unique_ptr<State>> mStates;
+
         Input mInput;
 
         //private members

@@ -42,8 +42,13 @@ TakeOne::Engine::Engine(int pWidth, int pHeight, std::string pTitle) :
 
 TakeOne::Engine::~Engine()
 {
-	glfwDestroyWindow(mWindow);
-	glfwTerminate();
+    for (auto state = mStates.rbegin(); state != mStates.rend(); ++state)
+    {
+        (*state)->Exit();
+    }
+
+    glfwDestroyWindow(mWindow);
+    glfwTerminate();
 }
 
 bool TakeOne::Engine::ShouldClose()
@@ -57,33 +62,69 @@ void TakeOne::Engine::SetShoudlClose(bool pShouldClose)
     mShouldClose = pShouldClose;
 }
 
-void TakeOne::Engine::SetUpdateCallback(UpdateCallback pCallback)
-{
-    mUpdateCallback = pCallback;
-}
-
-void TakeOne::Engine::SetDrawCallback(DrawCallback pCallback)
-{
-    mDrawCallback = pCallback;
-}
-
 void TakeOne::Engine::Run()
 {
-    double lastTime = glfwGetTime();
+    const int TICKS_PER_SECOND = 60;
+    const int SKIP_TICKS = 1000 / TICKS_PER_SECOND;
+    const int MAX_FRAMESKIP = 10;
+
+    double nextUpdate = glfwGetTime();
+
+    int loops;
     while(!ShouldClose())
     {
-        double now = glfwGetTime();
-        double dt = now - lastTime;
-        lastTime = now;
+
+        loops = 0;
+        glfwPollEvents();
+
+        if(mStates.empty())
+            continue;
+
+        State* currState = mStates.back().get();
+
+        currState->HandleEvents();
+
+        while(glfwGetTime() > nextUpdate && loops < MAX_FRAMESKIP)
+        {
+            currState->Update();
+
+            nextUpdate += SKIP_TICKS;
+            loops++;
+        }
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        currState->Draw();
 
-        mUpdateCallback(dt);
-        mDrawCallback();
-
-        //update engine
-        Update(dt);
+        glfwSwapBuffers(mWindow);
     }
+}
+
+void TakeOne::Engine::PushState(std::unique_ptr<State> pState)
+{
+    if(!mStates.empty())
+        mStates.back()->Exit();
+
+    mStates.push_back(std::move(pState));
+
+    mStates.back()->Enter();
+}
+
+std::unique_ptr<TakeOne::State> TakeOne::Engine::PopState()
+{
+    std::unique_ptr<TakeOne::State> ret = nullptr;
+
+    if(!mStates.empty())
+    {
+        mStates.back()->Exit();
+        ret = std::move(mStates.back());
+
+        mStates.pop_back();
+
+        if(!mStates.empty())
+            mStates.back()->Enter();
+    }
+
+    return ret;
 }
 
 TakeOne::Input& TakeOne::Engine::GetInput()
@@ -110,32 +151,6 @@ void  TakeOne::Engine::InitGlew()
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
-}
-
-void TakeOne::Engine::Update(double pDt)
-{
-    //calculate fps
-    static int updateRate = 4;  // 4 updates per sec.
-    static int frameCount = 0;
-    static double fps = 0.0;
-    static double dtAcc = 0.0;
-
-    frameCount++;
-    dtAcc += pDt;
-    if (dtAcc > 1.0/updateRate)
-    {
-        fps = frameCount / dtAcc ;
-        frameCount = 0;
-        dtAcc -= 1.0/updateRate;
-    }
-
-    glfwSetWindowTitle(mWindow, std::string(mWindowTitle +
-                                            "  FPS: "+ std::to_string(fps) +
-                                            "  DT: " + std::to_string(pDt)).c_str());
-
-    //get the events, then swap buffers
-    glfwPollEvents();
-    glfwSwapBuffers(mWindow);
 }
 
 void TakeOne::Engine::ErrorCallback(int pError, const char* pDescription)
