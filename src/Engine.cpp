@@ -33,7 +33,7 @@ TakeOne::Engine::Engine(int pWidth, int pHeight, std::string pTitle) :
 	//use the context created
 	glfwMakeContextCurrent(mWindow);
     //VSync: 0->off, 1->on
-    glfwSwapInterval(1);
+    glfwSwapInterval(0);
 
     InitGlew();
 
@@ -65,16 +65,14 @@ void TakeOne::Engine::SetShoudlClose(bool pShouldClose)
 void TakeOne::Engine::Run()
 {
     const int TICKS_PER_SECOND = 60;
-    const int SKIP_TICKS = 1000 / TICKS_PER_SECOND;
+    const int SKIP_TICKS = 1 / TICKS_PER_SECOND;
     const int MAX_FRAMESKIP = 10;
 
     double nextUpdate = glfwGetTime();
-
     int loops;
+
     while(!ShouldClose())
     {
-
-        loops = 0;
         glfwPollEvents();
 
         if(mStates.empty())
@@ -84,6 +82,7 @@ void TakeOne::Engine::Run()
 
         currState->HandleEvents();
 
+        loops = 0;
         while(glfwGetTime() > nextUpdate && loops < MAX_FRAMESKIP)
         {
             currState->Update();

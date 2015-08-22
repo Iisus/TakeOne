@@ -18,6 +18,24 @@ void TakeOne::Input::Init(GLFWwindow* pWindow)
     glfwSetScrollCallback(mWindow, MouseScrollCallbackGLFW);
 }
 
+int TakeOne::Input::GetKeyState(int pKey) const
+{
+    return glfwGetKey(mWindow, pKey);
+}
+
+int TakeOne::Input::GetMouseBtnState(int pBtn) const
+{
+    return glfwGetMouseButton(mWindow, pBtn);
+}
+
+glm::vec2 TakeOne::Input::GetCursorPos() const
+{
+    double x, y;
+    glfwGetCursorPos(mWindow, &x, &y);
+
+    return glm::vec2(x, y);
+}
+
 void TakeOne::Input::KeyboardAction(KeyboardCallback aKeyboardCallback)
 {
     mKeyboardCallbacks.push_back(aKeyboardCallback);

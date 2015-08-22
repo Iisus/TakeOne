@@ -1,5 +1,4 @@
 #include "SampleUtil.h"
-
 #include "MainState.h"
 
 

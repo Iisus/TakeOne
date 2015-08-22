@@ -15,6 +15,11 @@ TakeOne::RenderObject::RenderObject(std::shared_ptr<Program> pProgram, const std
     Load(pObjPath, pObjName);
 }
 
+void TakeOne::RenderObject::SetProgram(std::shared_ptr<Program> pProgram)
+{
+    mMaterial->SetProgram(pProgram);
+}
+
 void TakeOne::RenderObject::Load(const std::string &pObjPath, const std::string &pObjName)
 {
     if(!pObjPath.empty())

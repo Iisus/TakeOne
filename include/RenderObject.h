@@ -10,8 +10,10 @@ namespace TakeOne
     class RenderObject
     {
     public:
-        RenderObject(std::shared_ptr<Program> pProgram);
+        RenderObject(std::shared_ptr<Program> pProgram = nullptr);
         RenderObject(std::shared_ptr<Program> pProgram, const std::string& pObjPath, const std::string& pObjName);
+
+        void SetProgram(std::shared_ptr<Program> pProgram);
 
         void Load(const std::string& pObjPath, const std::string& pObjName);
         void Render() const;

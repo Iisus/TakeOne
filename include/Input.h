@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <functional>
+#include "glm/glm.hpp"
 
 class GLFWwindow;
 
@@ -22,6 +23,12 @@ namespace TakeOne
         Input(Input&&) = delete;
         Input& operator=(Input&&) = delete;
 
+        //Pool
+        int GetKeyState(int pKey) const;
+        int GetMouseBtnState(int pBtn) const;
+        glm::vec2 GetCursorPos() const;
+
+        //Event based
         void KeyboardAction(KeyboardCallback aKeyboardCallback);
         void MousePressAction(MousePressCallback aMousePressCallback);
         void MousePosAction(MousePosCallback aMousePosCallback);

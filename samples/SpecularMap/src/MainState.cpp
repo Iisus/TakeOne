@@ -1,217 +1,151 @@
 #include "MainState.h"
+#include "DefaultRes.h"
 
 MainState::MainState(Engine *pEngine)
     : State(pEngine)
 {
+    //setup camera
     mCamera.SetClearColor(glm::vec4(63.0f / 255.0f, 75.0f / 255.0f, 82.0f / 255.0f, 1.0));
-    mCamera.SetPerspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 1000.0f);
+    mCamera.SetPerspective(45.0f, 4.0f / 3.0f, 0.1f, 100000.0f);
+
+    //callback for mouse wheel: change camera fov
+    pEngine->GetInput().MouseScrollAction(
+    [this](double /*xoffset*/, double yoffset)
+    {
+        auto tempFov = mCamera.GetFOV() + yoffset*-1;
+        if(tempFov > 0 && tempFov < 120)
+            mCamera.SetPerspective(tempFov, mCamera.GetAspectRatio(), mCamera.GetNearPlane(), mCamera.GetFarPlane());
+    });
+
+    //callback for mouse position: rotate camera
+    pEngine->GetInput().MousePosAction(
+    [this](double pXPos, double pYPos)
+    {
+        static float mouseSpeed = 0.03;
+
+        static double oldX = pXPos, oldY = pYPos;
+
+        static float horizontalAngle = 0;
+        horizontalAngle -= mouseSpeed * float( pXPos - oldX);
+        static float verticalAngle = 0;
+        verticalAngle -= mouseSpeed * float( pYPos - oldY);
+
+        mCamera.SetAngleAxis(horizontalAngle, glm::vec3(0, 1, 0));
+        mCamera.Rotate(verticalAngle, glm::vec3(1,0,0));
+
+        oldX = pXPos;
+        oldY = pYPos;
+    });
+
+    //callback for keyboard
+    pEngine->GetInput().KeyboardAction(
+    [this](int pKey, int /*pScancode*/, int pAction, int /*pMods*/)
+    {
+        if(pAction == GLFW_RELEASE)
+            mPressedKeys[pKey] = false;
+        else if(pAction == GLFW_PRESS)
+            mPressedKeys[pKey] = true;
+    });
+
+    mEngine->GetInput().SetCursorMode(GLFW_CURSOR_DISABLED);
 }
 
 void MainState::Enter()
 {
+    DefaultRes defaultRes(SampleUtil::RES_FOLDER);
+    mProgram = std::shared_ptr<Program>(std::move(defaultRes.UberShaderProgram()));
 
+    SetupBoxRenderer();
+
+    mBox1Node.SetRenderObject(mBoxRenderer);
+    mBox1Node.GetTransform().SetScale(glm::vec3(1.0f));
 }
 
 void MainState::Exit()
 {
-int a=0;
+
 }
+
 void MainState::HandleEvents()
 {
-int a=0;
+
 }
+
 void MainState::Update()
 {
-int a=0;
+    //done here and not in HandleEvents because here is a fixed time step
+    //and in UpdateInput, the camera position is modified
+    UpdateInput();
 }
+
 void MainState::Draw()
 {
+    mBoxRenderer->GetMaterial().SetShaderParam("camera", mCamera.GetViewProjectionMatrix());
+    mBox1Node.SendModelMatrix();
 
+    mBoxRenderer->Render();
 }
 
-/*
-//#include "SampleUtil.h"
+void MainState::SetupBoxRenderer()
+{
+    mBoxRenderer = std::make_shared<BoxRenderObject>(mProgram);
 
-//#include "CameraNode.h"
-//#include "Primitives.h"
-//#include "RenderNode.h"
+    Texture diffuseTx(SampleUtil::RES_FOLDER + "textures/container2.png", Texture::INVERT_Y | Texture::COMPRESS_TO_DXT | Texture::TEXTURE_REPEATS | Texture::MIPMAPS);
+    Texture specularTx(SampleUtil::RES_FOLDER + "textures/container2_specular.png", Texture::INVERT_Y | Texture::COMPRESS_TO_DXT | Texture::TEXTURE_REPEATS | Texture::MIPMAPS);
 
-////-------------------------
-////function prototypes
-//void Init(Engine&);
-//void Update(double);
-//void Draw();
+    mBoxRenderer->GetMaterial().SetTexture(std::move(diffuseTx));
+    mBoxRenderer->GetMaterial().SetTexture(std::move(specularTx));
 
-//void SetupBoxRenderer();
-//void SetupCamera(Engine&);
+    //textures
+    mBoxRenderer->GetMaterial().SetShaderParam("material.diffuse",  0);
+    mBoxRenderer->GetMaterial().SetShaderParam("material.specular", 1);
+}
 
-//void UpdateKeyInput(Engine& pEngine, double pDt);
-////-------------------------
+void MainState::UpdateInput()
+{
+    static int cursorMode = GLFW_CURSOR_DISABLED;
+    static float speed = 0.0002;
 
-////-------------------------
-////Globals
-//CameraNode gCamera(TakeOne::CameraType::PERSPECTIVE);
-//float gCameraFov = 45.0f;
+    static glm::vec3 camPos(0.0f, 0.0f, 0.0f);
 
-//std::shared_ptr<Program> gProgram;
-//shared_ptr<BoxRenderObject> gBoxRenderer;
+    //catch the release of M key
+    static bool key_m_before = mPressedKeys[GLFW_KEY_M];
+    if (!mPressedKeys[GLFW_KEY_M] && key_m_before){
 
-//RenderNode gBoxNode1;
+        cursorMode = (cursorMode == GLFW_CURSOR_DISABLED)
+                ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED;
 
-//std::unordered_map<int, bool> gPressedKeys = {};
-////-------------------------
+        mEngine->GetInput().SetCursorMode(cursorMode);
+    }
+    key_m_before = mPressedKeys[GLFW_KEY_M];
 
-//Engine engine(1024, 768, "TakeOne");
+    if (mPressedKeys[GLFW_KEY_W]){
+        camPos += mCamera.GetFrontDir() * speed;
+    }
 
-//int main()
-//{
+    if (mPressedKeys[GLFW_KEY_S]){
+        camPos -= mCamera.GetFrontDir() * speed;
+    }
 
-//    Init(engine);
+    if (mPressedKeys[GLFW_KEY_D]){
+        camPos += mCamera.GetRightDir() * speed;
+    }
 
-//    engine.SetUpdateCallback(Update);
-//    engine.SetDrawCallback(Draw);
+    if (mPressedKeys[GLFW_KEY_A]){
+        camPos -= mCamera.GetRightDir() * speed;
+    }
 
-//    engine.Run();
+    if (mPressedKeys[GLFW_KEY_Q]){
+        camPos -= mCamera.GetUpDir() * speed;
+    }
 
-//    return 0;
-//}
+    if (mPressedKeys[GLFW_KEY_E]){
+        camPos += mCamera.GetUpDir() * speed;
+    }
 
-//void Init(Engine& pEngine)
-//{
-//    SetupCamera(pEngine);
+    if (mPressedKeys[GLFW_KEY_R]){
+        mProgram->Reload();
+    }
 
-//    SetupBoxRenderer();
-
-//    gBoxNode1.SetRenderObject(gBoxRenderer);
-//    gBoxNode1.GetTransform().SetScale(glm::vec3(0.1f));
-
-//    pEngine.GetInput().SetCursorMode(GLFW_CURSOR_DISABLED);
-
-//    //mouse
-//    engine.GetInput().MousePosAction(
-//    [](double pXPos, double pYPos)
-//    {
-//        static float mouseSpeed = 0.03;
-//        static float horizontalAngle = 0;
-//        static float verticalAngle = 0;
-
-//        static double oldX = pXPos, oldY = pYPos;
-
-//        horizontalAngle -= mouseSpeed * float( pXPos - oldX) * 0.016;
-//        verticalAngle   -= mouseSpeed * float( pYPos - oldY) * 0.016;
-
-//        gCamera.SetAngleAxis(horizontalAngle, glm::vec3(0, 1, 0));
-//        gCamera.Rotate(verticalAngle, glm::vec3(1,0,0));
-
-//        oldX = pXPos;
-//        oldY = pYPos;
-//    });
-
-//    //keyboard
-//    pEngine.GetInput().KeyboardAction(
-//    [](int pKey, int /*pScancode*\/, int pAction, int /*pMods*\/)
-//    {
-//        if(pAction == GLFW_RELEASE)
-//            gPressedKeys[pKey] = false;
-//        else if(pAction == GLFW_PRESS)
-//            gPressedKeys[pKey] = true;
-//    });
-//}
-
-//void Update(double pDt)
-//{
-//    gCamera.SetPerspective(glm::radians(gCameraFov), 4.0f / 3.0f, 0.1f, 100000.0f);
-
-//    UpdateKeyInput(engine, 0.016);
-//}
-
-//void Draw()
-//{
-//    gBoxNode1.GetRenderObject()->GetMaterial().SetShaderParam("camera", gCamera.GetViewProjectionMatrix());
-//    gBoxNode1.SendModelMatrix();
-
-//    gBoxNode1.GetRenderObject()->Render();
-//}
-
-//void SetupBoxRenderer()
-//{
-//    DefaultRes defaultRes(SampleUtil::RES_FOLDER);
-//    gProgram = std::shared_ptr<Program>(std::move(defaultRes.UberShaderProgram()));
-
-//    gBoxRenderer = std::make_shared<BoxRenderObject>(gProgram);
-
-//    Texture diffuseTx(SampleUtil::RES_FOLDER + "textures/container2.png", Texture::INVERT_Y | Texture::COMPRESS_TO_DXT | Texture::TEXTURE_REPEATS | Texture::MIPMAPS);
-//    Texture specularTx(SampleUtil::RES_FOLDER + "textures/container2_specular.png", Texture::INVERT_Y | Texture::COMPRESS_TO_DXT | Texture::TEXTURE_REPEATS | Texture::MIPMAPS);
-
-//    gBoxRenderer->GetMaterial().SetTexture(std::move(diffuseTx));
-//    gBoxRenderer->GetMaterial().SetTexture(std::move(specularTx));
-
-//    //textures
-//    gBoxRenderer->GetMaterial().SetShaderParam("material.diffuse",  0);
-//    gBoxRenderer->GetMaterial().SetShaderParam("material.specular", 1);
-//}
-
-//void SetupCamera(Engine& pEngine)
-//{
-//    gCamera.SetClearColor(glm::vec4(63.0f / 255.0f, 75.0f / 255.0f, 82.0f / 255.0f, 1.0));
-//    gCamera.SetPerspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 1000.0f);
-
-//    pEngine.GetInput().MouseScrollAction([](double /*xoffset*\/, double yoffset)
-//    {
-//        auto tempFov = gCameraFov+yoffset*-1;
-//        if(tempFov > 0 && tempFov < 120)
-//            gCameraFov = tempFov;
-//    });
-//}
-
-//void UpdateKeyInput(Engine& pEngine, double pDt)
-//{
-//    static int cursorMode = GLFW_CURSOR_DISABLED;
-//    static float speed = 2;
-
-//    static glm::vec3 camPos(0.0f, -5.0f, 5.0f);
-
-//    //catch the release of M key
-//    static bool key_m_before = gPressedKeys[GLFW_KEY_M];
-//    if (!gPressedKeys[GLFW_KEY_M] && key_m_before){
-
-//        cursorMode = (cursorMode == GLFW_CURSOR_DISABLED)
-//                ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED;
-
-//        pEngine.GetInput().SetCursorMode(cursorMode);
-//    }
-//    key_m_before = gPressedKeys[GLFW_KEY_M];
-
-//    if (gPressedKeys[GLFW_KEY_W]){
-//        camPos += gCamera.GetFrontDir() * speed * (float)pDt;
-//    }
-
-//    if (gPressedKeys[GLFW_KEY_S]){
-//        camPos -= gCamera.GetFrontDir() * speed * (float)pDt;
-//    }
-
-//    if (gPressedKeys[GLFW_KEY_D]){
-//        camPos += gCamera.GetRightDir() * speed * (float)pDt;
-//    }
-
-//    if (gPressedKeys[GLFW_KEY_A]){
-//        camPos -= gCamera.GetRightDir() * speed * (float)pDt;
-//    }
-
-//    if (gPressedKeys[GLFW_KEY_Q]){
-//        camPos -= gCamera.GetUpDir() * speed * (float)pDt;
-//    }
-
-//    if (gPressedKeys[GLFW_KEY_E]){
-//        camPos += gCamera.GetUpDir() * speed * (float)pDt;
-//    }
-
-//    if (gPressedKeys[GLFW_KEY_R]){
-//        //colorProgram->Reload();
-//        gProgram->Reload();
-//    }
-
-//    gCamera.GetTransform().SetPosition(camPos);
-
-//}
-*/
+    mCamera.GetTransform().SetPosition(camPos);
+}

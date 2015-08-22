@@ -12,7 +12,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/bin)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/bin)
 
 #for glm: use radians instead of degrees
-add_definitions(-DGLM_FORCE_RADIANS)
+#add_definitions(-DGLM_FORCE_RADIANS)
 
 if(UNIX)
   if(APPLE)
