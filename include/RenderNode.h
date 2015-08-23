@@ -17,12 +17,10 @@ namespace TakeOne
         ~RenderNode();
 
         void SetRenderObject(std::shared_ptr<RenderObject> pRenderObject);
-        std::shared_ptr<RenderObject> GetRenderObject();
+        std::shared_ptr<RenderObject> GetRenderObject() const;
 
-        void SendModelMatrix();
+        void SendModelMatrix(const std::string& pUniformName) const;
     private:
         std::shared_ptr<RenderObject> mRenderObject;
-
-        static const std::string kModelUniformName;
     };
 }

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8.4)
 
-project(Sample_SpecularMap)
+project(Sample_States)
 
 #C++14; all warnings
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wall")
@@ -13,6 +13,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/bin)
 
 #for glm: use radians instead of degrees
 add_definitions(-DGLM_FORCE_RADIANS)
+add_definitions(-DENABLE_DEBUG=1)
+
 
 if(UNIX)
   if(APPLE)
@@ -73,9 +75,9 @@ include_directories(${INCLUDE_DIRS})
 include_directories(SYSTEM ${INCLUDE_LIB_DIRS})
 link_directories(${LINK_DIRS})
 
-add_executable(Sample_SpecularMap ${SOURCE_FILES} ${HEADER_FILES})
+add_executable(Sample_States ${SOURCE_FILES} ${HEADER_FILES})
 
-target_link_libraries(Sample_SpecularMap ${LINK_FILES})
+target_link_libraries(Sample_States ${LINK_FILES})
 
 #copy resources from engine to /res/default/
 FILE(MAKE_DIRECTORY ../res/default/)
@@ -86,19 +88,19 @@ if(PLATFORM STREQUAL "Win32")
 
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static-libstdc++ -static-libgcc")
     
-    add_custom_command(TARGET Sample_SpecularMap POST_BUILD
+    add_custom_command(TARGET Sample_States POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
     ${CMAKE_CURRENT_LIST_DIR}/../../bin/libTakeOne.dll
     ${CMAKE_CURRENT_LIST_DIR}/bin/
     )
             
-    add_custom_command(TARGET Sample_SpecularMap POST_BUILD
+    add_custom_command(TARGET Sample_States POST_BUILD
       COMMAND ${CMAKE_COMMAND} -E copy_if_different
       ${CMAKE_CURRENT_LIST_DIR}/../../bin/glfw3.dll
       ${CMAKE_CURRENT_LIST_DIR}/bin/
       )
             
-    add_custom_command(TARGET Sample_SpecularMap POST_BUILD
+    add_custom_command(TARGET Sample_States POST_BUILD
       COMMAND ${CMAKE_COMMAND} -E copy_if_different
       ${CMAKE_CURRENT_LIST_DIR}/../../bin/glew32.dll
       ${CMAKE_CURRENT_LIST_DIR}/bin/

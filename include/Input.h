@@ -29,10 +29,15 @@ namespace TakeOne
         glm::vec2 GetCursorPos() const;
 
         //Event based
-        void KeyboardAction(KeyboardCallback aKeyboardCallback);
-        void MousePressAction(MousePressCallback aMousePressCallback);
-        void MousePosAction(MousePosCallback aMousePosCallback);
-        void MouseScrollAction(MouseScrollCallback aMouseScrollCallback);
+        int RegisterKeyboardAction(KeyboardCallback aKeyboardCallback);
+        int RegisterMousePressAction(MousePressCallback aMousePressCallback);
+        int RegisterMousePosAction(MousePosCallback aMousePosCallback);
+        int RegisterMouseScrollAction(MouseScrollCallback aMouseScrollCallback);
+
+        void UnregisterKeyboardAction(int pHandle);
+        void UnregisterMousePressAction(int pHandle);
+        void UnregisterMousePosAction(int pHandle);
+        void UnregisterMouseScrollAction(int pHandle);
 
         void MouseSetPosition(double pXPos, double pYPos);
         void SetCursorMode(int pMode);

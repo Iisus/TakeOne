@@ -7,11 +7,14 @@
 #include "Program.h"
 #include "Primitives.h"
 
-class MainState : public State
+class StateSphere : public State
 {
 public:
 
-    MainState(Engine* pEngine);
+    StateSphere(Engine* pEngine);
+
+    void SetNextState(State* pNextState);
+    void SetPrevState(State* pPrevState);
 
     virtual void Enter();
     virtual void Exit();
@@ -21,14 +24,20 @@ public:
     virtual void Draw();
 
 private:
-    void SetupBoxRenderer();
+    void SetupSphereRenderer();
     void UpdateInput();
+
+    State* mNextState;
+    State* mPrevState;
 
     CameraNode mCamera;
     shared_ptr<Program> mProgram;
 
-    shared_ptr<BoxRenderObject> mBoxRenderer;
-    RenderNode mBox1Node;
+    shared_ptr<SphereRenderObject> mSphereRenderer;
+    RenderNode mSphere1Node;
 
+    int mMouseScroolCallbackHandle;
+    int mMousePosCallbackHandle;
+    int mKeyboardCallbackHandle;
     std::unordered_map<int, bool> mPressedKeys;
 };

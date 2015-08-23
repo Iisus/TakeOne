@@ -24,8 +24,8 @@ namespace TakeOne
 
         void Run();
 
-        void PushState(std::unique_ptr<State> pState);
-        std::unique_ptr<State> PopState();
+        void PushState(State* pState);
+        State* PopState();
 
         Input& GetInput();
 
@@ -34,7 +34,7 @@ namespace TakeOne
         void InitGlew();
         static void ErrorCallback(int pError, const char* pDescription);
 
-        std::vector<std::unique_ptr<State>> mStates;
+        std::vector<State*> mStates;
 
         Input mInput;
 

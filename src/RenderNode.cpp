@@ -1,7 +1,5 @@
 #include "RenderNode.h"
 
-const std::string TakeOne::RenderNode::kModelUniformName = "ModelMatrix";
-
 TakeOne::RenderNode::RenderNode(std::shared_ptr<RenderObject> pRenderObject)
         : mRenderObject(pRenderObject)
 {
@@ -34,13 +32,13 @@ void TakeOne::RenderNode::SetRenderObject(std::shared_ptr<TakeOne::RenderObject>
     mRenderObject = pRenderObject;
 }
 
-std::shared_ptr<TakeOne::RenderObject> TakeOne::RenderNode::GetRenderObject()
+std::shared_ptr<TakeOne::RenderObject> TakeOne::RenderNode::GetRenderObject() const
 {
     return mRenderObject;
 }
 
-void TakeOne::RenderNode::SendModelMatrix()
+void TakeOne::RenderNode::SendModelMatrix(const std::string& pUniformName) const
 {
     if(mRenderObject)
-        mRenderObject->GetMaterial().SetShaderParam(kModelUniformName, mTransform->GetTransformMatrix());
+        mRenderObject->GetMaterial().SetShaderParam(pUniformName, mTransform->GetTransformMatrix());
 }

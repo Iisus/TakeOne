@@ -36,24 +36,46 @@ glm::vec2 TakeOne::Input::GetCursorPos() const
     return glm::vec2(x, y);
 }
 
-void TakeOne::Input::KeyboardAction(KeyboardCallback aKeyboardCallback)
+int TakeOne::Input::RegisterKeyboardAction(KeyboardCallback aKeyboardCallback)
 {
     mKeyboardCallbacks.push_back(aKeyboardCallback);
+    return mKeyboardCallbacks.size() - 1;
 }
 
-void TakeOne::Input::MousePressAction(MousePressCallback aMousePressCallback)
+int TakeOne::Input::RegisterMousePressAction(MousePressCallback aMousePressCallback)
 {
     mMousePressCallbacks.push_back(aMousePressCallback);
+    return mMousePressCallbacks.size() - 1;
 }
 
-void TakeOne::Input::MousePosAction(MousePosCallback aMousePosCallback)
+int TakeOne::Input::RegisterMousePosAction(MousePosCallback aMousePosCallback)
 {
     mMousePosCallbacks.push_back(aMousePosCallback);
+    return mMousePosCallbacks.size() -1;
 }
 
-void TakeOne::Input::MouseScrollAction(MouseScrollCallback aMouseScrollCallback)
+int TakeOne::Input::RegisterMouseScrollAction(MouseScrollCallback aMouseScrollCallback)
 {
     mMouseScrollCallbacks.push_back(aMouseScrollCallback);
+    return mMouseScrollCallbacks.size() - 1;
+}
+
+void TakeOne::Input::UnregisterKeyboardAction(int pHandle)
+{
+    mKeyboardCallbacks.erase(mKeyboardCallbacks.begin() + pHandle);
+}
+
+void TakeOne::Input::UnregisterMousePressAction(int pHandle)
+{
+    mMousePressCallbacks.erase(mMousePressCallbacks.begin() + pHandle);
+}
+void TakeOne::Input::UnregisterMousePosAction(int pHandle)
+{
+    mMousePosCallbacks.erase(mMousePosCallbacks.begin() + pHandle);
+}
+void TakeOne::Input::UnregisterMouseScrollAction(int pHandle)
+{
+    mMouseScrollCallbacks.erase(mMouseScrollCallbacks.begin() + pHandle);
 }
 
 void TakeOne::Input::MouseSetPosition(double pXPos, double pYPos)

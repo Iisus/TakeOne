@@ -1,27 +1,41 @@
-#include "MainState.h"
+#include "StateCube.h"
+#include "StateSphere.h"
 #include "DefaultRes.h"
 
-MainState::MainState(Engine *pEngine)
+StateCube::StateCube(Engine *pEngine)
     : State(pEngine)
 {
     //setup camera
     mCamera.SetClearColor(glm::vec4(63.0f / 255.0f, 75.0f / 255.0f, 82.0f / 255.0f, 1.0));
-    mCamera.SetPerspective(45.0f, 4.0f / 3.0f, 0.1f, 100000.0f);
+    mCamera.SetPerspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 100000.0f);
+}
 
+void StateCube::SetNextState(State* pNextState)
+{
+    mNextState = pNextState;
+}
+
+void StateCube::SetPrevState(State* pPrevState)
+{
+    mPrevState = pPrevState;
+}
+
+void StateCube::Enter()
+{
     //callback for mouse wheel: change camera fov
-    pEngine->GetInput().MouseScrollAction(
+    mMouseScroolCallbackHandle = mEngine->GetInput().RegisterMouseScrollAction(
     [this](double /*xoffset*/, double yoffset)
     {
-        auto tempFov = mCamera.GetFOV() + yoffset*-1;
-        if(tempFov > 0 && tempFov < 120)
+        auto tempFov = mCamera.GetFOV() + (-1) * glm::radians(yoffset);
+        if(tempFov > 0 && tempFov < glm::radians(120.0f))
             mCamera.SetPerspective(tempFov, mCamera.GetAspectRatio(), mCamera.GetNearPlane(), mCamera.GetFarPlane());
     });
 
     //callback for mouse position: rotate camera
-    pEngine->GetInput().MousePosAction(
+    mMousePosCallbackHandle = mEngine->GetInput().RegisterMousePosAction(
     [this](double pXPos, double pYPos)
     {
-        static float mouseSpeed = 0.03;
+        static float mouseSpeed = 0.001;
 
         static double oldX = pXPos, oldY = pYPos;
 
@@ -38,7 +52,7 @@ MainState::MainState(Engine *pEngine)
     });
 
     //callback for keyboard
-    pEngine->GetInput().KeyboardAction(
+    mKeyboardCallbackHandle = mEngine->GetInput().RegisterKeyboardAction(
     [this](int pKey, int /*pScancode*/, int pAction, int /*pMods*/)
     {
         if(pAction == GLFW_RELEASE)
@@ -48,12 +62,9 @@ MainState::MainState(Engine *pEngine)
     });
 
     mEngine->GetInput().SetCursorMode(GLFW_CURSOR_DISABLED);
-}
 
-void MainState::Enter()
-{
     DefaultRes defaultRes(SampleUtil::RES_FOLDER);
-    mProgram = std::shared_ptr<Program>(std::move(defaultRes.UberShaderProgram()));
+    mProgram = std::shared_ptr<Program>(std::move(defaultRes.SimpleTextureProgram()));
 
     SetupBoxRenderer();
 
@@ -61,47 +72,43 @@ void MainState::Enter()
     mBox1Node.GetTransform().SetScale(glm::vec3(1.0f));
 }
 
-void MainState::Exit()
+void StateCube::Exit()
+{
+    mEngine->GetInput().UnregisterMouseScrollAction(mMouseScroolCallbackHandle);
+    mEngine->GetInput().UnregisterMousePosAction(mMousePosCallbackHandle);
+    mEngine->GetInput().UnregisterKeyboardAction(mKeyboardCallbackHandle);
+}
+
+void StateCube::HandleEvents()
 {
 
 }
 
-void MainState::HandleEvents()
-{
-
-}
-
-void MainState::Update()
+void StateCube::Update()
 {
     //done here and not in HandleEvents because here is a fixed time step
     //and in UpdateInput, the camera position is modified
     UpdateInput();
 }
 
-void MainState::Draw()
+void StateCube::Draw()
 {
-    mBoxRenderer->GetMaterial().SetShaderParam("camera", mCamera.GetViewProjectionMatrix());
-    mBox1Node.SendModelMatrix();
+    mBoxRenderer->GetMaterial().SetShaderParam("u_Camera", mCamera.GetViewProjectionMatrix());
+    mBox1Node.SendModelMatrix("u_ModelMatrix");
 
     mBoxRenderer->Render();
 }
 
-void MainState::SetupBoxRenderer()
+void StateCube::SetupBoxRenderer()
 {
     mBoxRenderer = std::make_shared<BoxRenderObject>(mProgram);
 
     Texture diffuseTx(SampleUtil::RES_FOLDER + "textures/container2.png", Texture::INVERT_Y | Texture::COMPRESS_TO_DXT | Texture::TEXTURE_REPEATS | Texture::MIPMAPS);
-    Texture specularTx(SampleUtil::RES_FOLDER + "textures/container2_specular.png", Texture::INVERT_Y | Texture::COMPRESS_TO_DXT | Texture::TEXTURE_REPEATS | Texture::MIPMAPS);
 
     mBoxRenderer->GetMaterial().SetTexture(std::move(diffuseTx));
-    mBoxRenderer->GetMaterial().SetTexture(std::move(specularTx));
-
-    //textures
-    mBoxRenderer->GetMaterial().SetShaderParam("material.diffuse",  0);
-    mBoxRenderer->GetMaterial().SetShaderParam("material.specular", 1);
 }
 
-void MainState::UpdateInput()
+void StateCube::UpdateInput()
 {
     static int cursorMode = GLFW_CURSOR_DISABLED;
     static float speed = 0.0002;
@@ -146,6 +153,22 @@ void MainState::UpdateInput()
     if (mPressedKeys[GLFW_KEY_R]){
         mProgram->Reload();
     }
+
+    //catch the release of page up key
+    static bool key_pu_before = mPressedKeys[GLFW_KEY_PAGE_UP];
+    if (!mPressedKeys[GLFW_KEY_PAGE_UP] && key_pu_before){
+        mEngine->PopState();
+        mEngine->PushState(mNextState);
+    }
+    key_pu_before = mPressedKeys[GLFW_KEY_PAGE_UP];
+
+    //catch the release of page down key
+    static bool key_pd_before = mPressedKeys[GLFW_KEY_PAGE_DOWN];
+    if (!mPressedKeys[GLFW_KEY_PAGE_DOWN] && key_pd_before){
+        mEngine->PopState();
+        mEngine->PushState(mPrevState);
+    }
+    key_pd_before = mPressedKeys[GLFW_KEY_PAGE_DOWN];
 
     mCamera.GetTransform().SetPosition(camPos);
 }

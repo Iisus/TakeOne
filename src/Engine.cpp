@@ -78,7 +78,7 @@ void TakeOne::Engine::Run()
         if(mStates.empty())
             continue;
 
-        State* currState = mStates.back().get();
+        State* currState = mStates.back();
 
         currState->HandleEvents();
 
@@ -98,24 +98,24 @@ void TakeOne::Engine::Run()
     }
 }
 
-void TakeOne::Engine::PushState(std::unique_ptr<State> pState)
+void TakeOne::Engine::PushState(State* pState)
 {
     if(!mStates.empty())
         mStates.back()->Exit();
 
-    mStates.push_back(std::move(pState));
+    mStates.push_back(pState);
 
     mStates.back()->Enter();
 }
 
-std::unique_ptr<TakeOne::State> TakeOne::Engine::PopState()
+TakeOne::State* TakeOne::Engine::PopState()
 {
-    std::unique_ptr<TakeOne::State> ret = nullptr;
+    State* ret = nullptr;
 
     if(!mStates.empty())
     {
         mStates.back()->Exit();
-        ret = std::move(mStates.back());
+        ret = mStates.back();
 
         mStates.pop_back();
 
