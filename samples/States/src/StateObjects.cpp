@@ -1,8 +1,8 @@
-#include "StateSphere.h"
+#include "StateObjects.h"
 #include "DefaultRes.h"
 
-StateSphere::StateSphere(Engine *pEngine)
-    : State(pEngine)
+StateObjects::StateObjects(Engine *pEngine, std::string pScene)
+    : State(pEngine), mScene(pScene)
 {
     //setup camera
     mCamera.SetClearColor(glm::vec4(63.0f / 255.0f, 75.0f / 255.0f, 82.0f / 255.0f, 1.0));
@@ -10,17 +10,17 @@ StateSphere::StateSphere(Engine *pEngine)
 
 }
 
-void StateSphere::SetNextState(State* pNextState)
+void StateObjects::SetNextState(State* pNextState)
 {
     mNextState = pNextState;
 }
 
-void StateSphere::SetPrevState(State* pPrevState)
+void StateObjects::SetPrevState(State* pPrevState)
 {
     mPrevState = pPrevState;
 }
 
-void StateSphere::Enter()
+void StateObjects::Enter()
 {
     mPressedKeys = {};
 
@@ -68,55 +68,55 @@ void StateSphere::Enter()
     DefaultRes defaultRes(SampleUtil::RES_FOLDER);
     mProgram = std::shared_ptr<Program>(std::move(defaultRes.SimpleTextureProgram()));
 
-    SetupSphereRenderer();
-
-    mSphere1Node.SetRenderObject(mSphereRenderer);
-    mSphere1Node.GetTransform().SetScale(glm::vec3(1.0f));
-    mSphere1Node.GetTransform().SetPosition(glm::vec3(0.0f,0.0f, -5.0f));
-
-    //mCamera.GetTransform().AddChild(&mSphere1Node.GetTransform(), Transform::TRANSLATION);
+    SetupObjects();
 }
 
-void StateSphere::Exit()
+void StateObjects::Exit()
 {
     mEngine->GetInput().UnregisterMouseScrollAction(mMouseScroolCallbackHandle);
     mEngine->GetInput().UnregisterMousePosAction(mMousePosCallbackHandle);
     mEngine->GetInput().UnregisterKeyboardAction(mKeyboardCallbackHandle);
 }
 
-void StateSphere::HandleEvents()
+void StateObjects::HandleEvents()
 {
 
 }
 
-void StateSphere::Update()
+void StateObjects::Update()
 {
     //done here and not in HandleEvents because here is a fixed time step
     //and in UpdateInput, the camera position is modified
     UpdateInput();
 }
 
-void StateSphere::Draw()
+void StateObjects::Draw()
 {
-    mSphereRenderer->GetMaterial().SetShaderParam("u_Camera", mCamera.GetViewProjectionMatrix());
-    mSphere1Node.SendModelMatrix("u_ModelMatrix");
+    for(const auto& node : mObjectNodes)
+    {
+        node.GetRenderObject()->GetMaterial().SetShaderParam("u_Camera", mCamera.GetViewProjectionMatrix());
+        node.SendModelMatrix("u_ModelMatrix");
 
-    mSphereRenderer->Render();
+        node.GetRenderObject()->Render();
+    }
 }
 
-void StateSphere::SetupSphereRenderer()
+void StateObjects::SetupObjects()
 {
-    mSphereRenderer = std::make_shared<SphereRenderObject>(mProgram, 1, 100, 100);
+    string scenePath = SampleUtil::RES_FOLDER + "objects/" + mScene + "/";
+    ifstream sceneFile(scenePath + "/scene.txt");
 
-    Texture diffuseTx(SampleUtil::RES_FOLDER + "textures/container2.png", Texture::INVERT_Y | Texture::COMPRESS_TO_DXT | Texture::TEXTURE_REPEATS | Texture::MIPMAPS);
-
-    mSphereRenderer->GetMaterial().SetTexture(std::move(diffuseTx));
+    string objectName;
+    while(std::getline(sceneFile, objectName))
+    {
+        mObjectNodes.emplace_back(make_shared<RenderObject>(mProgram, scenePath, objectName));
+    }
 }
 
-void StateSphere::UpdateInput()
+void StateObjects::UpdateInput()
 {
     static int cursorMode = GLFW_CURSOR_DISABLED;
-    static float speed = 0.0002;
+    static float speed = 0.02;
 
     static glm::vec3 camPos(0.0f, 0.0f, 0.0f);
 

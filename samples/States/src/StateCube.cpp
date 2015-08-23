@@ -1,5 +1,4 @@
 #include "StateCube.h"
-#include "StateSphere.h"
 #include "DefaultRes.h"
 
 StateCube::StateCube(Engine *pEngine)
@@ -22,6 +21,8 @@ void StateCube::SetPrevState(State* pPrevState)
 
 void StateCube::Enter()
 {
+    mPressedKeys = {};
+
     //callback for mouse wheel: change camera fov
     mMouseScroolCallbackHandle = mEngine->GetInput().RegisterMouseScrollAction(
     [this](double /*xoffset*/, double yoffset)

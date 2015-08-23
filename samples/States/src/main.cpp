@@ -1,6 +1,7 @@
 #include "SampleUtil.h"
 #include "StateCube.h"
 #include "StateSphere.h"
+#include "StateObjects.h"
 
 
 int main()
@@ -9,14 +10,18 @@ int main()
 
     StateCube stateCube(&engine);
     StateSphere stateSphere(&engine);
+    StateObjects stateObjects(&engine, "TheCity");
 
     stateCube.SetNextState(&stateSphere);
-    stateCube.SetPrevState(&stateSphere);
+    stateCube.SetPrevState(&stateObjects);
 
-    stateSphere.SetNextState(&stateCube);
+    stateSphere.SetNextState(&stateObjects);
     stateSphere.SetPrevState(&stateCube);
 
-    engine.PushState(&stateCube);
+    stateObjects.SetNextState(&stateCube);
+    stateObjects.SetPrevState(&stateSphere);
+
+    engine.PushState(&stateObjects);
 
     engine.Run();
 
