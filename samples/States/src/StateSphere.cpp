@@ -71,6 +71,9 @@ void StateSphere::Enter()
 
     mSphere1Node.SetRenderObject(mSphereRenderer);
     mSphere1Node.GetTransform().SetScale(glm::vec3(1.0f));
+    mSphere1Node.GetTransform().SetPosition(glm::vec3(0.0f,0.0f, -5.0f));
+
+    mCamera.GetTransform().AddChild(&mSphere1Node.GetTransform(), Transform::TRANSLATION);
 }
 
 void StateSphere::Exit()

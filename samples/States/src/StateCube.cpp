@@ -70,6 +70,7 @@ void StateCube::Enter()
 
     mBox1Node.SetRenderObject(mBoxRenderer);
     mBox1Node.GetTransform().SetScale(glm::vec3(1.0f));
+    mBox1Node.GetTransform().SetPosition(glm::vec3(0.0f,0.0f, -5.0f));
 }
 
 void StateCube::Exit()

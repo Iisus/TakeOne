@@ -31,9 +31,9 @@ const TakeOne::Transform* TakeOne::Transform::GetParent() const
     return mParent;
 }
 
-void TakeOne::Transform::AddChild(Transform* const pChild)
+void TakeOne::Transform::AddChild(Transform* const pChild, int pTransformations)
 {
-    mChildren.push_back(pChild);
+    mChildren.insert( {pChild, pTransformations} );
     if(pChild->GetParent())
     {
         pChild->SetParent(nullptr);
@@ -43,13 +43,18 @@ void TakeOne::Transform::AddChild(Transform* const pChild)
 
 void TakeOne::Transform::RemoveChild(TakeOne::Transform* const pChild)
 {
-    mChildren.erase(std::remove(mChildren.begin(), mChildren.end(), pChild), mChildren.end());
+    mChildren.erase(pChild);
     pChild->mParent = nullptr;
 }
 
 const std::vector<TakeOne::Transform*>& TakeOne::Transform::GetChildren() const
 {
-    return mChildren;
+    std::vector<TakeOne::Transform*> ret;
+    ret.reserve(mChildren.size());
+
+    std::transform(mChildren.begin(), mChildren.end(), std::back_inserter(ret), [](auto elem){ return elem.first; });
+
+    return std::move(ret);
 }
 
 
@@ -104,7 +109,25 @@ void TakeOne::Transform::UpdateIfDirty()
         if(mParent)
         {
             mParent->UpdateIfDirty();
-            mWorldTransform = mParent->mWorldTransform * GetLocalTransformMatrix();
+
+            glm::mat4 worldTransform;
+
+            int transforms = mParent->mChildren[this];
+            if(transforms == 0)
+            {
+                worldTransform = mParent->mWorldTransform;
+            }
+            else
+            {
+                if(transforms & Transofmations::TRANSLATION)
+                    worldTransform *= glm::translate(mParent->mPosition);
+                if(transforms & Transofmations::ROTATION)
+                    worldTransform *= glm::mat4_cast(mParent->mRotation);
+                if(transforms & Transofmations::SCALE)
+                    worldTransform *= glm::scale(mParent->mScale);
+            }
+
+            mWorldTransform = worldTransform * GetLocalTransformMatrix();
         }
         else
         {
@@ -120,6 +143,6 @@ void TakeOne::Transform::SetDirty()
     mDirty = true;
     for(auto child : mChildren)
     {
-        child->SetDirty();
+        child.first->SetDirty();
     }
 }
