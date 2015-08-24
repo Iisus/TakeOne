@@ -10,7 +10,7 @@ int main()
 
     StateCube stateCube(&engine);
     StateSphere stateSphere(&engine);
-    StateObjects stateObjects(&engine, "TheCity");
+    StateObjects stateObjects(&engine, "House02");
 
     stateCube.SetNextState(&stateSphere);
     stateCube.SetPrevState(&stateObjects);

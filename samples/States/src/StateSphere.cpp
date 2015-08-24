@@ -112,7 +112,7 @@ void StateSphere::SetupSphereRenderer()
 {
     mSphereRenderer = std::make_shared<SphereRenderObject>(mProgram, 1, 100, 100);
 
-    Texture diffuseTx(SampleUtil::RES_FOLDER + "textures/container2.png", Texture::INVERT_Y | Texture::COMPRESS_TO_DXT | Texture::TEXTURE_REPEATS | Texture::MIPMAPS);
+    Texture diffuseTx(SampleUtil::RES_FOLDER + "textures/earthbare.jpg", Texture::INVERT_Y | Texture::COMPRESS_TO_DXT | Texture::TEXTURE_REPEATS | Texture::MIPMAPS);
 
     mSphereRenderer->GetMaterial().SetTexture(std::move(diffuseTx));
 }
