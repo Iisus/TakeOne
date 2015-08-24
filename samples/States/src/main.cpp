@@ -21,7 +21,7 @@ int main()
     stateObjects.SetNextState(&stateCube);
     stateObjects.SetPrevState(&stateSphere);
 
-    engine.PushState(&stateObjects);
+    engine.PushState(&stateSphere);
 
     engine.Run();
 

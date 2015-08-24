@@ -43,7 +43,10 @@ void StateCube::Enter()
         static float horizontalAngle = 0;
         horizontalAngle -= mouseSpeed * float( pXPos - oldX);
         static float verticalAngle = 0;
-        verticalAngle -= mouseSpeed * float( pYPos - oldY);
+        auto tempVA = verticalAngle - mouseSpeed * float( pYPos - oldY);
+
+        if(tempVA > glm::radians(-75.0f)&& tempVA < glm::radians(75.0f))
+            verticalAngle = tempVA;
 
         mCamera.SetAngleAxis(horizontalAngle, glm::vec3(0, 1, 0));
         mCamera.Rotate(verticalAngle, glm::vec3(1,0,0));
