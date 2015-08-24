@@ -32,23 +32,32 @@ TakeOne::Engine::Engine(int pWidth, int pHeight, std::string pTitle) :
 
 	//use the context created
 	glfwMakeContextCurrent(mWindow);
+}
+
+TakeOne::Engine::~Engine()
+{
+    glfwDestroyWindow(mWindow);
+    glfwTerminate();
+}
+
+void TakeOne::Engine::Init(bool pVSync)
+{
     //VSync: 0->off, 1->on
-    glfwSwapInterval(0);
+    glfwSwapInterval(pVSync);
 
     InitGlew();
 
     mInput.Init(mWindow);
 }
 
-TakeOne::Engine::~Engine()
+void TakeOne::Engine::Cleanup()
 {
     for (auto state = mStates.rbegin(); state != mStates.rend(); ++state)
     {
         (*state)->Exit();
     }
 
-    glfwDestroyWindow(mWindow);
-    glfwTerminate();
+    mInput.Cleanup();
 }
 
 bool TakeOne::Engine::ShouldClose()

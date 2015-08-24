@@ -39,14 +39,16 @@ namespace TakeOne
         void UnregisterMousePosAction(int pHandle);
         void UnregisterMouseScrollAction(int pHandle);
 
-        void MouseSetPosition(double pXPos, double pYPos);
+        void SetMousePosition(double pXPos, double pYPos);
         void SetCursorMode(int pMode);
 
     protected:
         friend class Engine;
 
-        Input(){}
+        Input();
+        ~Input();
         void Init(GLFWwindow* pWindow);
+        void Cleanup();
 
         GLFWwindow* mWindow;
 

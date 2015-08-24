@@ -8,6 +8,8 @@ int main()
 {
     Engine engine (1024, 768, "TakeOne");
 
+    engine.Init(false);
+
     StateCube stateCube(&engine);
     StateSphere stateSphere(&engine);
     StateObjects stateObjects(&engine, "House02");
@@ -21,9 +23,11 @@ int main()
     stateObjects.SetNextState(&stateCube);
     stateObjects.SetPrevState(&stateSphere);
 
-    engine.PushState(&stateSphere);
+    engine.PushState(&stateCube);
 
     engine.Run();
+
+    engine.Cleanup();
 
     return 0;
 }

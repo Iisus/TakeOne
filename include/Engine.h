@@ -17,7 +17,12 @@ namespace TakeOne
         Engine(int pWidth, int pHeight, std::string pTitle);
         Engine(const Engine& Engine) = delete;
         Engine& operator=(const Engine& pEngine) = delete;
+        Engine(Engine&& Engine) = delete;
+        Engine& operator=(Engine&& pEngine) = delete;
         ~Engine();
+
+        void Init(bool pVSync);
+        void Cleanup();
 
         bool ShouldClose();
         void SetShoudlClose(bool pShouldClose = true);

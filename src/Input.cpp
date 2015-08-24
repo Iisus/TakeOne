@@ -8,6 +8,16 @@ std::vector<TakeOne::Input::MousePressCallback> TakeOne::Input::mMousePressCallb
 std::vector<TakeOne::Input::MousePosCallback> TakeOne::Input::mMousePosCallbacks = {};
 std::vector<TakeOne::Input::MouseScrollCallback> TakeOne::Input::mMouseScrollCallbacks = {};
 
+TakeOne::Input::Input()
+{
+
+}
+
+TakeOne::Input::~Input()
+{
+    Cleanup();
+}
+
 void TakeOne::Input::Init(GLFWwindow* pWindow)
 {
     mWindow = pWindow;
@@ -16,6 +26,19 @@ void TakeOne::Input::Init(GLFWwindow* pWindow)
     glfwSetMouseButtonCallback(mWindow, MousePressCallbackGLFW);
     glfwSetCursorPosCallback(mWindow, MousePosCallbackGLFW);
     glfwSetScrollCallback(mWindow, MouseScrollCallbackGLFW);
+}
+
+void TakeOne::Input::Cleanup()
+{
+    if(mWindow)
+    {
+        glfwSetKeyCallback(mWindow, nullptr);
+        glfwSetMouseButtonCallback(mWindow, nullptr);
+        glfwSetCursorPosCallback(mWindow, nullptr);
+        glfwSetScrollCallback(mWindow, nullptr);
+
+        mWindow = nullptr;
+    }
 }
 
 int TakeOne::Input::GetKeyState(int pKey) const
@@ -62,23 +85,27 @@ int TakeOne::Input::RegisterMouseScrollAction(MouseScrollCallback aMouseScrollCa
 
 void TakeOne::Input::UnregisterKeyboardAction(int pHandle)
 {
-    mKeyboardCallbacks.erase(mKeyboardCallbacks.begin() + pHandle);
+    if(pHandle < static_cast<int>(mKeyboardCallbacks.size()))
+        mKeyboardCallbacks.erase(mKeyboardCallbacks.begin() + pHandle);
 }
 
 void TakeOne::Input::UnregisterMousePressAction(int pHandle)
 {
-    mMousePressCallbacks.erase(mMousePressCallbacks.begin() + pHandle);
+    if(pHandle < static_cast<int>(mMousePressCallbacks.size()))
+        mMousePressCallbacks.erase(mMousePressCallbacks.begin() + pHandle);
 }
 void TakeOne::Input::UnregisterMousePosAction(int pHandle)
 {
-    mMousePosCallbacks.erase(mMousePosCallbacks.begin() + pHandle);
+    if(pHandle < static_cast<int>(mMousePosCallbacks.size()))
+        mMousePosCallbacks.erase(mMousePosCallbacks.begin() + pHandle);
 }
 void TakeOne::Input::UnregisterMouseScrollAction(int pHandle)
 {
-    mMouseScrollCallbacks.erase(mMouseScrollCallbacks.begin() + pHandle);
+    if(pHandle < static_cast<int>(mMouseScrollCallbacks.size()))
+        mMouseScrollCallbacks.erase(mMouseScrollCallbacks.begin() + pHandle);
 }
 
-void TakeOne::Input::MouseSetPosition(double pXPos, double pYPos)
+void TakeOne::Input::SetMousePosition(double pXPos, double pYPos)
 {
     glfwSetCursorPos(mWindow, pXPos, pYPos);
 }
