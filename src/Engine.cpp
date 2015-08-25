@@ -74,7 +74,7 @@ void TakeOne::Engine::SetShoudlClose(bool pShouldClose)
 void TakeOne::Engine::Run()
 {
     const int TICKS_PER_SECOND = 60;
-    const int SKIP_TICKS = 1 / TICKS_PER_SECOND;
+    const double SKIP_TICKS = 1.0f / TICKS_PER_SECOND;
     const int MAX_FRAMESKIP = 10;
 
     double nextUpdate = glfwGetTime();
@@ -82,18 +82,18 @@ void TakeOne::Engine::Run()
 
     while(!ShouldClose())
     {
-        glfwPollEvents();
-
         if(mStates.empty())
-            continue;
+            break;
 
         State* currState = mStates.back();
-
-        currState->HandleEvents();
 
         loops = 0;
         while(glfwGetTime() > nextUpdate && loops < MAX_FRAMESKIP)
         {
+            glfwPollEvents();
+
+            currState->HandleEvents();
+
             currState->Update();
 
             nextUpdate += SKIP_TICKS;
@@ -104,6 +104,7 @@ void TakeOne::Engine::Run()
         currState->Draw();
 
         glfwSwapBuffers(mWindow);
+
     }
 }
 

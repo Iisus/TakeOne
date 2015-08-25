@@ -2,7 +2,7 @@
 #include "DefaultRes.h"
 
 StateSample::StateSample(Engine *pEngine)
-    : State(pEngine), mCameraMoveSpeed(0.001), mCameraRotateSpeed(0.001), mCameraHorAngle(0.0f), mCameraVerAngle(0.0f)
+    : State(pEngine), mCameraMoveSpeed(1), mCameraRotateSpeed(0.001), mCameraHorAngle(0.0f), mCameraVerAngle(0.0f)
 {
     //setup camera
     mCamera.SetClearColor(glm::vec4(63.0f / 255.0f, 75.0f / 255.0f, 82.0f / 255.0f, 1.0));
@@ -97,46 +97,6 @@ void StateSample::Exit()
 
 void StateSample::HandleEvents()
 {
-
-}
-
-void StateSample::Update()
-{
-    //done here and not in HandleEvents because here is a fixed time step
-    //and in UpdateInput, the camera position is modified
-    UpdateInput();
-}
-
-void StateSample::Draw()
-{
-    for(const auto& node : mObjectNodes)
-    {
-        node->GetRenderObject()->GetMaterial().SetShaderParam("u_Camera", mCamera.GetViewProjectionMatrix());
-        node->SendModelMatrix("u_ModelMatrix");
-
-        node->GetRenderObject()->Render();
-    }
-}
-
-void StateSample::LoadScene(const string& pScene)
-{
-    string scenePath = SampleUtil::RES_FOLDER + "objects/" + pScene + "/";
-    ifstream sceneFile(scenePath + "/scene.txt");
-
-    string objectName;
-    while(std::getline(sceneFile, objectName))
-    {
-        mObjectNodes.emplace_back(make_unique<RenderNode>(make_shared<RenderObject>(mProgram, scenePath, objectName)));
-    }
-}
-
-void StateSample::AddNode(unique_ptr<RenderNode> pNode)
-{
-    mObjectNodes.push_back(std::move(pNode));
-}
-
-void StateSample::UpdateInput()
-{
     static int cursorMode = GLFW_CURSOR_DISABLED;
 
     glm::vec3 camPos = mCamera.GetTransform().GetPosition();
@@ -197,4 +157,37 @@ void StateSample::UpdateInput()
     key_pd_before = mPressedKeys[GLFW_KEY_PAGE_DOWN];
 
     mCamera.GetTransform().SetPosition(camPos);
+}
+
+void StateSample::Update()
+{
+
+}
+
+void StateSample::Draw()
+{
+    for(const auto& node : mObjectNodes)
+    {
+        node->GetRenderObject()->GetMaterial().SetShaderParam("u_Camera", mCamera.GetViewProjectionMatrix());
+        node->SendModelMatrix("u_ModelMatrix");
+
+        node->GetRenderObject()->Render();
+    }
+}
+
+void StateSample::LoadScene(const string& pScene)
+{
+    string scenePath = SampleUtil::RES_FOLDER + "objects/" + pScene + "/";
+    ifstream sceneFile(scenePath + "/scene.txt");
+
+    string objectName;
+    while(std::getline(sceneFile, objectName))
+    {
+        AddNode(make_unique<RenderNode>(make_shared<RenderObject>(mProgram, scenePath, objectName)));
+    }
+}
+
+void StateSample::AddNode(unique_ptr<RenderNode> pNode)
+{
+    mObjectNodes.push_back(std::move(pNode));
 }

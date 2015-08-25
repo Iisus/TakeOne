@@ -43,9 +43,6 @@ protected:
     float mCameraRotateSpeed;
 
 private:
-    void SetupObjects();
-    void UpdateInput();
-
     State* mNextState;
     State* mPrevState;
 

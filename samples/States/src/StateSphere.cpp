@@ -5,7 +5,7 @@
 StateSphere::StateSphere(Engine *pEngine)
     : StateSample(pEngine)
 {
-    mCameraMoveSpeed = 0.0002;
+    mCameraMoveSpeed = 0.2;
 
     DefaultRes defaultRes(SampleUtil::RES_FOLDER);
     mProgram = std::shared_ptr<Program>(std::move(defaultRes.SimpleTextureProgram()));
@@ -24,7 +24,7 @@ void StateSphere::SetupSphereNode()
     sphereNode->GetTransform().SetScale(glm::vec3(1.0f));
     sphereNode->GetTransform().SetPosition(glm::vec3(0.0f,0.0f, -5.0f));
 
-    //mCamera.GetTransform().AddChild(&mSphere1Node.GetTransform(), Transform::TRANSLATION);
+    //mCamera.GetTransform().AddChild(&sphereNode->GetTransform(), Transform::TRANSLATION);
 
     AddNode(move(sphereNode));
 }

@@ -5,7 +5,7 @@
 StateCube::StateCube(Engine *pEngine)
     : StateSample(pEngine)
 {
-    mCameraMoveSpeed = 0.0002;
+    mCameraMoveSpeed = 0.2;
 
     DefaultRes defaultRes(SampleUtil::RES_FOLDER);
     mProgram = std::shared_ptr<Program>(std::move(defaultRes.SimpleTextureProgram()));
