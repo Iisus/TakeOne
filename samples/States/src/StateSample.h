@@ -28,13 +28,13 @@ protected:
     virtual void MousePos(double pXPos, double pYPos) {}
     virtual void Keyboard(int pKey, int pScancode, int pAction, int pMods) {}
 
-    void LoadScene(const string& pScene);
-    void AddNode(unique_ptr<RenderNode> pNode);
+    void LoadObject(const string& pObject);
+    void AddObject(const string& pObjectName, unique_ptr<RenderNode> pNode);
 
     CameraNode mCamera;
     shared_ptr<Program> mProgram;
 
-    vector<unique_ptr<RenderNode>> mObjectNodes;
+    unordered_map<string, vector<unique_ptr<RenderNode>>> mObjects;
 
     unordered_map<int, bool> mPressedKeys;
 

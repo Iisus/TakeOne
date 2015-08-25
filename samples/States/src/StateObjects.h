@@ -7,4 +7,5 @@ class StateObjects : public StateSample
 {
 public:
     StateObjects(Engine* pEngine, const string &pScene);
+
 };

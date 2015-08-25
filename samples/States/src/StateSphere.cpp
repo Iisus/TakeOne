@@ -26,5 +26,5 @@ void StateSphere::SetupSphereNode()
 
     //mCamera.GetTransform().AddChild(&sphereNode->GetTransform(), Transform::TRANSLATION);
 
-    AddNode(move(sphereNode));
+    AddObject("Sphere", move(sphereNode));
 }

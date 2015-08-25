@@ -24,5 +24,5 @@ void StateCube::SetupBoxNode()
     boxNode->GetTransform().SetScale(glm::vec3(1.0f));
     boxNode->GetTransform().SetPosition(glm::vec3(0.0f,0.0f, -5.0f));
 
-    AddNode(move(boxNode));
+    AddObject("Cube", move(boxNode));
 }

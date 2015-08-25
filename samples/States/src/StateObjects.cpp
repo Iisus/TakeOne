@@ -9,6 +9,5 @@ StateObjects::StateObjects(Engine *pEngine, const std::string& pScene)
     DefaultRes defaultRes(SampleUtil::RES_FOLDER);
     mProgram = std::shared_ptr<Program>(std::move(defaultRes.SimpleTextureProgram()));
 
-    LoadScene(pScene);
+    LoadObject(pScene);
 }
-

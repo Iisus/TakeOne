@@ -166,28 +166,29 @@ void StateSample::Update()
 
 void StateSample::Draw()
 {
-    for(const auto& node : mObjectNodes)
-    {
-        node->GetRenderObject()->GetMaterial().SetShaderParam("u_Camera", mCamera.GetViewProjectionMatrix());
-        node->SendModelMatrix("u_ModelMatrix");
+    for(const auto& objects: mObjects)
+        for(const auto& node : objects.second)
+        {
+            node->GetRenderObject()->GetMaterial().SetShaderParam("u_Camera", mCamera.GetViewProjectionMatrix());
+            node->SendModelMatrix("u_ModelMatrix");
 
-        node->GetRenderObject()->Render();
-    }
+            node->GetRenderObject()->Render();
+        }
 }
 
-void StateSample::LoadScene(const string& pScene)
+void StateSample::LoadObject(const string& pObject)
 {
-    string scenePath = SampleUtil::RES_FOLDER + "objects/" + pScene + "/";
+    string scenePath = SampleUtil::RES_FOLDER + "objects/" + pObject + "/";
     ifstream sceneFile(scenePath + "/scene.txt");
 
     string objectName;
     while(std::getline(sceneFile, objectName))
     {
-        AddNode(make_unique<RenderNode>(make_shared<RenderObject>(mProgram, scenePath, objectName)));
+        AddObject(pObject, make_unique<RenderNode>(make_shared<RenderObject>(mProgram, scenePath, objectName)));
     }
 }
 
-void StateSample::AddNode(unique_ptr<RenderNode> pNode)
+void StateSample::AddObject(const string& pObjectName, unique_ptr<RenderNode> pNode)
 {
-    mObjectNodes.push_back(std::move(pNode));
+    mObjects[pObjectName].push_back(std::move(pNode));
 }
