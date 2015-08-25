@@ -50,7 +50,4 @@ private:
     int mMouseBtnCallbackHandle;
     int mMousePosCallbackHandle;
     int mKeyboardCallbackHandle;
-
-    float mCameraHorAngle;
-    float mCameraVerAngle;
 };

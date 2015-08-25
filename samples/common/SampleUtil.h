@@ -4,6 +4,7 @@
 
 using namespace TakeOne;
 using namespace std;
+using namespace glm;
 
 class SampleUtil
 {

@@ -1,12 +1,14 @@
 #include "StateSample.h"
 #include "DefaultRes.h"
+#include <iostream>
 
 StateSample::StateSample(Engine *pEngine)
-    : State(pEngine), mCameraMoveSpeed(1), mCameraRotateSpeed(0.001), mCameraHorAngle(0.0f), mCameraVerAngle(0.0f)
+    : State(pEngine), mCameraMoveSpeed(1), mCameraRotateSpeed(0.001)
 {
     //setup camera
     mCamera.SetClearColor(glm::vec4(63.0f / 255.0f, 75.0f / 255.0f, 82.0f / 255.0f, 1.0));
     mCamera.SetPerspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 100000.0f);
+    mCamera.SetAngleAxis(vec4(0, 0, 1, 0));
 }
 
 void StateSample::SetNextState(State* pNextState)
@@ -41,29 +43,12 @@ void StateSample::Enter()
     });
 
     //callback for mouse position: rotate camera
-
+    mEngine->GetInput().SetMousePosition(0,0);
     mMousePosCallbackHandle = mEngine->GetInput().RegisterMousePosAction(
     [this](double pXPos, double pYPos)
     {
-        static double oldX = pXPos, oldY = pYPos;
-
-        mCameraHorAngle -= mCameraRotateSpeed * float( pXPos - oldX);
-
-        auto tempVA = mCameraVerAngle - mCameraRotateSpeed * float( pYPos - oldY);
-
-        if(tempVA > glm::radians(-75.0f)&& tempVA < glm::radians(75.0f))
-            mCameraVerAngle = tempVA;
-
-        //fps
-        mCamera.SetAngleAxis(mCameraHorAngle, glm::vec3(0, 1, 0));
-        mCamera.Rotate(mCameraVerAngle, glm::vec3(1, 0, 0));
-
-        //freecam
-        //mCamera.Rotate(mCameraRotateSpeed * float( oldX - pXPos), glm::vec3(0,1,0));
-        //mCamera.Rotate(mCameraRotateSpeed * float( oldY - pYPos), glm::vec3(1,0,0));
-
-        oldX = pXPos;
-        oldY = pYPos;
+        mCamera.SetAngleAxis(-mCameraRotateSpeed*pXPos, vec3(0, 1, 0));
+        mCamera.Rotate(-mCameraRotateSpeed*pYPos, vec3(1, 0, 0));
 
         //callback
         this->MousePos(pXPos, pYPos);
