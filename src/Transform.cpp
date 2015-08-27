@@ -2,10 +2,35 @@
 #include "glm/gtx/transform.hpp"
 #include <algorithm>
 
-TakeOne::Transform::Transform(Transform* const pParent)
-        : mWorldTransform(glm::mat4()), mPosition(glm::vec3(0.0f)), mScale(glm::vec3(1.0f)), mRotation(glm::quat()), mDirty(true), mParent(pParent)
+TakeOne::Transform::Transform(Transform* const pParent) :
+    mWorldTransform(glm::mat4()), mPosition(glm::vec3(0.0f)), mScale(glm::vec3(1.0f)), mRotation(glm::quat()), mDirty(true), mParent(pParent)
 {
 
+}
+
+TakeOne::Transform::Transform(Transform&& pOther) :
+    mWorldTransform(std::move(pOther.mWorldTransform)), mPosition(std::move(mPosition)), mScale(std::move(mScale)), mRotation(std::move(mRotation)),
+    mDirty(std::move(pOther.mDirty)), mParent(pOther.mParent), mChildren(std::move(mChildren))
+{
+    pOther.mParent = nullptr;
+}
+
+TakeOne::Transform& TakeOne::Transform::operator=(Transform&& pOther)
+{
+    if(&pOther != this)
+    {
+        mWorldTransform = std::move(pOther.mWorldTransform);
+        mPosition = std::move(mPosition);
+        mScale = std::move(mScale);
+        mRotation = std::move(mRotation);
+        mDirty = std::move(pOther.mDirty);
+        mParent = pOther.mParent;
+        mChildren = std::move(mChildren);
+
+        pOther.mParent = nullptr;
+    }
+
+    return *this;
 }
 
 TakeOne::Transform::~Transform()
@@ -13,7 +38,7 @@ TakeOne::Transform::~Transform()
 
 }
 
-void TakeOne::Transform::SetParent(TakeOne::Transform* const pParent)
+void TakeOne::Transform::SetParent(TakeOne::Transform* const pParent, int pTransformations)
 {
     if(mParent)
     {
@@ -22,7 +47,7 @@ void TakeOne::Transform::SetParent(TakeOne::Transform* const pParent)
 
     if(pParent)
     {
-        pParent->AddChild(this);
+        pParent->AddChild(this, pTransformations);
     }
 }
 

@@ -19,11 +19,11 @@ namespace TakeOne
         Transform(Transform* const pParent = nullptr);
         Transform(const Transform&) = delete;
         Transform& operator=(const Transform&) = delete;
-        Transform(Transform&&) = delete;
-        Transform& operator=(Transform&&) = delete;
+        Transform(Transform&& pOther);
+        Transform& operator=(Transform&& pOther);
         ~Transform();
 
-        void SetParent(Transform* const pParent);
+        void SetParent(Transform* const pParent, int pTransformations = 0);
         const Transform* GetParent() const;
         void AddChild(Transform* const pChild, int pTransformations = 0);
         void RemoveChild(Transform* const);

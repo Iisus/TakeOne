@@ -10,28 +10,28 @@ int main()
 {
     Engine engine (1024, 768, "TakeOne");
 
-    engine.Init(false);
+    engine.Init(true);
 
-//    StateCube stateCube(&engine);
-//    StateSphere stateSphere(&engine);
-//    StateObjects stateObjects(&engine, "Armchair");
-//    StateFPS stateFPS(&engine);
+    StateCube stateCube(&engine);
+    StateSphere stateSphere(&engine);
+    StateObjects stateObjects(&engine, "Armchair");
+    StateFPS stateFPS(&engine);
     StateSolarSystem stateSolarSystem(&engine);
 
-//    stateCube.SetPrevState(&stateSolarSystem);
-//    stateCube.SetNextState(&stateSphere);
+    stateCube.SetPrevState(&stateSolarSystem);
+    stateCube.SetNextState(&stateSphere);
 
-//    stateSphere.SetPrevState(&stateCube);
-//    stateSphere.SetNextState(&stateObjects);
+    stateSphere.SetPrevState(&stateCube);
+    stateSphere.SetNextState(&stateObjects);
 
-//    stateObjects.SetPrevState(&stateSphere);
-//    stateObjects.SetNextState(&stateFPS);
+    stateObjects.SetPrevState(&stateSphere);
+    stateObjects.SetNextState(&stateFPS);
 
-//    stateFPS.SetPrevState(&stateObjects);
-//    stateFPS.SetNextState(&stateSolarSystem);
+    stateFPS.SetPrevState(&stateObjects);
+    stateFPS.SetNextState(&stateSolarSystem);
 
-//    stateSolarSystem.SetPrevState(&stateFPS);
-//    stateSolarSystem.SetNextState(&stateCube);
+    stateSolarSystem.SetPrevState(&stateFPS);
+    stateSolarSystem.SetNextState(&stateCube);
 
     engine.PushState(&stateSolarSystem);
 

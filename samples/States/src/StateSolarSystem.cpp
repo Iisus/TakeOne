@@ -12,42 +12,74 @@ StateSolarSystem::StateSolarSystem(Engine *pEngine)
 
     mPlanets =
     {
-        PlanetProp{"Sky", "stars_milkyway.jpg", 10000, 0, 0},
-        PlanetProp{"Sun", "texture_sun.jpg", 100, 0, 0}, //the real size is 277 the size of mercury
-        PlanetProp{"Mercury", "texture_mercury.jpg", 1, 123.7, 0},
-        PlanetProp{"Venus", "texture_venus_atmosphere.jpg", 2.41, 144.3, 0},
-        PlanetProp{"Earth", "texture_earth_clouds.jpg", 2.54, 161.3, 0},
-        PlanetProp{"Moon", "texture_moon.jpg",0.69, 5, 0},
-        PlanetProp{"Mars", "texture_mars.jpg", 1.34, 193.4, 0},
-        PlanetProp{"Jupiter", "texture_jupiter.jpg", 28.4, 419.0, 0},
-        PlanetProp{"Saturn", "texture_saturn.jpg", 24, 687.2, 0},
-        PlanetProp{"Uranus", "texture_uranus.jpg", 10.2, 1279.0, 0},
-        PlanetProp{"Neptune", "texture_neptune.jpg", 9.88, 1943.4, 0},
+        {"Sky",     PlanetProp{"Sky",     "stars_milkyway.jpg",           10000, 0,   0.0,    0,     0, 0}},
+        {"Sun",     PlanetProp{"Sun",     "texture_sun.jpg",              60,    0,   0.0,    0,     0, 0}}, //the real size is 277 the size of mercury
+        {"Mercury", PlanetProp{"Mercury", "texture_mercury.jpg",          2,     80,  0.0125, 0.002, 0, 0}},
+        {"Venus",   PlanetProp{"Venus",   "texture_venus_atmosphere.jpg", 3,     100, 0.008,  -.01,  0, 0}},
+        {"Earth",   PlanetProp{"Earth",   "texture_earth_clouds.jpg",     3.3,   140, 0.01,   .02,   0, 0}},
+        {"Moon",    PlanetProp{"Moon",    "texture_moon.jpg",             1,     7,   0.045,  .025,  0, 0}},
+        {"Mars",    PlanetProp{"Mars",    "texture_mars.jpg",             2.9,   180, 0.012,  .02,   0, 0}},
+        {"Jupiter", PlanetProp{"Jupiter", "texture_jupiter.jpg",          14.4,  300, 0.013,  .071,  0, 0}},
+        {"Saturn",  PlanetProp{"Saturn",  "texture_saturn.jpg",           12,    400, 0.011,  .07,   0, 0}},
+        {"Uranus",  PlanetProp{"Uranus",  "texture_uranus.jpg",           8.2,   550, 0.007,  -.05,  0, 0}},
+        {"Neptune", PlanetProp{"Neptune", "texture_neptune.jpg",          6.88,  700, 0.009,  .04,   0, 0}}
     };
 
     for(const auto& planet : mPlanets)
-        SetupNode(planet);
+        SetupNode(planet.second);
 
-     mCamera.GetTransform()->SetPosition(vec3(0, 0, 800));
+     mCamera.GetTransform()->SetPosition(vec3(0, 0, 300));
 
-     mObjects["Mercury"].back()->GetTransform()->SetParent(&mSunTransform);
-     mObjects["Venus"].back()->GetTransform()->SetParent(&mSunTransform);
-     mObjects["Earth"].back()->GetTransform()->SetParent(&mSunTransform);
-     mObjects["Moon"].back()->GetTransform()->SetParent(mObjects["Earth"].back()->GetTransform());
-     mObjects["Mars"].back()->GetTransform()->SetParent(&mSunTransform);
-     mObjects["Jupiter"].back()->GetTransform()->SetParent(&mSunTransform);
-     mObjects["Saturn"].back()->GetTransform()->SetParent(&mSunTransform);
-     mObjects["Uranus"].back()->GetTransform()->SetParent(&mSunTransform);
-     mObjects["Neptune"].back()->GetTransform()->SetParent(&mSunTransform);
+     mObjects["Mercury"].back()->GetTransform()->SetParent(&mTransformations["Mercury"]);
+     mObjects["Venus"].back()->GetTransform()->SetParent(&mTransformations["Venus"]);
+     mObjects["Earth"].back()->GetTransform()->SetParent(&mTransformations["Earth"]);
+     mObjects["Moon"].back()->GetTransform()->SetParent(&mTransformations["Moon"]);
+     mObjects["Earth"].back()->GetTransform()->AddChild(&mTransformations["Moon"]);
+     mObjects["Mars"].back()->GetTransform()->SetParent(&mTransformations["Mars"]);
+     mObjects["Jupiter"].back()->GetTransform()->SetParent(&mTransformations["Jupiter"]);
+     mObjects["Saturn"].back()->GetTransform()->SetParent(&mTransformations["Saturn"]);
+     mObjects["Uranus"].back()->GetTransform()->SetParent(&mTransformations["Uranus"]);
+     mObjects["Neptune"].back()->GetTransform()->SetParent(&mTransformations["Neptune"]);
 }
 
 void StateSolarSystem::Update()
 {
-    static float angle = 0;
-    angle +=0.002;
-    mSunTransform.SetRotation(glm::angleAxis(angle, vec3(0, 1, 0)));
+    StateSample::Update();
 
-    mObjects["Earth"].back()->GetTransform()->SetRotation(glm::angleAxis(angle*100, vec3(0, 1, 0)));
+    for(const auto& obj : mObjects)
+    {
+        obj.second.back()->GetTransform()->SetRotation(angleAxis(mPlanets[obj.first].RevAcc, vec3(0, 1, 0)));
+        mPlanets[obj.first].RevAcc += mPlanets[obj.first].RevSpeed;
+
+        mTransformations[obj.first].SetRotation(angleAxis(mPlanets[obj.first].RotAcc, vec3(0, 1, 0)));
+        mPlanets[obj.first].RotAcc += mPlanets[obj.first].RotSpeed;
+    }
+}
+
+void StateSolarSystem::HandleEvents()
+{
+    StateSample::HandleEvents();
+
+    static auto currPlanet = mObjects.begin();
+
+    static bool key_p_before = mPressedKeys[GLFW_KEY_P];
+    if (!mPressedKeys[GLFW_KEY_P] && key_p_before){
+
+        mCamera.GetTransform()->SetParent((*currPlanet).second.back()->GetTransform());
+        mCamera.GetTransform()->SetPosition(vec3(0, 0, mPlanets[(*currPlanet).first].Radius * 2 + 30));
+
+        currPlanet++;
+        if(currPlanet == mObjects.end())
+            currPlanet = mObjects.begin();
+    }
+    key_p_before = mPressedKeys[GLFW_KEY_P];
+
+    static bool key_o_before = mPressedKeys[GLFW_KEY_P];
+    if (!mPressedKeys[GLFW_KEY_O] && key_o_before){
+        mCamera.GetTransform()->SetParent(nullptr);
+        mCamera.GetTransform()->SetPosition(vec3(0, 0, 300));
+    }
+    key_o_before = mPressedKeys[GLFW_KEY_O];
 }
 
 void StateSolarSystem::SetupNode(const PlanetProp& pPlanet)
@@ -56,7 +88,6 @@ void StateSolarSystem::SetupNode(const PlanetProp& pPlanet)
     Texture diffuseTx(SampleUtil::RES_FOLDER + "textures/SolarSystem/" + pPlanet.Texture, Texture::INVERT_Y | Texture::COMPRESS_TO_DXT | Texture::TEXTURE_REPEATS | Texture::MIPMAPS);
     sphereNode->GetRenderObject()->GetMaterial().SetTexture(std::move(diffuseTx));
     sphereNode->GetTransform()->SetPosition(vec3(pPlanet.Distance, 0, 0));
-
 
     AddObject(pPlanet.Name, move(sphereNode));
 }

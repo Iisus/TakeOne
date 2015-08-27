@@ -3,7 +3,7 @@
 #include <iostream>
 
 StateSample::StateSample(Engine *pEngine)
-    : State(pEngine), mCameraMoveSpeed(1), mCameraRotateSpeed(0.001)
+    : State(pEngine), mCameraMoveSpeed(1), mCameraRotateSpeed(0.001), mNextState(nullptr), mPrevState(nullptr)
 {
     //setup camera
     mCamera.SetClearColor(glm::vec4(63.0f / 255.0f, 75.0f / 255.0f, 82.0f / 255.0f, 1.0));
@@ -127,7 +127,7 @@ void StateSample::HandleEvents()
 
     //catch the release of page up key
     static bool key_pu_before = mPressedKeys[GLFW_KEY_PAGE_UP];
-    if (!mPressedKeys[GLFW_KEY_PAGE_UP] && key_pu_before){
+    if (!mPressedKeys[GLFW_KEY_PAGE_UP] && key_pu_before && mNextState){
         mEngine->PopState();
         mEngine->PushState(mNextState);
     }
@@ -135,7 +135,7 @@ void StateSample::HandleEvents()
 
     //catch the release of page down key
     static bool key_pd_before = mPressedKeys[GLFW_KEY_PAGE_DOWN];
-    if (!mPressedKeys[GLFW_KEY_PAGE_DOWN] && key_pd_before){
+    if (!mPressedKeys[GLFW_KEY_PAGE_DOWN] && key_pd_before && mPrevState){
         mEngine->PopState();
         mEngine->PushState(mPrevState);
     }

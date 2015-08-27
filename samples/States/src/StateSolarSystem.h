@@ -6,22 +6,6 @@
 class StateSolarSystem : public StateSample
 {
 private:
-    enum Planet
-    {
-        Sky,
-        Sun,
-        Mercury,
-        Venus,
-        Earth,
-        Moon,
-        Mars,
-        Jupiter,
-        Saturn,
-        Uranus,
-        Neptune,
-
-        Count
-    };
 
     struct PlanetProp
     {
@@ -29,17 +13,22 @@ private:
         string Texture;
         float Radius;
         float Distance;
-        float Speed;
+        float RotSpeed;
+        float RevSpeed;
+        float RotAcc;
+        float RevAcc;
     };
 
 public:
     StateSolarSystem(Engine* pEngine);
 
     virtual void Update();
+    virtual void HandleEvents();
+
 private:
     void SetupNode(const PlanetProp& pPlanet);
 
-    vector<PlanetProp> mPlanets;
-    Transform mSunTransform;
+    unordered_map<string, PlanetProp> mPlanets;
+    unordered_map<string, Transform> mTransformations;
 
 };
