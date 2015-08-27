@@ -15,13 +15,13 @@ StateFPS::StateFPS(Engine *pEngine)
 
     for(const auto& node : mObjects[kObjName])
     {
-        mOldManTransform.AddChild(&node->GetTransform());
+        mOldManTransform.AddChild(node->GetTransform());
     }
 
     mOldManTransform.SetPosition(vec3(0, -145, -200));
     mOldManTransform.SetRotation(angleAxis(radians(180.0f), vec3(0, 1, 0)) * angleAxis(radians(-20.0f), vec3(1, 0, 0)));
 
-    mCamera.GetTransform().AddChild(&mOldManTransform);
+    mCamera.GetTransform()->AddChild(&mOldManTransform);
 
     LoadObject("House02");
 }

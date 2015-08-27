@@ -21,8 +21,8 @@ void StateCube::SetupBoxNode()
 
     boxNode->GetRenderObject()->GetMaterial().SetTexture(std::move(diffuseTx));
 
-    boxNode->GetTransform().SetScale(glm::vec3(1.0f));
-    boxNode->GetTransform().SetPosition(glm::vec3(0.0f,0.0f, -5.0f));
+    boxNode->GetTransform()->SetScale(glm::vec3(1.0f));
+    boxNode->GetTransform()->SetPosition(glm::vec3(0.0f,0.0f, -5.0f));
 
     AddObject("Cube", move(boxNode));
 }

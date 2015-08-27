@@ -3,6 +3,7 @@
 #include "StateSphere.h"
 #include "StateObjects.h"
 #include "StateFPS.h"
+#include "StateSolarSystem.h"
 
 
 int main()
@@ -11,24 +12,28 @@ int main()
 
     engine.Init(false);
 
-    StateCube stateCube(&engine);
-    StateSphere stateSphere(&engine);
-    StateObjects stateObjects(&engine, "Armchair");
-    StateFPS stateFPS(&engine);
+//    StateCube stateCube(&engine);
+//    StateSphere stateSphere(&engine);
+//    StateObjects stateObjects(&engine, "Armchair");
+//    StateFPS stateFPS(&engine);
+    StateSolarSystem stateSolarSystem(&engine);
 
-    stateCube.SetNextState(&stateSphere);
-    stateCube.SetPrevState(&stateFPS);
+//    stateCube.SetPrevState(&stateSolarSystem);
+//    stateCube.SetNextState(&stateSphere);
 
-    stateSphere.SetNextState(&stateObjects);
-    stateSphere.SetPrevState(&stateCube);
+//    stateSphere.SetPrevState(&stateCube);
+//    stateSphere.SetNextState(&stateObjects);
 
-    stateObjects.SetNextState(&stateFPS);
-    stateObjects.SetPrevState(&stateSphere);
+//    stateObjects.SetPrevState(&stateSphere);
+//    stateObjects.SetNextState(&stateFPS);
 
-    stateFPS.SetNextState(&stateCube);
-    stateFPS.SetPrevState(&stateObjects);
+//    stateFPS.SetPrevState(&stateObjects);
+//    stateFPS.SetNextState(&stateSolarSystem);
 
-    engine.PushState(&stateFPS);
+//    stateSolarSystem.SetPrevState(&stateFPS);
+//    stateSolarSystem.SetNextState(&stateCube);
+
+    engine.PushState(&stateSolarSystem);
 
     engine.Run();
 

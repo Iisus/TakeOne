@@ -17,12 +17,12 @@ void StateSphere::SetupSphereNode()
 {
     auto sphereNode = make_unique<RenderNode>(make_shared<SphereRenderObject>(mProgram, 1, 100, 100));
 
-    Texture diffuseTx(SampleUtil::RES_FOLDER + "textures/earthbare.jpg", Texture::INVERT_Y | Texture::COMPRESS_TO_DXT | Texture::TEXTURE_REPEATS | Texture::MIPMAPS);
+    Texture diffuseTx(SampleUtil::RES_FOLDER + "textures/SolarSystem/texture_saturn_ring.png", Texture::INVERT_Y | Texture::COMPRESS_TO_DXT | Texture::TEXTURE_REPEATS | Texture::MIPMAPS);
 
     sphereNode->GetRenderObject()->GetMaterial().SetTexture(std::move(diffuseTx));
 
-    sphereNode->GetTransform().SetScale(glm::vec3(1.0f));
-    sphereNode->GetTransform().SetPosition(glm::vec3(0.0f,0.0f, -5.0f));
+    sphereNode->GetTransform()->SetScale(glm::vec3(1.0f, 1.0f, 1.0f));
+    sphereNode->GetTransform()->SetPosition(glm::vec3(0.0f,0.0f, -5.0f));
 
     //mCamera.GetTransform().AddChild(&sphereNode->GetTransform(), Transform::TRANSLATION);
 

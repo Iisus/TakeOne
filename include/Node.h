@@ -19,7 +19,7 @@ namespace TakeOne
         void SetName(const std::string& pName);
         std::string GetName() const;
 
-        Transform& GetTransform();
+        Transform* GetTransform();
 
     protected:
         std::unique_ptr<Transform> mTransform;

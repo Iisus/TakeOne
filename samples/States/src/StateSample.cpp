@@ -84,7 +84,7 @@ void StateSample::HandleEvents()
 {
     static int cursorMode = GLFW_CURSOR_DISABLED;
 
-    glm::vec3 camPos = mCamera.GetTransform().GetPosition();
+    glm::vec3 camPos = mCamera.GetTransform()->GetPosition();
 
     //catch the release of M key
     static bool key_m_before = mPressedKeys[GLFW_KEY_M];
@@ -141,7 +141,7 @@ void StateSample::HandleEvents()
     }
     key_pd_before = mPressedKeys[GLFW_KEY_PAGE_DOWN];
 
-    mCamera.GetTransform().SetPosition(camPos);
+    mCamera.GetTransform()->SetPosition(camPos);
 }
 
 void StateSample::Update()
