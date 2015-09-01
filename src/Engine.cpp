@@ -82,6 +82,8 @@ void TakeOne::Engine::Run()
 
     while(!ShouldClose())
     {
+        ShowFPS();
+
         if(mStates.empty())
             break;
 
@@ -104,7 +106,6 @@ void TakeOne::Engine::Run()
         currState->Draw();
 
         glfwSwapBuffers(mWindow);
-
     }
 }
 
@@ -160,6 +161,25 @@ void  TakeOne::Engine::InitGlew()
     glEnable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);
     //glCullFace(GL_BACK);
+}
+
+void TakeOne::Engine::ShowFPS()
+{
+    double currentTime = glfwGetTime ();
+    static int nbFrames = 0;
+    static double lastTime = 0;
+
+    nbFrames++;
+
+    if (currentTime - lastTime >= 0.5)
+    {
+      glfwSetWindowTitle(mWindow, std::string(mWindowTitle +
+                         " [FPS: " + std::to_string((float)nbFrames / (currentTime - lastTime)) +
+                         "] [DT: " + std::to_string((currentTime - lastTime) / (float)nbFrames) + "]").c_str());
+
+      nbFrames = 0;
+      lastTime = currentTime;
+    }
 }
 
 void TakeOne::Engine::ErrorCallback(int pError, const char* pDescription)

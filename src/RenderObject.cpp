@@ -1,5 +1,4 @@
 #include "RenderObject.h"
-#include "MaterialHelper.h"
 #include "Log.h"
 #include <sstream>
 
@@ -82,21 +81,17 @@ void TakeOne::RenderObject::LoadMesh(std::ifstream& pFile)
 
 void TakeOne::RenderObject::LoadMaterial(std::ifstream& pFile)
 {
-    MaterialHelper materialLoader;
-
     //The header contains the uniforms used(form: 11010, where 1 means that the uniform is used)
     // + textures string size
-    unsigned long headerSize = MaterialHelper::Count + 1;
+    unsigned long headerSize = Material::Count + 1;
 
     std::vector<unsigned int> formatUsed(headerSize);
     pFile.read(reinterpret_cast<char*>(&formatUsed[0]), static_cast<long>(headerSize * sizeof(formatUsed[0])));
     unsigned int texStringSize = formatUsed.back();
     formatUsed.pop_back();
-    materialLoader.SetFormatUsed(std::move(formatUsed));
 
-    MaterialHelper::MaterialFormat materialFormat;
-    pFile.read(reinterpret_cast<char*>(&materialFormat), sizeof(materialFormat));
-    materialLoader.SetMaterialFormat(std::move(materialFormat));
+    Material::DefaultProperties materialProps;
+    pFile.read(reinterpret_cast<char*>(&materialProps), sizeof(materialProps));
 
 
     char* texPaths = new char[texStringSize+1];
@@ -113,5 +108,5 @@ void TakeOne::RenderObject::LoadMaterial(std::ifstream& pFile)
         mMaterial->SetTexture(Texture(mObjPath + item, Texture::INVERT_Y | Texture::COMPRESS_TO_DXT | Texture::TEXTURE_REPEATS | Texture::MIPMAPS));
     }
 
-    materialLoader.Apply(*mMaterial);
+    mMaterial->ApplyDefaultProperties(formatUsed, materialProps);
 }

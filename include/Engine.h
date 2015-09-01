@@ -37,6 +37,8 @@ namespace TakeOne
     private:
         //private methods
         void InitGlew();
+        void ShowFPS();
+
         static void ErrorCallback(int pError, const char* pDescription);
 
         std::vector<State*> mStates;
