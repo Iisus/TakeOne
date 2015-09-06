@@ -8,4 +8,6 @@ class StateObjects : public StateSample
 public:
     StateObjects(Engine* pEngine, const string &pScene);
 
+    virtual void Enter();
+    virtual void Update();
 };

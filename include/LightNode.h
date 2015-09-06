@@ -12,7 +12,7 @@ namespace TakeOne
         SPOT
     };
 
-    class LightNode : private Node
+    class LightNode : public Node
     {
     public:
         LightNode(LightType pLightType = LightType::DIRECTIONAL);
