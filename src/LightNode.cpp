@@ -1,9 +1,49 @@
 #include "LightNode.h"
 
+static const std::string POSITION = "u_LightPosition";
+static const std::string DIRECTION = "u_LightDirection";
+static const std::string AMBIENT_COLOR = "u_LightAmbientColor";
+static const std::string DIFFUSE_COLOR = "u_LightDiffuseColor";
+static const std::string SPECULAR_COLOR = "u_LightSpecularColor";
+static const std::string CUT_OFF= "u_LightCutOff";
+static const std::string CUTTER_CUT_OFF = "u_LightCutterCutOff";
+static const std::string CONSTANT_ATTENUATION = "u_LightConstantAttenuation";
+static const std::string LINEAR_ATTENUATION = "u_LightLinearAttenuation";
+static const std::string QUADRATIC_ATTENUATION = "u_LightQuadraticAttenuation";
+
 TakeOne::LightNode::LightNode(LightType pLightType)
     : mLightType(pLightType)
 {
 
+}
+
+TakeOne::LightNode::LightNode(LightNode&& pOther) :
+    Node(std::move(pOther)), mLightType(pOther.mLightType), mDirection(pOther.mDirection), mAmbientColor(pOther.mAmbientColor),
+    mDiffuseColor(pOther.mDiffuseColor), mSpecularColor(pOther.mSpecularColor), mCutOff(pOther.mCutOff), mCuterCutOff(pOther.mCuterCutOff),
+    mConstantAttenuation(pOther.mConstantAttenuation),mLinearAttenuation(pOther.mLinearAttenuation),
+    mQuadraticAttenuation(pOther.mQuadraticAttenuation)
+{
+
+}
+
+TakeOne::LightNode& TakeOne::LightNode::operator=(LightNode&& pOther)
+{
+    if(this != &pOther)
+    {
+        Node::operator =(std::move(pOther));
+        mLightType = pOther.mLightType;
+        mDirection = pOther.mDirection;
+        mAmbientColor = pOther.mAmbientColor;
+        mDiffuseColor = pOther.mDiffuseColor;
+        mSpecularColor = pOther.mSpecularColor;
+        mCutOff = pOther.mCutOff;
+        mCuterCutOff = pOther.mCuterCutOff;
+        mConstantAttenuation = pOther.mConstantAttenuation;
+        mLinearAttenuation = pOther.mLinearAttenuation;
+        mQuadraticAttenuation = pOther.mQuadraticAttenuation;
+    }
+
+    return *this;
 }
 
 TakeOne::LightNode::~LightNode()
@@ -136,4 +176,18 @@ float TakeOne::LightNode::GetQuadraticAttenuation() const
 void TakeOne::LightNode::SetQuadraticAttenuation(float pQuadraticAttenuation)
 {
     mQuadraticAttenuation = pQuadraticAttenuation;
+}
+
+void TakeOne::LightNode::ApplyLight(Material& pMaterial)
+{
+    pMaterial.SetShaderParam(POSITION, mTransform->GetPosition());
+    pMaterial.SetShaderParam(DIRECTION, mDirection);
+    pMaterial.SetShaderParam(AMBIENT_COLOR, mAmbientColor);
+    pMaterial.SetShaderParam(DIFFUSE_COLOR, mDiffuseColor);
+    pMaterial.SetShaderParam(SPECULAR_COLOR, mSpecularColor);
+    pMaterial.SetShaderParam(CUT_OFF, mCutOff);
+    pMaterial.SetShaderParam(CUTTER_CUT_OFF, mCuterCutOff);
+    pMaterial.SetShaderParam(CONSTANT_ATTENUATION, mConstantAttenuation);
+    pMaterial.SetShaderParam(LINEAR_ATTENUATION, mLinearAttenuation);
+    pMaterial.SetShaderParam(QUADRATIC_ATTENUATION, mQuadraticAttenuation);
 }

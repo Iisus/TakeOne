@@ -28,8 +28,13 @@ void TakeOne::Material::SetProgram(std::shared_ptr<Program> pProgram)
     mProgram = pProgram;
 }
 
-void TakeOne::Material::SetTexture(Texture&& pTexture)
+void TakeOne::Material::SetTexture(Texture&& pTexture, std::string pUniformName)
 {
+    if(!pUniformName.empty())
+    {
+        SetShaderParam(pUniformName, pTexture.GetTextureNo());
+    }
+
     mTextures.push_back(std::move(pTexture));
 }
 
@@ -47,12 +52,9 @@ void TakeOne::Material::Use()
     if(mTextures.empty())
         Texture::Unbind();
 
-    int texNumber = 0;
     for(const auto& texture:mTextures)
     {
-        glActiveTexture(GL_TEXTURE0 + texNumber);
         texture.Bind();
-        texNumber++;
     }
 }
 

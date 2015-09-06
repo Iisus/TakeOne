@@ -68,6 +68,8 @@ void StateSample::Enter()
     });
 
     mEngine->GetInput().SetCursorMode(GLFW_CURSOR_DISABLED);
+
+    mProgram->Reload();
 }
 
 void StateSample::Exit()
@@ -78,6 +80,7 @@ void StateSample::Exit()
     mEngine->GetInput().UnregisterKeyboardAction(mKeyboardCallbackHandle);
 
     mPressedKeys = {};
+    mLights.clear();
 }
 
 void StateSample::HandleEvents()
@@ -125,6 +128,7 @@ void StateSample::HandleEvents()
         mProgram->Reload();
     }
 
+
     //catch the release of page up key
     static bool key_pu_before = mPressedKeys[GLFW_KEY_PAGE_UP];
     if (!mPressedKeys[GLFW_KEY_PAGE_UP] && key_pu_before && mNextState){
@@ -155,7 +159,15 @@ void StateSample::Draw()
         for(const auto& node : objects.second)
         {
             node->GetRenderObject()->GetMaterial().SetShaderParam("u_Camera", mCamera.GetViewProjectionMatrix());
+            node->GetRenderObject()->GetMaterial().SetShaderParam("u_ViewPos", mCamera.GetTransform()->GetPosition());
             node->SendModelMatrix("u_ModelMatrix");
+
+            for(auto& light : mLights)
+            {
+                light.ApplyLight(node->GetRenderObject()->GetMaterial());
+            }
+
+            node->GetRenderObject()->GetMaterial().ResendShaderParams();
 
             node->GetRenderObject()->Render();
         }

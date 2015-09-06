@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Node.h"
+#include "Material.h"
 
 namespace TakeOne
 {
@@ -15,7 +16,10 @@ namespace TakeOne
     {
     public:
         LightNode(LightType pLightType = LightType::DIRECTIONAL);
+        LightNode(LightNode&& pOther);
+        LightNode& operator=(LightNode&& pOther);
         ~LightNode(); //empty
+
 
         void SetLightType(LightType pLightType) { mLightType = pLightType; }
         LightType GetLightType() const { return mLightType; }
@@ -61,6 +65,8 @@ namespace TakeOne
 
         float GetQuadraticAttenuation() const;
         void SetQuadraticAttenuation(float pQuadraticAttenuation);
+
+        void ApplyLight(Material& pMaterial);
 
     private:
 

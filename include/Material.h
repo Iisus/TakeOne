@@ -58,7 +58,7 @@ namespace TakeOne
         void ResendShaderParam(DefaultPropertiesEnum pName);
         void ResendShaderParams();
         void ApplyDefaultProperties(const std::vector<unsigned int>& pPropsUsed, const DefaultProperties& pDefaultProps);
-        void SetTexture(Texture&& pTexture);
+        void SetTexture(Texture&& pTexture, std::string pUniformName = "");
         void SetProgram(std::shared_ptr<Program> pProgram);
         void Use();
         void Reload();

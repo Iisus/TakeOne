@@ -5,6 +5,7 @@
 #include "CameraNode.h"
 #include "RenderNode.h"
 #include "Program.h"
+#include "LightNode.h"
 
 class StateSample : public State
 {
@@ -33,6 +34,7 @@ protected:
 
     CameraNode mCamera;
     shared_ptr<Program> mProgram;
+    vector<LightNode> mLights;
 
     unordered_map<string, vector<unique_ptr<RenderNode>>> mObjects;
 

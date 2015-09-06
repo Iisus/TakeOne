@@ -9,7 +9,7 @@ namespace TakeOne
     {
     public:
         Texture();
-        Texture(const std::string pTexturePath, unsigned int pTextureFlags);
+        Texture(const std::string pTexturePath, unsigned int pTextureFlags, unsigned int pTextureNo = 0);
 
         Texture(const Texture&) = delete;
         Texture& operator=(const Texture&) = delete;
@@ -19,10 +19,11 @@ namespace TakeOne
 
         ~Texture();
 
-        void LoadFromFile(const std::string pTexturePath, unsigned int pTextureFlags, unsigned int pTextureId = 0);
-        void LoadFromBuffer(const unsigned char* const pBuffer, int pSize, unsigned int pTextureFlags, unsigned int pTextureId = 0);
+        void LoadFromFile(const std::string pTexturePath, unsigned int pTextureFlags, unsigned int pTextureNo = 0, unsigned int pTextureId = 0);
+        void LoadFromBuffer(const unsigned char* const pBuffer, int pSize, unsigned int pTextureFlags, unsigned int pTextureNo = 0, unsigned int pTextureId = 0);
         void Bind() const;
         void Unload();
+        inline int GetTextureNo() const { return mTextureNo; }
 
         //static because we need to unbind the last texture from the material
         static void Unbind();
@@ -48,6 +49,7 @@ namespace TakeOne
 
         std::string mTexturePath;
         unsigned int mTextureFlags;
+        unsigned int mTextureNo;
         unsigned int mTextureId;
 
         //unordered_map< TexturPath, pair< TextureId, RefCount> >

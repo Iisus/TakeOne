@@ -27,6 +27,11 @@ namespace TakeOne
             return std::make_unique<Program>(mResFolder + "/default/shaders/SimpleTexture/vertex.glsl", mResFolder + "/default/shaders/SimpleTexture/fragment.glsl");
         }
 
+        inline std::unique_ptr<Program> SpecularMapProgram() const
+        {
+            return std::make_unique<Program>(mResFolder + "/default/shaders/SpecularMap/vertex.glsl", mResFolder + "/default/shaders/SpecularMap/fragment.glsl");
+        }
+
     private:
         const std::string mResFolder;
     };

@@ -33,7 +33,7 @@ int main()
     stateSolarSystem.SetPrevState(&stateFPS);
     stateSolarSystem.SetNextState(&stateCube);
 
-    engine.PushState(&stateSolarSystem);
+    engine.PushState(&stateCube);
 
     engine.Run();
 

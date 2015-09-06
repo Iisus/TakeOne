@@ -9,6 +9,8 @@ public:
 
     StateCube(Engine* pEngine);
 
+    virtual void Enter();
+
 private:
     void SetupBoxNode();
 };
