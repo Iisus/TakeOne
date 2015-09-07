@@ -13,7 +13,7 @@ namespace TakeOne
     class PlaneRenderObject : public RenderObject
     {
     public:
-        PlaneRenderObject(const std::shared_ptr<Program>& pProgram);
+        PlaneRenderObject(const std::shared_ptr<Program>& pProgram, glm::vec2 pTextureTile = glm::vec2(1.0f, 1.0f));
     };
 
     class SphereRenderObject : public RenderObject
