@@ -153,14 +153,16 @@ void  TakeOne::Engine::InitGlew()
         LOG_MSG("Error: %s\n", glewGetErrorString(err));
     }
 
-    glEnable (GL_BLEND);
+    glEnable(GL_BLEND);
     glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+//    glEnable(GL_ALPHA_TEST);
+//    glAlphaFunc(GL_GREATER, 0.5f);
 
     glEnable(GL_MULTISAMPLE);
 
     glEnable(GL_DEPTH_TEST);
-    glDisable(GL_CULL_FACE);
-    //glCullFace(GL_BACK);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
 }
 
 void TakeOne::Engine::ShowFPS()
