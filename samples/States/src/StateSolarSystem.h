@@ -22,6 +22,8 @@ private:
 public:
     StateSolarSystem(Engine* pEngine);
 
+    virtual void Enter();
+    virtual void Exit();
     virtual void Update();
     virtual void HandleEvents();
 

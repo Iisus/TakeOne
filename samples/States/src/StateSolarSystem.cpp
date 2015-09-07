@@ -42,6 +42,20 @@ StateSolarSystem::StateSolarSystem(Engine *pEngine)
      mObjects["Neptune"].back()->GetTransform()->SetParent(&mTransformations["Neptune"]);
 }
 
+void StateSolarSystem::Enter()
+{
+    StateSample::Enter();
+
+    glDisable(GL_CULL_FACE);
+}
+
+void StateSolarSystem::Exit()
+{
+    StateSample::Enter();
+
+    glEnable(GL_CULL_FACE);
+}
+
 void StateSolarSystem::Update()
 {
     StateSample::Update();
