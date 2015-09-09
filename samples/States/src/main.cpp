@@ -2,6 +2,7 @@
 #include "StateCube.h"
 #include "StateSphere.h"
 #include "StateObjects.h"
+#include "StateMedievalCity.h"
 #include "StateFPS.h"
 #include "StateSolarSystem.h"
 
@@ -13,27 +14,31 @@ int main()
     engine.Init(true);
 
     StateCube stateCube(&engine);
-    StateSphere stateSphere(&engine);
+    //StateSphere stateSphere(&engine);
     StateObjects stateObjects(&engine, "Armchair");
+    StateMedievalCity stateMedievalCity(&engine);
     StateFPS stateFPS(&engine);
     StateSolarSystem stateSolarSystem(&engine);
 
     stateCube.SetPrevState(&stateSolarSystem);
-    stateCube.SetNextState(&stateSphere);
+    stateCube.SetNextState(&stateObjects);
 
-    stateSphere.SetPrevState(&stateCube);
-    stateSphere.SetNextState(&stateObjects);
+    //stateSphere.SetPrevState(&stateCube);
+    //stateSphere.SetNextState(&stateObjects);
 
-    stateObjects.SetPrevState(&stateSphere);
-    stateObjects.SetNextState(&stateFPS);
+    stateObjects.SetPrevState(&stateCube);
+    stateObjects.SetNextState(&stateMedievalCity);
 
-    stateFPS.SetPrevState(&stateObjects);
+    stateMedievalCity.SetPrevState(&stateObjects);
+    stateMedievalCity.SetNextState(&stateFPS);
+
+    stateFPS.SetPrevState(&stateMedievalCity);
     stateFPS.SetNextState(&stateSolarSystem);
 
     stateSolarSystem.SetPrevState(&stateFPS);
     stateSolarSystem.SetNextState(&stateCube);
 
-    engine.PushState(&stateCube);
+    engine.PushState(&stateMedievalCity);
 
     engine.Run();
 
