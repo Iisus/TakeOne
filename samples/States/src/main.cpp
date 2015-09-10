@@ -38,7 +38,7 @@ int main()
     stateSolarSystem.SetPrevState(&stateFPS);
     stateSolarSystem.SetNextState(&stateCube);
 
-    engine.PushState(&stateMedievalCity);
+    engine.PushState(&stateCube);
 
     engine.Run();
 
