@@ -21,13 +21,17 @@ out vec4 FinalColor;
 void main()
 {
     // Ambient
-    vec3 ambient = u_LightAmbientColor * vec3(texture(u_DiffuseMap, FragTexCoord));
+    vec4 color = texture(u_DiffuseMap, FragTexCoord);
+    if(color.a<0.9)
+		discard;
+    
+    vec3 ambient = u_LightAmbientColor * color.rgb;
   	
     // Diffuse 
     vec3 norm = normalize(FragNormal);
     vec3 lightDir = normalize(u_LightPosition - FragPos);
     float diff = max(dot(norm, lightDir), 0.0);
-    vec3 diffuse = u_LightDiffuseColor * diff * vec3(texture(u_DiffuseMap, FragTexCoord));  
+    vec3 diffuse = u_LightDiffuseColor * diff * color.rgb;  
     
     // Specular
     vec3 viewDir = normalize(u_ViewPos - FragPos);
@@ -35,6 +39,6 @@ void main()
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), u_Shininess);
     vec3 specular = u_LightSpecularColor * spec * vec3(texture(u_SpecularMap, FragTexCoord));
         
-    FinalColor = vec4(ambient + diffuse + specular, 1.0f);  
+    FinalColor = vec4(ambient + diffuse + specular, color.a);  
 } 
 
