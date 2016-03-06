@@ -79,7 +79,7 @@ target_link_libraries(Sample_Test ${LINK_FILES})
 
 #copy resources from engine to /res/default/
 FILE(MAKE_DIRECTORY ../res/default/)
-FILE(COPY ../../res/ DESTINATION ../../res/default/)
+FILE(COPY ../../res/ DESTINATION ../res/default/)
 
 #postbuild commands; copy dll's
 if(PLATFORM STREQUAL "Win32")
