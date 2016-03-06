@@ -1,7 +1,0 @@
-g head
-g hair
-g torso
-g legs
-g foot
-g hand01
-g hand

@@ -1,0 +1,3 @@
+g back
+g cloth
+g seam

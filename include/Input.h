@@ -2,9 +2,9 @@
 
 #include <vector>
 #include <functional>
+#include "glm/glm.hpp"
 
 class GLFWwindow;
-class Engine;
 
 namespace TakeOne
 {
@@ -23,19 +23,32 @@ namespace TakeOne
         Input(Input&&) = delete;
         Input& operator=(Input&&) = delete;
 
-        void KeyboardAction(KeyboardCallback aKeyboardCallback);
-        void MousePressAction(MousePressCallback aMousePressCallback);
-        void MousePosAction(MousePosCallback aMousePosCallback);
-        void MouseScrollAction(MouseScrollCallback aMouseScrollCallback);
+        //Pool
+        int GetKeyState(int pKey) const;
+        int GetMouseBtnState(int pBtn) const;
+        glm::vec2 GetCursorPos() const;
 
-        void MouseSetPosition(double pXPos, double pYPos);
+        //Event based
+        int RegisterKeyboardAction(KeyboardCallback aKeyboardCallback);
+        int RegisterMousePressAction(MousePressCallback aMousePressCallback);
+        int RegisterMousePosAction(MousePosCallback aMousePosCallback);
+        int RegisterMouseScrollAction(MouseScrollCallback aMouseScrollCallback);
+
+        void UnregisterKeyboardAction(int pHandle);
+        void UnregisterMousePressAction(int pHandle);
+        void UnregisterMousePosAction(int pHandle);
+        void UnregisterMouseScrollAction(int pHandle);
+
+        void SetMousePosition(double pXPos, double pYPos);
         void SetCursorMode(int pMode);
 
     protected:
         friend class Engine;
 
-        Input(){}
+        Input();
+        ~Input();
         void Init(GLFWwindow* pWindow);
+        void Cleanup();
 
         GLFWwindow* mWindow;
 

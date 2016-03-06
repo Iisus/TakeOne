@@ -187,7 +187,7 @@ int main(int argc, char *argv[])
 {
     if(argc<3)
     {
-        cout<<"Invalid number of arguments."<<endl;
+        cout<<"Invalid number of arguments. The arguments are: Source FileName Destination"<<endl;
         return 0;
     }
     gSource = argv[1];

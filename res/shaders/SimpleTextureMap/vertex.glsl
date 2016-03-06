@@ -23,7 +23,7 @@
 #version 330 core
 
 uniform mat4 camera;
-uniform mat4 model;
+uniform mat4 ModelMatrix;
 
 layout (location = 0) in vec3 vertPos;
 layout (location = 1) in vec3 vertNormal;
@@ -42,5 +42,5 @@ void main() {
     cameraPosition = -camera[3].xyz * mat3(camera);
 
     // Apply all matrix transformations to vert
-    gl_Position = camera * model * vec4(vertPos,1);
+    gl_Position = camera * ModelMatrix * vec4(vertPos,1);
 }

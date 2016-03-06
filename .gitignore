@@ -6,3 +6,8 @@
 
 /samples/test/bin/
 /samples/test/CMakeLists.txt.user
+
+/samples/States/bin/
+/samples/States/CMakeLists.txt.user
+
+/samples/res/default/

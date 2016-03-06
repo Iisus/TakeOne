@@ -10,18 +10,19 @@ TakeOne::Texture::Texture()
 
 }
 
-TakeOne::Texture::Texture(std::string pTexturePath, unsigned int pTextureFlags)
+TakeOne::Texture::Texture(std::string pTexturePath, unsigned int pTextureFlags, unsigned int pTextureNo)
 {
-    LoadFromFile(pTexturePath, pTextureFlags);
+    LoadFromFile(pTexturePath, pTextureFlags, pTextureNo);
 }
 
 
 TakeOne::Texture::Texture(TakeOne::Texture &&pTexture) :
     mTexturePath(std::move(pTexture.mTexturePath)), mTextureFlags(std::move(pTexture.mTextureFlags)),
-    mTextureId(std::move(pTexture.mTextureId))
+    mTextureNo(std::move(pTexture.mTextureNo)), mTextureId(std::move(pTexture.mTextureId))
 {
     pTexture.mTexturePath = "";
     pTexture.mTextureFlags = 0;
+    pTexture.mTextureNo = 0;
     pTexture.mTextureId = 0;
 }
 
@@ -32,10 +33,12 @@ TakeOne::Texture& TakeOne::Texture::operator=(TakeOne::Texture &&pTexture)
         Unload();
         mTexturePath = std::move(pTexture.mTexturePath);
         mTextureFlags = std::move(pTexture.mTextureFlags);
+        mTextureNo = std::move(pTexture.mTextureNo);
         mTextureId = std::move(pTexture.mTextureId);
 
         pTexture.mTexturePath = "";
         pTexture.mTextureFlags = 0;
+        pTexture.mTextureNo = 0;
         pTexture.mTextureId = 0;
     }
     return *this;
@@ -46,20 +49,22 @@ TakeOne::Texture::~Texture()
     Unload();
 }
 
-void TakeOne::Texture::LoadFromFile(std::string pTexturePath, unsigned int pTextureFlags, unsigned int pTextureId)
+void TakeOne::Texture::LoadFromFile(std::string pTexturePath, unsigned int pTextureFlags, unsigned int pTextureNo, unsigned int pTextureId)
 {
     mTexturePath = pTexturePath;
     mTextureFlags = pTextureFlags;
+    mTextureNo = pTextureNo;
 
     Load(pTextureId);
 }
 
-void TakeOne::Texture::LoadFromBuffer(const unsigned char* const pBuffer, int pSize, unsigned int pTextureFlags,  unsigned int pTextureId)
+void TakeOne::Texture::LoadFromBuffer(const unsigned char* const pBuffer, int pSize, unsigned int pTextureFlags, unsigned int pTextureNo, unsigned int pTextureId)
 {
     Unload();
 
     mTextureFlags = pTextureFlags;
     mTextureId = pTextureId;
+    mTextureNo = pTextureNo;
 
     mTextureId = SOIL_load_OGL_texture_from_memory
             (
@@ -78,6 +83,7 @@ void TakeOne::Texture::LoadFromBuffer(const unsigned char* const pBuffer, int pS
 
 void TakeOne::Texture::Bind() const
 {
+    glActiveTexture(GL_TEXTURE0 + mTextureNo);
     glBindTexture(GL_TEXTURE_2D, mTextureId);
 }
 

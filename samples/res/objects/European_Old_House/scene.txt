@@ -1,0 +1,7 @@
+g house
+defaultobject
+defaultobject1
+defaultobject2
+defaultobject3
+defaultobject4
+defaultobject5

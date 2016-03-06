@@ -70,7 +70,7 @@ TakeOne::BoxRenderObject::BoxRenderObject(const std::shared_ptr<Program>& pProgr
     mMesh->Setup();
 }
 
-TakeOne::PlaneRenderObject::PlaneRenderObject(const std::shared_ptr<Program>& pProgram) :
+TakeOne::PlaneRenderObject::PlaneRenderObject(const std::shared_ptr<Program>& pProgram, glm::vec2 pTextureTile) :
     RenderObject(pProgram)
 {
     std::vector<unsigned int> attribsUsed(Vertex::Count);
@@ -83,10 +83,10 @@ TakeOne::PlaneRenderObject::PlaneRenderObject(const std::shared_ptr<Program>& pP
 
     std::vector<Vertex> vertices
     {
-        Vertex(glm::vec3( UNIT, -UNIT,  UNIT), glm::vec3(-0.0, -0.0,  1.0), glm::vec3(0.0), glm::vec2( 0.0,  0.0)),
-        Vertex(glm::vec3( UNIT,  UNIT,  UNIT), glm::vec3(-0.0, -0.0,  1.0), glm::vec3(0.0), glm::vec2( 1.0,  0.0)),
-        Vertex(glm::vec3(-UNIT,  UNIT,  UNIT), glm::vec3(-0.0, -0.0,  1.0), glm::vec3(0.0), glm::vec2( 1.0,  1.0)),
-        Vertex(glm::vec3(-UNIT, -UNIT,  UNIT), glm::vec3(-0.0, -0.0,  1.0), glm::vec3(0.0), glm::vec2( 0.0,  1.0)),
+        Vertex(glm::vec3( UNIT, -UNIT,  UNIT), glm::vec3(-0.0, -0.0,  1.0), glm::vec3(0.0), glm::vec2( 0.0,            0.0)),
+        Vertex(glm::vec3( UNIT,  UNIT,  UNIT), glm::vec3(-0.0, -0.0,  1.0), glm::vec3(0.0), glm::vec2( pTextureTile.x, 0.0)),
+        Vertex(glm::vec3(-UNIT,  UNIT,  UNIT), glm::vec3(-0.0, -0.0,  1.0), glm::vec3(0.0), glm::vec2( pTextureTile.x, pTextureTile.y)),
+        Vertex(glm::vec3(-UNIT, -UNIT,  UNIT), glm::vec3(-0.0, -0.0,  1.0), glm::vec3(0.0), glm::vec2( 0.0,            pTextureTile.y)),
     };
 
     mMesh->SetVertices(std::move(vertices));

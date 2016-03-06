@@ -1,0 +1,4 @@
+g muro_head muro
+g muro muro_main
+g muro eyes
+g muro eye_cornl2

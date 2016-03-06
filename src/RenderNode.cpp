@@ -32,12 +32,12 @@ void TakeOne::RenderNode::SetRenderObject(std::shared_ptr<TakeOne::RenderObject>
     mRenderObject = pRenderObject;
 }
 
-std::shared_ptr<TakeOne::RenderObject> TakeOne::RenderNode::GetRenderObject()
+std::shared_ptr<TakeOne::RenderObject> TakeOne::RenderNode::GetRenderObject() const
 {
     return mRenderObject;
 }
 
-void TakeOne::RenderNode::ApplyTransformation(const std::string& pUniformName)
+void TakeOne::RenderNode::SendModelMatrix(const std::string& pUniformName) const
 {
     if(mRenderObject)
         mRenderObject->GetMaterial().SetShaderParam(pUniformName, mTransform->GetTransformMatrix());

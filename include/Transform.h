@@ -2,22 +2,30 @@
 #include "glm/glm.hpp"
 #include "glm/gtx/quaternion.hpp"
 #include <vector>
+#include <unordered_map>
 
 namespace TakeOne
 {
     class Transform
     {
     public:
+        enum Transofmations
+        {
+            TRANSLATION = 1,
+            ROTATION = 2,
+            SCALE = 4
+        };
+
         Transform(Transform* const pParent = nullptr);
         Transform(const Transform&) = delete;
         Transform& operator=(const Transform&) = delete;
-        Transform(Transform&&) = delete;
-        Transform& operator=(Transform&&) = delete;
+        Transform(Transform&& pOther);
+        Transform& operator=(Transform&& pOther);
         ~Transform();
 
-        void SetParent(Transform* const pParent);
+        void SetParent(Transform* const pParent, int pTransformations = 0);
         const Transform* GetParent() const;
-        void AddChild(Transform* const pChild);
+        void AddChild(Transform* const pChild, int pTransformations = 0);
         void RemoveChild(Transform* const);
         const std::vector<Transform*>& GetChildren() const;
 
@@ -45,6 +53,6 @@ namespace TakeOne
         bool mDirty;
 
         Transform* mParent;
-        std::vector<Transform*> mChildren;
+        std::unordered_map<Transform*, int> mChildren;
     };
 }

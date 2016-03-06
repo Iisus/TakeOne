@@ -1,3 +1,14 @@
 #pragma once
 
-#define RES_FOLDER std::string("../../res/")
+#include "Engine.h"
+
+using namespace TakeOne;
+using namespace std;
+using namespace glm;
+
+class SampleUtil
+{
+public:
+
+    static const string RES_FOLDER;
+};

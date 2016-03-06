@@ -40,7 +40,7 @@ std::string TakeOne::Node::GetName() const
     return mName;
 }
 
-TakeOne::Transform& TakeOne::Node::GetTransform()
+TakeOne::Transform* TakeOne::Node::GetTransform()
 {
-    return *mTransform;
+    return mTransform.get();
 }

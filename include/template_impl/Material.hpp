@@ -15,4 +15,12 @@ void TakeOne::Material::SetShaderParam(const std::string& pName, T pValue, int p
         mShaderParams[pName] = std::unique_ptr<ShaderParamBase>(
                 new ShaderParam<T>(mProgram->GetUniformLocation(pName), pValue, pCount));
     }
+
+    mShaderParams[pName]->SendToShader();
+}
+
+template<typename T>
+void TakeOne::Material::SetShaderParam(DefaultPropertiesEnum pName, T pValue, int pCount)
+{
+    SetShaderParam<T>(kDefaultUniforms[pName], pValue, pCount);
 }
